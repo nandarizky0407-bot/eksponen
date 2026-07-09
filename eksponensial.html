@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eksponensial: Pangkat & Akar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        /* 1. SETUP & THEME */
+        * { box-sizing: border-box; }
+        body { 
+            background-color: #020617; 
+            margin: 0; 
+            min-height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            font-family: 'Lato', sans-serif; 
+            color: #f8fafc;
+            padding: 20px;
+        }
+
+        /* 2. SLIDE CONTAINER */
+        .slide-container {
+            width: 100%;
+            max-width: 1280px;
+            height: 90vh;
+            min-height: 650px;
+            background-color: #0f172a;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            position: relative;
+            overflow: hidden;
+            display: none;
+            flex-direction: column;
+            padding: 40px 60px;
+            border: 2px solid #334155;
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+        .slide-container.active { display: flex; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .slide-container::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle at top right, rgba(192, 132, 252, 0.15), transparent 40%),
+                        radial-gradient(circle at bottom left, rgba(34, 211, 238, 0.15), transparent 40%);
+            z-index: 0;
+            pointer-events: none;
+        }
+        .content-wrapper { position: relative; z-index: 1; display: flex; flex-direction: column; height: 100%; }
+
+        /* 3. TYPOGRAPHY */
+        h1, h2, h3, .font-poppins { font-family: 'Poppins', sans-serif; }
+        .slide-title { font-size: 36px; font-weight: 700; color: #22d3ee; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 2px; border-bottom: 2px solid #334155; padding-bottom: 10px; }
+        p, li { font-size: 16px; line-height: 1.6; color: #cbd5e1; }
+
+        /* 4. UTILITY COMPONENTS */
+        .scrollable { overflow-y: auto; padding-right: 10px; flex-grow: 1; }
+        .scrollable::-webkit-scrollbar { width: 6px; }
+        .scrollable::-webkit-scrollbar-track { background: #1e293b; border-radius: 4px; }
+        .scrollable::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+        .scrollable::-webkit-scrollbar-thumb:hover { background: #c084fc; }
+
+        .btn-neon { transition: all 0.2s; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; border: none; }
+        .btn-neon:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 0 15px rgba(34, 211, 238, 0.4); }
+        .btn-neon:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        .tab-btn { border-bottom: 3px solid transparent; transition: all 0.2s; background: transparent; color: #94a3b8; font-weight: bold; padding: 12px 20px; cursor: pointer; font-size: 14px; }
+        .tab-btn.active { border-color: #22d3ee; color: #22d3ee; background-color: rgba(34,211,238,0.1); border-radius: 8px 8px 0 0; }
+
+        .input-dark { background-color: #1e293b; border: 2px solid #475569; color: #fff; outline: none; transition: 0.3s; width: 100%; }
+        .input-dark:focus { border-color: #c084fc; box-shadow: 0 0 10px rgba(192,132,252,0.3); }
+        .input-correct { border-color: #22c55e !important; background-color: rgba(34,197,94,0.1) !important; color: #4ade80 !important; }
+        .input-wrong { border-color: #ef4444 !important; background-color: rgba(239,68,68,0.1) !important; color: #f87171 !important; }
+
+        /* Formula Container */
+        .formula-container { background-color: #1e293b; padding: 15px 25px; border-radius: 12px; border-left: 4px solid #c084fc; display: inline-flex; align-items: center; justify-content: center; margin: 10px 0; overflow-x: auto; }
+        math { font-size: 24px; color: #fff; }
+
+        /* Grid Questions */
+        .q-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 8px; margin-bottom: 20px; }
+        .q-btn { background: #1e293b; border: 1px solid #475569; border-radius: 8px; font-weight: bold; color: #94a3b8; padding: 8px 0; transition: 0.2s; cursor: pointer; font-size: 14px; }
+        .q-btn.active { background: #22d3ee; color: #0f172a; border-color: #22d3ee; transform: scale(1.05); }
+        .q-btn.correct { background: #22c55e; color: #fff; border-color: #16a34a; }
+
+        /* Nav Footer */
+        .slide-nav { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #334155; padding-top: 20px; margin-top: 20px; flex-shrink: 0; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #334155; font-size: 14px; }
+        th { background-color: #1e293b; color: #94a3b8; font-weight: bold; position: sticky; top: 0; }
+    </style>
+</head>
+<body>
+
+    <div id="app" class="w-full max-w-7xl relative">
+
+        <!-- SLIDE 1: COVER -->
+        <div class="slide-container active" id="slide1">
+            <div class="content-wrapper items-center justify-center text-center">
+                <div class="p-6 bg-slate-800/80 border border-slate-600 rounded-full mb-6 text-6xl text-cyan-400 shadow-[0_0_30px_rgba(34,211,238,0.3)]">
+                    <math display="math"><msup><mi>x</mi><mn>2</mn></msup></math>
+                </div>
+                <h1 class="text-5xl md:text-7xl font-bold font-poppins text-white mb-4 tracking-widest drop-shadow-lg">EKSPONENSIAL</h1>
+                <p class="text-xl md:text-2xl text-cyan-300 font-poppins mb-12 tracking-wider uppercase">Menaklukkan Akar dan Pangkat</p>
+                
+                <div class="bg-slate-800/90 p-8 rounded-2xl border border-slate-600 w-full max-w-md backdrop-blur-md">
+                    <label class="block text-slate-300 font-bold mb-4 uppercase text-sm tracking-widest">Identitas Siswa</label>
+                    <input type="text" id="student-name" class="input-dark px-5 py-4 rounded-xl text-center font-bold mb-6 text-lg" placeholder="Ketik namamu di sini...">
+                    <button onclick="startApp()" class="btn-neon w-full bg-cyan-500 text-slate-900 text-lg py-4 rounded-xl">Mulai Belajar <i class="fa-solid fa-arrow-right ml-2"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 2: PENGGUNAAN -->
+        <div class="slide-container" id="slide2">
+            <div class="content-wrapper">
+                <h2 class="slide-title">Eksponen di Kehidupan Nyata</h2>
+                <div class="scrollable grid grid-cols-1 md:grid-cols-2 gap-8 items-center h-full">
+                    <div class="space-y-6">
+                        <p class="text-lg">Mengapa kita harus belajar pangkat dan akar? Di alam semesta, banyak hal yang tumbuh atau menyusut dengan kecepatan <b>eksponensial</b>, bukan dengan penambahan biasa.</p>
+                        
+                        <div class="bg-slate-800 p-5 rounded-xl border-l-4 border-cyan-400">
+                            <h3 class="text-lg font-bold text-white mb-2"><i class="fa-solid fa-microscope text-cyan-400 mr-2"></i> Pertumbuhan Bakteri</h3>
+                            <p class="text-sm">Bakteri membelah diri menjadi dua setiap beberapa jam. Jika ada 1 bakteri, dalam 1 jam jadi 2, lalu 4, 8, 16. Ini adalah bentuk eksponensial <math display="math"><msup><mn>2</mn><mi>x</mi></msup></math>.</p>
+                        </div>
+                        
+                        <div class="bg-slate-800 p-5 rounded-xl border-l-4 border-purple-400">
+                            <h3 class="text-lg font-bold text-white mb-2"><i class="fa-solid fa-vault text-purple-400 mr-2"></i> Bunga Majemuk Bank</h3>
+                            <p class="text-sm">Uang tabungan di bank akan menghasilkan bunga. Bunga tersebut akan menghasilkan bunga lagi di tahun berikutnya, membuat tabungan tumbuh melesat.</p>
+                        </div>
+                    </div>
+                    <div class="bg-slate-800 border-2 border-cyan-500/50 rounded-2xl p-6 flex flex-col items-center justify-center text-center shadow-[0_0_20px_rgba(34,211,238,0.2)]">
+                        <i class="fa-solid fa-chart-line text-8xl text-cyan-400 mb-6"></i>
+                        <h3 class="text-xl font-bold text-white mb-2">Grafik Eksponensial</h3>
+                        <p class="text-sm text-slate-400">Melesat tajam ke atas dengan sangat cepat!</p>
+                    </div>
+                </div>
+                <div class="slide-nav">
+                    <button onclick="navSlide(-1)" class="btn-neon bg-slate-700 text-white px-6 py-2 rounded-lg">Kembali</button>
+                    <span class="text-slate-500 font-bold">2 / 10</span>
+                    <button onclick="navSlide(1)" class="btn-neon bg-cyan-500 text-slate-900 px-6 py-2 rounded-lg">Lanjut</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 3: TUJUAN -->
+        <div class="slide-container" id="slide3">
+            <div class="content-wrapper">
+                <h2 class="slide-title">Tujuan Pembelajaran</h2>
+                <div class="scrollable flex flex-col justify-center h-full">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-slate-800 p-8 rounded-2xl border border-slate-600 text-center flex flex-col items-center hover:border-cyan-400 transition">
+                            <i class="fa-solid fa-superscript text-5xl text-cyan-400 mb-6"></i>
+                            <h3 class="text-lg font-bold text-white mb-3">Notasi & Sifat</h3>
+                            <p class="text-sm text-slate-400">Memahami bentuk pangkat dan akar beserta sifat-sifat operasinya secara mendalam.</p>
+                        </div>
+                        <div class="bg-slate-800 p-8 rounded-2xl border border-slate-600 text-center flex flex-col items-center hover:border-purple-400 transition">
+                            <i class="fa-solid fa-compress text-5xl text-purple-400 mb-6"></i>
+                            <h3 class="text-lg font-bold text-white mb-3">Menyederhanakan</h3>
+                            <p class="text-sm text-slate-400">Melatih kecepatan menyederhanakan ekspresi aljabar eksponensial dan akar.</p>
+                        </div>
+                        <div class="bg-slate-800 p-8 rounded-2xl border border-slate-600 text-center flex flex-col items-center hover:border-emerald-400 transition">
+                            <i class="fa-solid fa-scale-balanced text-5xl text-emerald-400 mb-6"></i>
+                            <h3 class="text-lg font-bold text-white mb-3">Persamaan & Fungsi</h3>
+                            <p class="text-sm text-slate-400">Mampu membedakan persamaan, pertidaksamaan, dan memvisualisasikan grafik eksponen.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="slide-nav">
+                    <button onclick="navSlide(-1)" class="btn-neon bg-slate-700 text-white px-6 py-2 rounded-lg">Kembali</button>
+                    <span class="text-slate-500 font-bold">3 / 10</span>
+                    <button onclick="navSlide(1)" class="btn-neon bg-cyan-500 text-slate-900 px-6 py-2 rounded-lg">Lanjut</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 4: MATERI PANGKAT -->
+        <div class="slide-container" id="slide4">
+            <div class="content-wrapper">
+                <h2 class="slide-title">Materi: Pangkat (Eksponen)</h2>
+                
+                <div class="flex gap-2 mb-6 border-b border-slate-700 shrink-0 overflow-x-auto">
+                    <button onclick="switchTab('s4', 'notasi')" id="btn-s4-notasi" class="tab-btn active">1. Notasi</button>
+                    <button onclick="switchTab('s4', 'sifat')" id="btn-s4-sifat" class="tab-btn">2. Sifat-sifat</button>
+                    <button onclick="switchTab('s4', 'latihan')" id="btn-s4-latihan" class="tab-btn">3. Latihan (20)</button>
+                    <button onclick="switchTab('s4', 'grafik')" id="btn-s4-grafik" class="tab-btn">4. Grafik</button>
+                    <button onclick="switchTab('s4', 'aljabar')" id="btn-s4-aljabar" class="tab-btn">5. Persamaan</button>
+                </div>
+                
+                <div class="scrollable relative flex-grow">
+                    <!-- S4 Tab 1: Notasi -->
+                    <div id="s4-notasi" class="block">
+                        <h3 class="text-xl font-bold text-cyan-300 mb-4">Notasi Eksponensial</h3>
+                        <p class="mb-4">Eksponen adalah cara matematis yang singkat untuk menulis perkalian berulang dari angka yang sama.</p>
+                        <div class="formula-container w-full max-w-xl mb-6">
+                            <math display="block"><msup><mi>a</mi><mi>n</mi></msup><mo>=</mo><mi>a</mi><mo>&times;</mo><mi>a</mi><mo>&times;</mo><mo>...</mo><mo>&times;</mo><mi>a</mi></math>
+                        </div>
+                        <p class="text-sm text-slate-400 italic mb-4">(di mana <math><mi>a</mi></math> dikalikan dengan dirinya sendiri sebanyak <math><mi>n</mi></math> faktor)</p>
+                        <ul class="list-disc pl-6 space-y-2 bg-slate-800 p-5 rounded-xl border border-slate-700">
+                            <li><math><mi>a</mi></math> disebut <b>basis</b> (bilangan pokok).</li>
+                            <li><math><mi>n</mi></math> disebut <b>eksponen</b> (pangkat).</li>
+                            <li>Contoh: <math><msup><mn>2</mn><mn>3</mn></msup><mo>=</mo><mn>2</mn><mo>&times;</mo><mn>2</mn><mo>&times;</mo><mn>2</mn><mo>=</mo><mn>8</mn></math></li>
+                        </ul>
+                    </div>
+
+                    <!-- S4 Tab 2: Sifat -->
+                    <div id="s4-sifat" class="hidden h-full flex-col">
+                        <div class="flex flex-wrap gap-2 mb-4 shrink-0">
+                            <button onclick="showSifatExp(1)" class="btn-neon bg-slate-800 border border-slate-600 px-4 py-2 rounded text-sm text-cyan-300">Perkalian</button>
+                            <button onclick="showSifatExp(2)" class="btn-neon bg-slate-800 border border-slate-600 px-4 py-2 rounded text-sm text-cyan-300">Pembagian</button>
+                            <button onclick="showSifatExp(3)" class="btn-neon bg-slate-800 border border-slate-600 px-4 py-2 rounded text-sm text-cyan-300">Pangkat Dipangkatkan</button>
+                            <button onclick="showSifatExp(4)" class="btn-neon bg-slate-800 border border-slate-600 px-4 py-2 rounded text-sm text-cyan-300">Pangkat Negatif</button>
+                            <button onclick="showSifatExp(5)" class="btn-neon bg-slate-800 border border-slate-600 px-4 py-2 rounded text-sm text-cyan-300">Pangkat Nol</button>
+                        </div>
+                        <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 flex-grow" id="sifat-exp-content">
+                            <!-- Injected via JS -->
+                        </div>
+                    </div>
+
+                    <!-- S4 Tab 3: Latihan -->
+                    <div id="s4-latihan" class="hidden h-full flex-col">
+                        <p class="mb-4 text-cyan-300 font-bold">Latihan Menyederhanakan Pangkat</p>
+                        <div class="q-grid shrink-0" id="s4-grid"></div>
+                        
+                        <div class="bg-slate-800 border border-slate-700 p-8 rounded-2xl flex-grow flex flex-col items-center justify-center text-center mt-2">
+                            <div class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">Soal <span id="s4-q-num">1</span></div>
+                            <div class="formula-container mb-6 scale-125" id="s4-q-formula"></div>
+                            
+                            <div class="flex gap-4 w-full max-w-md mb-6">
+                                <input type="text" id="s4-input" class="input-dark px-4 py-3 rounded-xl text-center text-xl font-bold" placeholder="Hasil...">
+                                <button onclick="checkAnswer('s4')" id="s4-btn-cek" class="btn-neon bg-emerald-500 text-white px-6 py-3 rounded-xl font-bold">Cek</button>
+                            </div>
+                            
+                            <div class="flex gap-4 w-full max-w-md">
+                                <button onclick="showDiscussion('s4')" id="s4-btn-disc" class="btn-neon flex-1 bg-slate-700 text-white py-2 rounded-xl font-bold"><i class="fa-solid fa-lightbulb text-amber-400 mr-2"></i> Bahas</button>
+                                <button onclick="nextQuestion('s4')" class="btn-neon flex-1 bg-cyan-600 text-slate-900 py-2 rounded-xl font-bold">Ganti Soal</button>
+                            </div>
+                            
+                            <div id="s4-fb" class="font-bold text-lg h-6 mt-4"></div>
+                            <div id="s4-disc-panel" class="hidden mt-4 bg-slate-900 border border-slate-700 p-4 rounded-xl text-sm text-slate-300 w-full max-w-md"></div>
+                        </div>
+                    </div>
+
+                    <!-- S4 Tab 4: Grafik -->
+                    <div id="s4-grafik" class="hidden h-full flex-col">
+                        <h3 class="text-xl font-bold text-cyan-300 mb-4">Fungsi Eksponen & Grafik</h3>
+                        <p class="mb-4">Fungsi eksponen memiliki bentuk umum <math><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo><mo>=</mo><msup><mi>a</mi><mi>x</mi></msup></math>. Grafiknya berbentuk kurva lengkung mulus.</p>
+                        <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                            <div class="space-y-4">
+                                <p><strong class="text-emerald-400">Syarat Basis:</strong> <math><mi>a</mi><mo>&gt;</mo><mn>0</mn></math> dan <math><mi>a</mi><mo>&ne;</mo><mn>1</mn></math></p>
+                                <p>Contoh: <math><mi>y</mi><mo>=</mo><msup><mn>2</mn><mi>x</mi></msup></math></p>
+                                <ul class="list-disc pl-5 text-sm text-slate-300 space-y-2">
+                                    <li>Selalu memotong sumbu Y di titik <b>(0, 1)</b> karena <math><msup><mi>a</mi><mn>0</mn></msup><mo>=</mo><mn>1</mn></math>.</li>
+                                    <li>Memiliki asimtot datar pada sumbu X (y=0). Kurva akan mendekati nol tapi tidak akan pernah menyentuhnya.</li>
+                                    <li>Jika a > 1, kurva <b>monoton naik</b>.</li>
+                                </ul>
+                            </div>
+                            <div class="bg-slate-900 p-4 rounded-xl border border-slate-600 flex justify-center items-center">
+                                <svg width="200" height="150" viewBox="0 0 200 150">
+                                    <line x1="20" y1="130" x2="180" y2="130" stroke="#64748b" stroke-width="2"/>
+                                    <line x1="100" y1="20" x2="100" y2="140" stroke="#64748b" stroke-width="2"/>
+                                    <path d="M 20 128 Q 80 125 100 80 T 160 20" fill="none" stroke="#22d3ee" stroke-width="3"/>
+                                    <circle cx="100" cy="80" r="4" fill="#c084fc"/>
+                                    <text x="110" y="85" fill="#c084fc" font-size="12">(0,1)</text>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- S4 Tab 5: Persamaan -->
+                    <div id="s4-aljabar" class="hidden">
+                        <h3 class="text-xl font-bold text-cyan-300 mb-4">Persamaan & Pertidaksamaan Aljabar</h3>
+                        <p class="mb-6">Langkah terpenting dalam menyelesaikan aljabar eksponensial adalah <b>menyamakan basis</b> pada kedua ruas (kiri dan kanan).</p>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-slate-800 p-6 rounded-xl border-t-4 border-cyan-400">
+                                <h4 class="font-bold text-cyan-300 mb-3">Persamaan</h4>
+                                <p class="text-sm mb-4">Jika <math><msup><mi>a</mi><mrow><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo></mrow></msup><mo>=</mo><msup><mi>a</mi><mrow><mi>g</mi><mo>(</mo><mi>x</mi><mo>)</mo></mrow></msup></math>, maka <math><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo><mo>=</mo><mi>g</mi><mo>(</mo><mi>x</mi><mo>)</mo></math></p>
+                                <div class="bg-slate-900 p-4 rounded-lg text-sm text-slate-300 font-mono leading-loose">
+                                    Contoh Soal:<br>
+                                    <math><msup><mn>2</mn><mi>x</mi></msup><mo>=</mo><mn>8</mn></math><br>
+                                    <math><msup><mn>2</mn><mi>x</mi></msup><mo>=</mo><msup><mn>2</mn><mn>3</mn></msup></math><br>
+                                    Karena basis sudah sama (2):<br>
+                                    <math><mi>x</mi><mo>=</mo><mn>3</mn></math>
+                                </div>
+                            </div>
+                            <div class="bg-slate-800 p-6 rounded-xl border-t-4 border-purple-400">
+                                <h4 class="font-bold text-purple-300 mb-3">Pertidaksamaan</h4>
+                                <p class="text-sm mb-4">Untuk basis <math><mi>a</mi><mo>&gt;</mo><mn>1</mn></math>:<br>Jika <math><msup><mi>a</mi><mrow><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo></mrow></msup><mo>&gt;</mo><msup><mi>a</mi><mrow><mi>g</mi><mo>(</mo><mi>x</mi><mo>)</mo></mrow></msup></math>, maka <math><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo><mo>&gt;</mo><mi>g</mi><mo>(</mo><mi>x</mi><mo>)</mo></math></p>
+                                <div class="bg-slate-900 p-4 rounded-lg text-sm text-slate-300 font-mono">
+                                    <i>Catatan Kritis:</i><br>
+                                    Tanda ketidaksamaan <b>TETAP</b> jika basis > 1.<br>
+                                    Jika basis berupa pecahan (0 < a < 1), maka tanda ketidaksamaan <b>DIBALIK</b>.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="slide-nav">
+                    <button onclick="navSlide(-1)" class="btn-neon bg-slate-700 text-white px-6 py-2 rounded-lg">Kembali</button>
+                    <span class="text-slate-500 font-bold">4 / 10</span>
+                    <button onclick="navSlide(1)" class="btn-neon bg-cyan-500 text-slate-900 px-6 py-2 rounded-lg">Lanjut</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 5: MATERI AKAR -->
+        <div class="slide-container" id="slide5">
+            <div class="content-wrapper">
+                <h2 class="slide-title">Materi: Bentuk Akar</h2>
+                
+                <div class="flex gap-2 mb-6 border-b border-slate-700 shrink-0">
+                    <button onclick="switchTab('s5', 'notasi')" id="btn-s5-notasi" class="tab-btn active">1. Notasi</button>
+                    <button onclick="switchTab('s5', 'sifat')" id="btn-s5-sifat" class="tab-btn">2. Sifat-sifat</button>
+                    <button onclick="switchTab('s5', 'latihan')" id="btn-s5-latihan" class="tab-btn">3. Latihan (20)</button>
+                </div>
+
+                <div class="scrollable relative flex-grow">
+                    <!-- S5 Tab 1: Notasi -->
+                    <div id="s5-notasi" class="block">
+                        <h3 class="text-xl font-bold text-purple-300 mb-4">Notasi Bentuk Akar</h3>
+                        <p class="mb-4">Akar adalah operasi kebalikan (invers) dari perpangkatan. Mencari akar pangkat <math><mi>n</mi></math> dari bilangan <math><mi>a</mi></math> sama dengan mencari angka yang jika dipangkatkan <math><mi>n</mi></math> akan menghasilkan <math><mi>a</mi></math>.</p>
+                        <div class="formula-container w-full max-w-xl mb-6">
+                            <math display="block"><mroot><mi>a</mi><mi>n</mi></mroot><mo>=</mo><mi>b</mi><mo>&hArr;</mo><msup><mi>b</mi><mi>n</mi></msup><mo>=</mo><mi>a</mi></math>
+                        </div>
+                        <ul class="list-disc pl-6 space-y-3 text-slate-300 bg-slate-800 p-5 rounded-xl border border-slate-700">
+                            <li>Simbol <math><msqrt><mrow></mrow></msqrt></math> dinamakan tanda akar (radikal).</li>
+                            <li>Jika indeks akar (<math><mi>n</mi></math>) tidak ditulis, nilainya disepakati adalah <b>2</b> (akar kuadrat). Contoh: <math><msqrt><mn>25</mn></msqrt><mo>=</mo><mn>5</mn></math>.</li>
+                            <li>Syarat penting akar genap pada bilangan real: Nilai di dalam akar <b>tidak boleh negatif</b>.</li>
+                        </ul>
+                    </div>
+
+                    <!-- S5 Tab 2: Sifat -->
+                    <div id="s5-sifat" class="hidden h-full flex-col">
+                        <div class="flex flex-wrap gap-2 mb-4 shrink-0">
+                            <button onclick="showSifatRoot(1)" class="btn-neon bg-slate-800 border border-slate-600 px-4 py-2 rounded text-sm text-purple-300">Perkalian</button>
+                            <button onclick="showSifatRoot(2)" class="btn-neon bg-slate-800 border border-slate-600 px-4 py-2 rounded text-sm text-purple-300">Pembagian</button>
+                            <button onclick="showSifatRoot(3)" class="btn-neon bg-slate-800 border border-slate-600 px-4 py-2 rounded text-sm text-purple-300">Tambah / Kurang</button>
+                        </div>
+                        <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 flex-grow" id="sifat-root-content">
+                            <!-- Injected via JS -->
+                        </div>
+                    </div>
+
+                    <!-- S5 Tab 3: Latihan -->
+                    <div id="s5-latihan" class="hidden h-full flex-col">
+                        <p class="mb-4 text-purple-300 font-bold">Latihan Menyederhanakan Akar</p>
+                        <div class="q-grid shrink-0" id="s5-grid"></div>
+                        
+                        <div class="bg-slate-800 border border-slate-700 p-8 rounded-2xl flex-grow flex flex-col items-center justify-center text-center mt-2">
+                            <div class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">Soal <span id="s5-q-num">1</span></div>
+                            <div class="formula-container mb-6 scale-125" id="s5-q-formula"></div>
+                            
+                            <div class="flex gap-4 w-full max-w-md mb-6">
+                                <input type="text" id="s5-input" class="input-dark px-4 py-3 rounded-xl text-center text-xl font-bold" placeholder="Hasil...">
+                                <button onclick="checkAnswer('s5')" id="s5-btn-cek" class="btn-neon bg-emerald-500 text-white px-6 py-3 rounded-xl font-bold">Cek</button>
+                            </div>
+                            
+                            <div class="flex gap-4 w-full max-w-md">
+                                <button onclick="showDiscussion('s5')" id="s5-btn-disc" class="btn-neon flex-1 bg-slate-700 text-white py-2 rounded-xl font-bold"><i class="fa-solid fa-lightbulb text-amber-400 mr-2"></i> Bahas</button>
+                                <button onclick="nextQuestion('s5')" class="btn-neon flex-1 bg-purple-600 text-white py-2 rounded-xl font-bold">Ganti Soal</button>
+                            </div>
+                            
+                            <div id="s5-fb" class="font-bold text-lg h-6 mt-4"></div>
+                            <div id="s5-disc-panel" class="hidden mt-4 bg-slate-900 border border-slate-700 p-4 rounded-xl text-sm text-slate-300 w-full max-w-md"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="slide-nav">
+                    <button onclick="navSlide(-1)" class="btn-neon bg-slate-700 text-white px-6 py-2 rounded-lg">Kembali</button>
+                    <span class="text-slate-500 font-bold">5 / 10</span>
+                    <button onclick="navSlide(1)" class="btn-neon bg-cyan-500 text-slate-900 px-6 py-2 rounded-lg">Lanjut</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 6: HUBUNGAN PANGKAT & AKAR -->
+        <div class="slide-container" id="slide6">
+            <div class="content-wrapper">
+                <h2 class="slide-title">Jembatan Pangkat & Akar</h2>
+                <div class="scrollable flex flex-col justify-center h-full gap-8 md:flex-row items-center">
+                    <div class="space-y-6 flex-1">
+                        <p class="text-lg">Kenyataannya, operasi <b>Akar</b> adalah bentuk penulisan lain dari <b>Pangkat Pecahan</b>. Ini adalah aturan emas yang menyatukan kedua bab ini menjadi satu kesatuan utuh.</p>
+                        
+                        <div class="formula-container w-full py-8 text-center bg-slate-800 border-none shadow-lg border-l-8 border-emerald-400">
+                            <math display="block"><msup><mi>a</mi><mfrac><mi>m</mi><mi>n</mi></mfrac></msup><mo>=</mo><mroot><msup><mi>a</mi><mi>m</mi></msup><mi>n</mi></mroot></math>
+                        </div>
+                        
+                        <div class="bg-slate-800/50 p-5 rounded-xl border border-slate-700 space-y-4">
+                            <p class="font-bold text-cyan-300"><i class="fa-solid fa-key mr-2"></i> Aturan Mengingat (Atas & Bawah):</p>
+                            <ul class="list-disc pl-5 text-sm space-y-2">
+                                <li>Pembilang pecahan (<math><mi>m</mi></math>) menjadi pangkat bilangan <b>di dalam</b> akar.</li>
+                                <li>Penyebut pecahan (<math><mi>n</mi></math>) menjadi indeks (tingkat akar) <b>di luar</b>.</li>
+                                <li class="mt-4 text-purple-300 font-bold bg-slate-900 p-3 rounded-lg border border-slate-600">
+                                    Contoh Konversi: <br>
+                                    <math><msup><mn>8</mn><mfrac><mn>2</mn><mn>3</mn></mfrac></msup><mo>=</mo><mroot><msup><mn>8</mn><mn>2</mn></msup><mn>3</mn></mroot><mo>=</mo><mroot><mn>64</mn><mn>3</mn></mroot><mo>=</mo><mn>4</mn></math>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="slide-nav">
+                    <button onclick="navSlide(-1)" class="btn-neon bg-slate-700 text-white px-6 py-2 rounded-lg">Kembali</button>
+                    <span class="text-slate-500 font-bold">6 / 10</span>
+                    <button onclick="navSlide(1)" class="btn-neon bg-cyan-500 text-slate-900 px-6 py-2 rounded-lg">Lanjut</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 7: 20 LATIHAN MUDAH (TIMER) -->
+        <div class="slide-container" id="slide7">
+            <div class="content-wrapper flex flex-col h-full">
+                <div class="flex justify-between items-center mb-6 border-b border-slate-700 pb-4 shrink-0">
+                    <h2 class="text-3xl font-bold text-cyan-400 uppercase tracking-widest"><i class="fa-solid fa-gamepad mr-2"></i> Ujian Level Dasar</h2>
+                    <div class="flex items-center gap-3">
+                        <div class="font-mono text-2xl font-bold text-rose-500 bg-rose-500/10 px-4 py-2 rounded-lg border border-rose-500/30">
+                            <i class="fa-regular fa-clock"></i> <span id="s7-timer-text">03:00</span>
+                        </div>
+                        <button onclick="addTime('s7', 15)" class="btn-neon bg-amber-500 text-slate-900 text-sm font-bold px-3 py-2 rounded-lg">+15s</button>
+                    </div>
+                </div>
+
+                <div class="q-grid shrink-0 mb-4" id="s7-grid"></div>
+
+                <div class="bg-slate-800 border border-slate-700 p-8 rounded-2xl flex-grow flex flex-col items-center justify-center text-center shadow-lg relative">
+                    <button onclick="startTimer('s7')" id="s7-btn-start" class="absolute top-4 right-4 bg-emerald-500 text-white text-xs px-4 py-2 font-bold rounded shadow hover:bg-emerald-400">Mulai Waktu</button>
+
+                    <div class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">Soal <span id="s7-q-num">1</span></div>
+                    <div class="formula-container mb-8 scale-125" id="s7-q-formula"></div>
+                    
+                    <div class="flex gap-4 w-full max-w-md mb-6">
+                        <input type="text" id="s7-input" class="input-dark flex-grow px-4 py-3 rounded-xl text-center text-xl font-bold" placeholder="Ketik jawaban..." disabled>
+                        <button onclick="checkTestAnswer('s7')" id="s7-btn-cek" class="btn-neon bg-cyan-600 text-slate-900 px-8 py-3 rounded-xl font-bold" disabled>Cek</button>
+                    </div>
+                    
+                    <div class="flex gap-4 w-full max-w-md">
+                        <button onclick="showDiscussion('s7')" id="s7-btn-disc" class="btn-neon flex-1 bg-slate-700 text-white py-2 rounded-xl font-bold hidden"><i class="fa-solid fa-lightbulb text-amber-400 mr-2"></i> Bahas</button>
+                        <button onclick="nextTestQuestion('s7')" class="btn-neon flex-1 bg-slate-600 text-white py-2 rounded-xl font-bold">Ganti Soal</button>
+                    </div>
+                    
+                    <div id="s7-fb" class="font-bold text-lg h-6 mt-4"></div>
+                    <div id="s7-disc-panel" class="hidden mt-4 bg-slate-900 border border-slate-700 p-4 rounded-xl text-sm text-slate-300 w-full max-w-lg"></div>
+                </div>
+
+                <div class="slide-nav">
+                    <button onclick="navSlide(-1)" class="btn-neon bg-slate-700 text-white px-6 py-2 rounded-lg">Kembali</button>
+                    <span class="text-slate-500 font-bold">7 / 10</span>
+                    <button onclick="navSlide(1)" class="btn-neon bg-cyan-500 text-slate-900 px-6 py-2 rounded-lg">Lanjut</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 8: 20 LATIHAN HOTS (TIMER 5 MIN) -->
+        <div class="slide-container" id="slide8">
+            <div class="content-wrapper flex flex-col h-full">
+                <div class="flex justify-between items-center mb-6 border-b border-slate-700 pb-4 shrink-0">
+                    <h2 class="text-3xl font-bold text-purple-400 uppercase tracking-widest"><i class="fa-solid fa-fire mr-2 text-rose-500"></i> Ujian Level HOTS</h2>
+                    <div class="flex items-center gap-3">
+                        <div class="font-mono text-2xl font-bold text-rose-500 bg-rose-500/10 px-4 py-2 rounded-lg border border-rose-500/30">
+                            <i class="fa-regular fa-clock"></i> <span id="s8-timer-text">05:00</span>
+                        </div>
+                        <button onclick="addTime('s8', 15)" class="btn-neon bg-amber-500 text-slate-900 text-sm font-bold px-3 py-2 rounded-lg">+15s</button>
+                    </div>
+                </div>
+
+                <div class="q-grid mb-4 shrink-0" id="s8-grid"></div>
+
+                <div class="bg-slate-800 border border-slate-700 p-8 rounded-2xl flex-grow flex flex-col items-center justify-center text-center shadow-lg relative">
+                    <button onclick="startTimer('s8')" id="s8-btn-start" class="absolute top-4 right-4 bg-emerald-500 text-white text-xs px-4 py-2 font-bold rounded shadow hover:bg-emerald-400">Mulai Waktu</button>
+
+                    <div class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">Soal HOTS <span id="s8-q-num">1</span></div>
+                    <div class="formula-container mb-8 scale-125" id="s8-q-formula"></div>
+                    
+                    <div class="flex gap-4 w-full max-w-md mb-6">
+                        <input type="text" id="s8-input" class="input-dark flex-grow px-4 py-3 rounded-xl text-center text-xl font-bold" placeholder="Ketik nilai x atau hasil..." disabled>
+                        <button onclick="checkTestAnswer('s8')" id="s8-btn-cek" class="btn-neon bg-purple-600 hover:bg-purple-500 text-white px-8 py-3 rounded-xl font-bold" disabled>Cek</button>
+                    </div>
+                    
+                    <div class="flex gap-4 w-full max-w-md">
+                        <button onclick="showDiscussion('s8')" id="s8-btn-disc" class="btn-neon flex-1 bg-slate-700 text-white py-2 rounded-xl font-bold hidden"><i class="fa-solid fa-lightbulb text-amber-400 mr-2"></i> Bahas</button>
+                        <button onclick="nextTestQuestion('s8')" id="s8-btn-next" class="btn-neon flex-1 bg-slate-600 text-white py-2 rounded-xl font-bold">Ganti Soal</button>
+                    </div>
+                    
+                    <div id="s8-fb" class="font-bold text-lg h-6 mt-4"></div>
+                    <div id="s8-disc-panel" class="hidden mt-4 bg-slate-900 border border-slate-700 p-4 rounded-xl text-sm text-slate-300 w-full max-w-lg"></div>
+                </div>
+
+                <div class="slide-nav">
+                    <button onclick="navSlide(-1)" class="btn-neon bg-slate-700 text-white px-6 py-2 rounded-lg">Kembali</button>
+                    <span class="text-slate-500 font-bold">8 / 10</span>
+                    <button onclick="navSlide(1)" class="btn-neon bg-cyan-500 text-slate-900 px-6 py-2 rounded-lg">Lanjut Rapor</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 9: STATISTIK WAKTU -->
+        <div class="slide-container" id="slide9">
+            <div class="content-wrapper flex flex-col h-full">
+                <h2 class="slide-title">Rapor Kecepatan Eksekusi</h2>
+                <div class="grid grid-cols-2 gap-6 mb-6 shrink-0">
+                    <div class="bg-slate-800 p-6 rounded-xl border-l-4 border-cyan-400 flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-slate-400 uppercase font-bold tracking-wider">Rata-rata Dasar</p>
+                            <p class="text-3xl font-bold text-cyan-300 mt-1" id="stat-avg-dasar">0s / soal</p>
+                        </div>
+                        <i class="fa-solid fa-stopwatch text-4xl text-cyan-500/50"></i>
+                    </div>
+                    <div class="bg-slate-800 p-6 rounded-xl border-l-4 border-purple-400 flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-slate-400 uppercase font-bold tracking-wider">Rata-rata HOTS</p>
+                            <p class="text-3xl font-bold text-purple-300 mt-1" id="stat-avg-hots">0s / soal</p>
+                        </div>
+                        <i class="fa-solid fa-fire text-4xl text-purple-500/50"></i>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 rounded-xl border border-slate-700 flex-grow overflow-hidden flex flex-col">
+                    <div class="scrollable w-full">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>No. Soal</th>
+                                    <th>Kategori (Slide)</th>
+                                    <th>Status Pengerjaan</th>
+                                    <th>Waktu Terpakai</th>
+                                </tr>
+                            </thead>
+                            <tbody id="stat-tbody" class="divide-y divide-slate-700/50 text-slate-300">
+                                <!-- Generated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="slide-nav">
+                    <button onclick="navSlide(-1)" class="btn-neon bg-slate-700 text-white px-6 py-2 rounded-lg">Kembali</button>
+                    <span class="text-slate-500 font-bold">9 / 10</span>
+                    <button onclick="navSlide(1)" class="btn-neon bg-cyan-500 text-slate-900 px-6 py-2 rounded-lg">Lanjut Kesimpulan</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 10: PENUTUP -->
+        <div class="slide-container" id="slide10">
+            <div class="absolute inset-0 bg-gradient-to-t from-cyan-900/30 to-purple-900/30 pointer-events-none"></div>
+            <div class="content-wrapper flex flex-col items-center justify-center text-center z-10 w-full max-w-3xl mx-auto">
+                <div class="bg-slate-800/80 p-12 rounded-3xl border border-slate-600 backdrop-blur-md shadow-2xl w-full">
+                    <i class="fa-solid fa-graduation-cap text-7xl text-cyan-400 mb-6 drop-shadow-lg"></i>
+                    <h1 class="text-4xl font-bold font-poppins text-white mb-4">Misi Eksponensial Selesai!</h1>
+                    <p class="text-lg text-slate-300 mb-8 leading-relaxed">
+                        Kerja bagus, <span id="final-name" class="font-bold text-cyan-300"></span>! Kamu telah menjelajahi notasi pangkat, menyelidiki bentuk akar, dan menemukan jembatan penghubung di antara keduanya.
+                    </p>
+                    <div class="bg-slate-900 p-6 rounded-xl border-l-4 border-purple-400 text-left mb-8">
+                        <h3 class="font-bold text-purple-300 mb-2">💡 Refleksi Singkat:</h3>
+                        <p class="text-sm text-slate-400">Bagian manakah dari materi eksponen atau akar yang menurutmu paling menantang hari ini? Ingat, setiap kesulitan dalam matematika hanyalah kode yang belum terpecahkan.</p>
+                    </div>
+                    <h2 class="text-3xl font-bold text-cyan-400 tracking-widest">THANK YOU FOR TODAY!</h2>
+                </div>
+            </div>
+            
+            <div class="absolute bottom-10 right-10 z-20">
+                <button onclick="navSlide(-1)" class="text-slate-500 hover:text-white transition font-bold">← Kembali</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // --- 1. CORE & UTILS ---
+        let currentSlide = 1;
+        const totalSlides = 10;
+        let studentName = "Siswa";
+
+        function startApp() {
+            const inp = document.getElementById('student-name').value.trim();
+            if(!inp) { alert("Masukkan namamu dulu ya!"); return; }
+            studentName = inp;
+            document.getElementById('final-name').innerText = studentName;
+            
+            initS4();
+            initS5();
+            initTests();
+            navSlide(1);
+        }
+
+        function navSlide(step) {
+            let next = currentSlide + step;
+            if(next < 1 || next > totalSlides) return;
+            
+            if(next === 9) compileStats();
+
+            document.querySelectorAll('.slide-container').forEach(el => el.classList.remove('active'));
+            document.getElementById('slide' + next).classList.add('active');
+            currentSlide = next;
+        }
+
+        function buildMath(content) { return `<math>${content}</math>`; }
+        
+        function switchTab(slide, tabId) {
+            document.querySelectorAll(`#slide${slide.replace('s','')} .tab-btn`).forEach(b => b.classList.remove('active'));
+            document.querySelectorAll(`#slide${slide.replace('s','')} .scrollable > div`).forEach(d => { d.classList.add('hidden'); d.classList.remove('flex', 'block'); });
+            
+            document.getElementById(`btn-${slide}-${tabId}`).classList.add('active');
+            const target = document.getElementById(`${slide}-${tabId}`);
+            target.classList.remove('hidden');
+            if(tabId === 'sifat' || tabId === 'latihan' || tabId === 'grafik') target.classList.add('flex');
+            else target.classList.add('block');
+        }
+
+        function renderGrid(containerId, count, onClickCb) {
+            const grid = document.getElementById(containerId);
+            grid.innerHTML = '';
+            for(let i=0; i<count; i++) {
+                let b = document.createElement('button');
+                b.className = 'q-btn';
+                b.innerText = i+1;
+                b.id = `${containerId}-btn-${i}`;
+                b.onclick = () => onClickCb(i);
+                grid.appendChild(b);
+            }
+        }
+
+        function updateGridUI(containerId, currentIdx) {
+            document.querySelectorAll(`#${containerId} .q-btn`).forEach(b => b.classList.remove('active'));
+            document.getElementById(`${containerId}-btn-${currentIdx}`).classList.add('active');
+        }
+
+        // Shared Logic for non-timer exercises (S4 & S5)
+        let exState = {
+            s4: { idx: 0, data: [] },
+            s5: { idx: 0, data: [] }
+        };
+
+        function checkAnswer(slide) {
+            const state = exState[slide];
+            const val = document.getElementById(`${slide}-input`).value.trim();
+            const inp = document.getElementById(`${slide}-input`);
+            const fb = document.getElementById(`${slide}-fb`);
+            
+            if(val === state.data[state.idx].a) {
+                inp.classList.add('input-correct'); inp.classList.remove('input-wrong');
+                fb.innerHTML = '<span class="text-emerald-400"><i class="fa-solid fa-check"></i> Tepat Sekali!</span>';
+                document.getElementById(`${slide}-grid-btn-${state.idx}`).classList.add('correct');
+            } else {
+                inp.classList.add('input-wrong'); inp.classList.remove('input-correct');
+                fb.innerHTML = '<span class="text-rose-400"><i class="fa-solid fa-xmark"></i> Kurang Tepat, coba lagi!</span>';
+            }
+        }
+
+        function showDiscussion(slide) {
+            const state = exState[slide];
+            const p = document.getElementById(`${slide}-disc-panel`);
+            p.innerText = "Pembahasan: " + state.data[state.idx].d;
+            p.classList.remove('hidden');
+        }
+
+        function nextQuestion(slide) {
+            const state = exState[slide];
+            const nextIdx = (state.idx + 1) % 20;
+            if(slide === 's4') loadQ_S4(nextIdx);
+            if(slide === 's5') loadQ_S5(nextIdx);
+        }
+
+        // --- 2. SLIDE 4: PANGKAT ---
+        function showSifatExp(id) {
+            const content = document.getElementById('sifat-exp-content');
+            let data = "";
+            switch(id) {
+                case 1: data = `<h4 class="font-bold text-cyan-300 mb-4 text-xl">Sifat Perkalian</h4><p class="mb-4">Jika basis sama, jumlahkan pangkatnya.</p><div class="formula-container">${buildMath('<msup><mi>a</mi><mi>m</mi></msup><mo>&times;</mo><msup><mi>a</mi><mi>n</mi></msup><mo>=</mo><msup><mi>a</mi><mrow><mi>m</mi><mo>+</mo><mi>n</mi></mrow></msup>')}</div>`; break;
+                case 2: data = `<h4 class="font-bold text-cyan-300 mb-4 text-xl">Sifat Pembagian</h4><p class="mb-4">Jika basis sama, kurangkan pangkatnya.</p><div class="formula-container">${buildMath('<mfrac><msup><mi>a</mi><mi>m</mi></msup><msup><mi>a</mi><mi>n</mi></msup></mfrac><mo>=</mo><msup><mi>a</mi><mrow><mi>m</mi><mo>-</mo><mi>n</mi></mrow></msup>')}</div>`; break;
+                case 3: data = `<h4 class="font-bold text-cyan-300 mb-4 text-xl">Pangkat Dipangkatkan</h4><p class="mb-4">Kalikan kedua pangkatnya.</p><div class="formula-container">${buildMath('<msup><mfenced><msup><mi>a</mi><mi>m</mi></msup></mfenced><mi>n</mi></msup><mo>=</mo><msup><mi>a</mi><mrow><mi>m</mi><mo>&times;</mo><mi>n</mi></mrow></msup>')}</div>`; break;
+                case 4: data = `<h4 class="font-bold text-cyan-300 mb-4 text-xl">Pangkat Negatif</h4><p class="mb-4">Balik posisi menjadi pecahan.</p><div class="formula-container">${buildMath('<msup><mi>a</mi><mrow><mo>-</mo><mi>n</mi></mrow></msup><mo>=</mo><mfrac><mn>1</mn><msup><mi>a</mi><mi>n</mi></msup></mfrac>')}</div>`; break;
+                case 5: data = `<h4 class="font-bold text-cyan-300 mb-4 text-xl">Pangkat Nol</h4><p class="mb-4">Semua bilangan tak nol pangkat nol adalah 1.</p><div class="formula-container">${buildMath('<msup><mi>a</mi><mn>0</mn></msup><mo>=</mo><mn>1</mn>')}</div>`; break;
+            }
+            content.innerHTML = data;
+        }
+
+        exState.s4.data = [
+            {q: '<msup><mn>2</mn><mn>3</mn></msup>', a: '8', d: '2 x 2 x 2 = 8'}, {q: '<msup><mn>5</mn><mn>2</mn></msup>', a: '25', d: '5 x 5 = 25'},
+            {q: '<msup><mn>3</mn><mn>4</mn></msup>', a: '81', d: '3 x 3 x 3 x 3 = 81'}, {q: '<msup><mn>10</mn><mn>3</mn></msup>', a: '1000', d: '10 x 10 x 10 = 1000'},
+            {q: '<msup><mn>7</mn><mn>2</mn></msup>', a: '49', d: '7 x 7 = 49'}, {q: '<msup><mn>2</mn><mn>5</mn></msup>', a: '32', d: '32'},
+            {q: '<msup><mn>4</mn><mn>3</mn></msup>', a: '64', d: '64'}, {q: '<msup><mn>6</mn><mn>2</mn></msup>', a: '36', d: '36'},
+            {q: '<msup><mn>9</mn><mn>2</mn></msup>', a: '81', d: '81'}, {q: '<msup><mn>1</mn><mn>100</mn></msup>', a: '1', d: '1 pangkat berapapun = 1'},
+            {q: '<msup><mn>8</mn><mn>2</mn></msup>', a: '64', d: '64'}, {q: '<msup><mn>3</mn><mn>3</mn></msup>', a: '27', d: '27'},
+            {q: '<msup><mn>11</mn><mn>2</mn></msup>', a: '121', d: '121'}, {q: '<msup><mn>2</mn><mn>6</mn></msup>', a: '64', d: '64'},
+            {q: '<msup><mn>5</mn><mn>3</mn></msup>', a: '125', d: '125'}, {q: '<msup><mn>12</mn><mn>2</mn></msup>', a: '144', d: '144'},
+            {q: '<msup><mn>10</mn><mn>4</mn></msup>', a: '10000', d: '10000'}, {q: '<msup><mn>2</mn><mn>4</mn></msup>', a: '16', d: '16'},
+            {q: '<msup><mn>15</mn><mn>2</mn></msup>', a: '225', d: '225'}, {q: '<msup><mn>20</mn><mn>2</mn></msup>', a: '400', d: '400'}
+        ];
+
+        function initS4() {
+            showSifatExp(1);
+            renderGrid('s4-grid', 20, i => loadQ_S4(i));
+            loadQ_S4(0);
+        }
+
+        function loadQ_S4(idx) {
+            exState.s4.idx = idx;
+            updateGridUI('s4-grid', idx);
+            document.getElementById('s4-q-num').innerText = idx + 1;
+            document.getElementById('s4-q-formula').innerHTML = buildMath(exState.s4.data[idx].q);
+            document.getElementById('s4-input').value = '';
+            document.getElementById('s4-input').className = "input-dark flex-grow px-4 py-3 rounded-xl text-center text-xl font-bold";
+            document.getElementById('s4-fb').innerText = '';
+            document.getElementById('s4-disc-panel').classList.add('hidden');
+        }
+
+        // --- 3. SLIDE 5: AKAR ---
+        function showSifatRoot(id) {
+            const content = document.getElementById('sifat-root-content');
+            let data = "";
+            switch(id) {
+                case 1: data = `<h4 class="font-bold text-purple-300 mb-4 text-xl">Perkalian Akar</h4><p class="mb-4">Kalikan angka di dalam akar.</p><div class="formula-container">${buildMath('<msqrt><mi>a</mi></msqrt><mo>&times;</mo><msqrt><mi>b</mi></msqrt><mo>=</mo><msqrt><mrow><mi>a</mi><mo>&times;</mo><mi>b</mi></mrow></msqrt>')}</div>`; break;
+                case 2: data = `<h4 class="font-bold text-purple-300 mb-4 text-xl">Pembagian Akar</h4><p class="mb-4">Bisa disatukan dalam pecahan akar.</p><div class="formula-container">${buildMath('<mfrac><msqrt><mi>a</mi></msqrt><msqrt><mi>b</mi></msqrt></mfrac><mo>=</mo><msqrt><mfrac><mi>a</mi><mi>b</mi></mfrac></msqrt>')}</div>`; break;
+                case 3: data = `<h4 class="font-bold text-purple-300 mb-4 text-xl">Penjumlahan/Pengurangan</h4><p class="mb-4">Syarat: Nilai akar harus sama.</p><div class="formula-container">${buildMath('<mi>c</mi><msqrt><mi>a</mi></msqrt><mo>&plusmn;</mo><mi>d</mi><msqrt><mi>a</mi></msqrt><mo>=</mo><mo>(</mo><mi>c</mi><mo>&plusmn;</mo><mi>d</mi><mo>)</mo><msqrt><mi>a</mi></msqrt>')}</div>`; break;
+            }
+            content.innerHTML = data;
+        }
+
+        exState.s5.data = [
+            {q: '<msqrt><mn>16</mn></msqrt>', a: '4', d: '4 x 4 = 16'}, {q: '<msqrt><mn>25</mn></msqrt>', a: '5', d: '5'},
+            {q: '<msqrt><mn>49</mn></msqrt>', a: '7', d: '7'}, {q: '<msqrt><mn>64</mn></msqrt>', a: '8', d: '8'},
+            {q: '<msqrt><mn>81</mn></msqrt>', a: '9', d: '9'}, {q: '<msqrt><mn>100</mn></msqrt>', a: '10', d: '10'},
+            {q: '<msqrt><mn>144</mn></msqrt>', a: '12', d: '12'}, {q: '<msqrt><mn>121</mn></msqrt>', a: '11', d: '11'},
+            {q: '<msqrt><mn>36</mn></msqrt>', a: '6', d: '6'}, {q: '<msqrt><mn>9</mn></msqrt>', a: '3', d: '3'},
+            {q: '<mroot><mn>8</mn><mn>3</mn></mroot>', a: '2', d: '2 x 2 x 2 = 8'}, {q: '<mroot><mn>27</mn><mn>3</mn></mroot>', a: '3', d: '3 x 3 x 3 = 27'},
+            {q: '<msqrt><mn>400</mn></msqrt>', a: '20', d: '20'}, {q: '<msqrt><mn>169</mn></msqrt>', a: '13', d: '13'},
+            {q: '<mroot><mn>64</mn><mn>3</mn></mroot>', a: '4', d: '4 x 4 x 4 = 64'}, {q: '<msqrt><mn>225</mn></msqrt>', a: '15', d: '15'},
+            {q: '<msqrt><mn>1</mn></msqrt>', a: '1', d: '1'}, {q: '<mroot><mn>125</mn><mn>3</mn></mroot>', a: '5', d: '5 x 5 x 5 = 125'},
+            {q: '<msqrt><mn>256</mn></msqrt>', a: '16', d: '16'}, {q: '<msqrt><mn>4</mn></msqrt>', a: '2', d: '2'}
+        ];
+
+        function initS5() {
+            showSifatRoot(1);
+            renderGrid('s5-grid', 20, i => loadQ_S5(i));
+            loadQ_S5(0);
+        }
+
+        function loadQ_S5(idx) {
+            exState.s5.idx = idx;
+            updateGridUI('s5-grid', idx);
+            document.getElementById('s5-q-num').innerText = idx + 1;
+            document.getElementById('s5-q-formula').innerHTML = buildMath(exState.s5.data[idx].q);
+            document.getElementById('s5-input').value = '';
+            document.getElementById('s5-input').className = "input-dark flex-grow px-4 py-3 rounded-xl text-center text-xl font-bold";
+            document.getElementById('s5-fb').innerText = '';
+            document.getElementById('s5-disc-panel').classList.add('hidden');
+        }
+
+        // --- 4. TIMER LOGIC ENGINE FOR S7 & S8 ---
+        function createTimerEngine() {
+            return {
+                interval: null, timeLeft: 0, maxTime: 0, isRunning: false,
+                start(seconds, onTick, onTimeout) {
+                    if(this.isRunning) return;
+                    this.timeLeft = seconds; this.maxTime = seconds; this.isRunning = true;
+                    this.interval = setInterval(() => {
+                        this.timeLeft--;
+                        onTick(this.timeLeft);
+                        if(this.timeLeft <= 0) { this.stop(); onTimeout(); }
+                    }, 1000);
+                },
+                stop() { clearInterval(this.interval); this.isRunning = false; },
+                add(sec, onTick) { if(this.isRunning) { this.timeLeft += sec; onTick(this.timeLeft); } },
+                getTimeUsed() { return this.maxTime - this.timeLeft; }
+            }
+        }
+        
+        function formatTime(s) {
+            let m = Math.floor(s/60); let sc = s%60;
+            return `${m.toString().padStart(2,'0')}:${sc.toString().padStart(2,'0')}`;
+        }
+
+        let testState = {
+            s7: { idx: 0, timer: createTimerEngine(), stats: Array(20).fill(null).map(()=>({solved:false, time:0})), timeLimit: 180, 
+                  data: [
+                      {q: '<msup><mn>2</mn><mn>4</mn></msup>', a: '16', d: '16'}, {q: '<msqrt><mn>49</mn></msqrt>', a: '7', d: '7'},
+                      {q: '<msup><mn>3</mn><mn>3</mn></msup>', a: '27', d: '27'}, {q: '<mroot><mn>27</mn><mn>3</mn></mroot>', a: '3', d: '3'},
+                      {q: '<msup><mn>10</mn><mn>2</mn></msup>', a: '100', d: '100'}, {q: '<msqrt><mn>100</mn></msqrt>', a: '10', d: '10'},
+                      {q: '<msup><mn>5</mn><mn>3</mn></msup>', a: '125', d: '125'}, {q: '<mroot><mn>125</mn><mn>3</mn></mroot>', a: '5', d: '5'},
+                      {q: '<msup><mn>4</mn><mn>2</mn></msup>', a: '16', d: '16'}, {q: '<msqrt><mn>16</mn></msqrt>', a: '4', d: '4'},
+                      {q: '<msup><mn>1</mn><mn>50</mn></msup>', a: '1', d: '1'}, {q: '<msqrt><mn>64</mn></msqrt>', a: '8', d: '8'},
+                      {q: '<msup><mn>6</mn><mn>2</mn></msup>', a: '36', d: '36'}, {q: '<msqrt><mn>36</mn></msqrt>', a: '6', d: '6'},
+                      {q: '<msup><mn>7</mn><mn>2</mn></msup>', a: '49', d: '49'}, {q: '<msqrt><mn>81</mn></msqrt>', a: '9', d: '9'},
+                      {q: '<msup><mn>8</mn><mn>2</mn></msup>', a: '64', d: '64'}, {q: '<mroot><mn>8</mn><mn>3</mn></mroot>', a: '2', d: '2'},
+                      {q: '<msup><mn>9</mn><mn>2</mn></msup>', a: '81', d: '81'}, {q: '<msqrt><mn>144</mn></msqrt>', a: '12', d: '12'}
+                  ]
+            },
+            s8: { idx: 0, timer: createTimerEngine(), stats: Array(20).fill(null).map(()=>({solved:false, time:0})), timeLimit: 300,
+                  data: [
+                      {q: '<msup><mn>2</mn><mi>x</mi></msup><mo>=</mo><mn>32</mn>', a: '5', d: '32 = 2^5, jadi x = 5'},
+                      {q: '<msup><mn>3</mn><mi>x</mi></msup><mo>=</mo><mn>81</mn>', a: '4', d: '81 = 3^4, jadi x = 4'},
+                      {q: '<msqrt><mn>50</mn></msqrt><mo>=</mo><mi>x</mi><msqrt><mn>2</mn></msqrt>', a: '5', d: 'akar(25*2) = 5 akar(2)'},
+                      {q: '<msup><mn>5</mn><mrow><mi>x</mi><mo>-</mo><mn>1</mn></mrow></msup><mo>=</mo><mn>125</mn>', a: '4', d: '125 = 5^3. x-1=3 -> x=4'},
+                      {q: '<mfrac><msup><mn>2</mn><mn>5</mn></msup><msup><mn>2</mn><mn>2</mn></msup></mfrac>', a: '8', d: '2^(5-2) = 2^3 = 8'},
+                      {q: '<msup><mn>4</mn><mfrac><mn>3</mn><mn>2</mn></mfrac></msup>', a: '8', d: '(akar(4))^3 = 2^3 = 8'},
+                      {q: '<msup><mn>27</mn><mfrac><mn>2</mn><mn>3</mn></mfrac></msup>', a: '9', d: '(akar_pangkat_3(27))^2 = 3^2 = 9'},
+                      {q: '<msup><mn>16</mn><mfrac><mn>1</mn><mn>4</mn></mfrac></msup>', a: '2', d: 'akar_pangkat_4(16) = 2'},
+                      {q: '<msqrt><mn>12</mn></msqrt><mo>+</mo><msqrt><mn>27</mn></msqrt><mo>=</mo><mi>x</mi><msqrt><mn>3</mn></msqrt>', a: '5', d: '2V3 + 3V3 = 5V3'},
+                      {q: '<msup><mn>10</mn><mi>x</mi></msup><mo>=</mo><mn>10000</mn>', a: '4', d: '10^4 = 10000'},
+                      {q: '<msup><mn>7</mn><mi>x</mi></msup><mo>=</mo><mn>1</mn>', a: '0', d: 'x = 0'},
+                      {q: '<msup><mrow><mo>(</mo><msup><mn>2</mn><mn>3</mn></msup><mo>)</mo></mrow><mn>2</mn></msup>', a: '64', d: '2^6 = 64'},
+                      {q: '<mfrac><mn>1</mn><msup><mn>3</mn><mrow><mo>-</mo><mn>2</mn></mrow></msup></mfrac>', a: '9', d: '3^2 = 9'},
+                      {q: '<msqrt><mn>8</mn></msqrt><mo>&times;</mo><msqrt><mn>2</mn></msqrt>', a: '4', d: 'akar(16) = 4'},
+                      {q: '<mfrac><msqrt><mn>75</mn></msqrt><msqrt><mn>3</mn></msqrt></mfrac>', a: '5', d: 'akar(25) = 5'},
+                      {q: '<msup><mn>2</mn><mi>x</mi></msup><mo>&times;</mo><msup><mn>2</mn><mn>3</mn></msup><mo>=</mo><mn>32</mn>', a: '2', d: '2^(x+3) = 2^5. x=2'},
+                      {q: '<msup><mn>8</mn><mfrac><mn>1</mn><mn>3</mn></mfrac></msup>', a: '2', d: 'akar pangkat 3 dari 8 = 2'},
+                      {q: '<msup><mn>64</mn><mfrac><mn>1</mn><mn>2</mn></mfrac></msup>', a: '8', d: 'akar(64) = 8'},
+                      {q: '<msup><mn>5</mn><mrow><mn>2</mn><mi>x</mi></mrow></msup><mo>=</mo><mn>25</mn>', a: '1', d: '5^2x = 5^2. x=1'},
+                      {q: '<msup><mn>9</mn><mfrac><mn>3</mn><mn>2</mn></mfrac></msup>', a: '27', d: '3^3 = 27'}
+                  ]
+            }
+        };
+
+        function initTests() {
+            renderGrid('s7-grid', 20, i => loadTestQ('s7', i));
+            loadTestQ('s7', 0);
+            renderGrid('s8-grid', 20, i => loadTestQ('s8', i));
+            loadTestQ('s8', 0);
+        }
+
+        function loadTestQ(slide, idx) {
+            const state = testState[slide];
+            state.timer.stop();
+            state.idx = idx;
+            
+            updateGridUI(`${slide}-grid`, idx);
+            document.getElementById(`${slide}-q-num`).innerText = idx + 1;
+            document.getElementById(`${slide}-q-formula`).innerHTML = buildMath(state.data[idx].q);
+            
+            const inp = document.getElementById(`${slide}-input`);
+            inp.value = '';
+            inp.disabled = state.stats[idx].solved;
+            inp.className = "input-dark flex-grow px-4 py-3 rounded-xl text-center text-xl font-bold";
+            if(state.stats[idx].solved) inp.value = state.data[idx].a;
+
+            document.getElementById(`${slide}-btn-cek`).disabled = state.stats[idx].solved;
+            document.getElementById(`${slide}-fb`).innerHTML = state.stats[idx].solved ? "<span class='text-emerald-400'>Sudah diselesaikan!</span>" : "";
+            document.getElementById(`${slide}-disc-panel`).classList.add('hidden');
+            
+            document.getElementById(`${slide}-btn-start`).innerText = "Mulai Waktu";
+            document.getElementById(`${slide}-btn-start`).disabled = state.stats[idx].solved;
+            document.getElementById(`${slide}-timer-text`).innerText = formatTime(state.timeLimit);
+            
+            if(state.stats[idx].solved) {
+                document.getElementById(`${slide}-btn-disc`).classList.remove('hidden');
+            } else {
+                document.getElementById(`${slide}-btn-disc`).classList.add('hidden');
+            }
+        }
+
+        function startTimer(slide) {
+            const state = testState[slide];
+            if(state.stats[state.idx].solved) return;
+            
+            document.getElementById(`${slide}-btn-start`).innerText = "Berjalan...";
+            document.getElementById(`${slide}-input`).disabled = false;
+            document.getElementById(`${slide}-btn-cek`).disabled = false;
+            
+            state.timer.start(state.timeLimit, 
+                (t) => { document.getElementById(`${slide}-timer-text`).innerText = formatTime(t); },
+                () => { 
+                    document.getElementById(`${slide}-fb`).innerHTML = "<span class='text-rose-500'>Waktu Habis!</span>"; 
+                    document.getElementById(`${slide}-input`).disabled=true; 
+                    document.getElementById(`${slide}-btn-cek`).disabled=true;
+                }
+            );
+        }
+
+        function addTime(slide, sec) { 
+            testState[slide].timer.add(sec, (t) => { document.getElementById(`${slide}-timer-text`).innerText = formatTime(t); }); 
+        }
+
+        function checkTestAnswer(slide) {
+            const state = testState[slide];
+            if(!state.timer.isRunning) { alert("Klik Mulai Waktu dulu!"); return; }
+            
+            const val = document.getElementById(`${slide}-input`).value.trim();
+            const inp = document.getElementById(`${slide}-input`);
+            const fb = document.getElementById(`${slide}-fb`);
+            
+            if(val === state.data[state.idx].a) {
+                state.timer.stop();
+                state.stats[state.idx].solved = true;
+                state.stats[state.idx].time = state.timer.getTimeUsed();
+                
+                inp.classList.add('input-correct'); inp.disabled = true;
+                document.getElementById(`${slide}-btn-cek`).disabled = true;
+                document.getElementById(`${slide}-btn-disc`).classList.remove('hidden');
+                fb.innerHTML = `<span class="text-emerald-400"><i class="fa-solid fa-check"></i> Benar! Waktu: ${state.stats[state.idx].time}s</span>`;
+                document.getElementById(`${slide}-grid-btn-${state.idx}`).classList.add('correct');
+            } else {
+                inp.classList.add('input-wrong'); setTimeout(()=>inp.classList.remove('input-wrong'), 1000);
+                fb.innerHTML = '<span class="text-rose-400"><i class="fa-solid fa-xmark"></i> Salah! Ayo coba lagi.</span>';
+            }
+        }
+
+        function nextTestQuestion(slide) {
+            const state = testState[slide];
+            loadTestQ(slide, (state.idx + 1) % 20);
+        }
+
+        // --- 5. STATS LOGIC (SLIDE 9) ---
+        function compileStats() {
+            const tbody = document.getElementById('stat-tbody');
+            tbody.innerHTML = '';
+
+            let totalTimeDasar = 0, countDasar = 0;
+            let totalTimeHots = 0, countHots = 0;
+
+            for(let i=0; i<20; i++) {
+                // Dasar (S7)
+                let d = testState.s7.stats[i];
+                if(d.solved) { totalTimeDasar += d.time; countDasar++; }
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-800/50">
+                        <td>${i+1}</td>
+                        <td class="text-cyan-300 font-bold">Dasar</td>
+                        <td>${d.solved ? '<span class="text-emerald-400"><i class="fa-solid fa-check"></i> Selesai</span>' : '<span class="text-slate-500">Belum</span>'}</td>
+                        <td class="font-mono text-cyan-100">${d.solved ? d.time + 's' : '-'}</td>
+                    </tr>
+                `;
+                // HOTS (S8)
+                let h = testState.s8.stats[i];
+                if(h.solved) { totalTimeHots += h.time; countHots++; }
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-800/50">
+                        <td>${i+1}</td>
+                        <td class="text-purple-300 font-bold">HOTS</td>
+                        <td>${h.solved ? '<span class="text-emerald-400"><i class="fa-solid fa-check"></i> Selesai</span>' : '<span class="text-slate-500">Belum</span>'}</td>
+                        <td class="font-mono text-purple-100">${h.solved ? h.time + 's' : '-'}</td>
+                    </tr>
+                `;
+            }
+
+            document.getElementById('stat-avg-dasar').innerText = countDasar > 0 ? Math.round(totalTimeDasar/countDasar) + 's / soal' : '0s / soal';
+            document.getElementById('stat-avg-hots').innerText = countHots > 0 ? Math.round(totalTimeHots/countHots) + 's / soal' : '0s / soal';
+        }
+
+    </script>
+</body>
+</html>
+```
