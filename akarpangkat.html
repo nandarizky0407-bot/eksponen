@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pangkat & Akar ⚡ Petualangan Matematika</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500..700&family=Rajdhani:wght@400..600&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root {
+  --dark-bg:#0F172A; --dark-card:#1E293B; --dark-border:#334155;
+  --blue-100:#1E293B; --blue-200:#334155; --blue-300:#38BDF8; --blue-400:#0EA5E9;
+  --blue-500:#0284C7; --blue-600:#0369A1;
+  --green-100:#1E293B; --green-200:#166534; --green-300:#4ADE80; --green-400:#22C55E;
+  --green-500:#16A34A;
+  --orange:#F59E0B; --orange-deep:#D97706;
+  --red:#EF4444; --red-deep:#DC2626;
+  --text-light:#F1F5F9; --text-mid:#94A3B8; --text-dim:#64748B;
+  --shadow-blue:0 8px 24px rgba(14,165,233,.25);
+  --shadow-green:0 8px 24px rgba(34,197,94,.25);
+  --shadow-soft:0 4px 16px rgba(0,0,0,.3);
+}
+*{-webkit-tap-highlight-color:transparent;box-sizing:border-box;}
+html,body{height:100%;margin:0;}
+body{
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(135deg,#0F172A 0%, #1E293B 50%, #0F172A 100%);
+  background-attachment:fixed;color:var(--text-light);overflow:hidden;
+}
+.font-display{font-family:'Orbitron',sans-serif; letter-spacing: 1px;}
+.font-cute{font-family:'Rajdhani',sans-serif; font-weight: 600;}
+.bg-decorations{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.bg-decorations .deco{position:absolute;font-size:1.5rem;opacity:.15;animation:floatUp linear infinite;}
+@keyframes floatUp{0%{transform:translateY(110vh) rotate(0deg);}100%{transform:translateY(-20vh) rotate(360deg);}}
+@keyframes wiggle{0%,100%{transform:rotate(-3deg);}50%{transform:rotate(3deg);}}
+@keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.1);}}
+@keyframes pop-in{0%{transform:scale(.5);opacity:0;}60%{transform:scale(1.1);opacity:1;}100%{transform:scale(1);}}
+@keyframes bounce-soft{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+.app-shell{position:relative;width:100vw;height:100vh;z-index:1;}
+.slide{position:absolute;inset:0;display:none;flex-direction:column;overflow-y:auto;padding:1.5rem 2.5rem 6rem;}
+.slide.active{display:flex;animation:slideUp .5s ease-out;}
+.slide::-webkit-scrollbar{width:8px;}
+.slide::-webkit-scrollbar-track{background:var(--dark-bg);}
+.slide::-webkit-scrollbar-thumb{background:var(--blue-400);border-radius:4px;}
+.slide-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-shrink:0;flex-wrap:wrap;gap:.5rem;}
+.slide-tag{display:inline-flex;align-items:center;gap:.5rem;background:var(--dark-card);border:1px solid var(--blue-400);padding:.4rem 1rem;border-radius:999px;font-weight:600;font-size:.85rem;color:var(--blue-300);box-shadow:var(--shadow-soft);}
+.slide-num{background:linear-gradient(135deg,var(--blue-400),var(--blue-600));color:white;width:32px;height:32px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-family:'Rajdhani';font-size:.85rem;}
+.nav-bar{position:fixed;bottom:1.2rem;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:1rem;background:var(--dark-card);border:1px solid var(--dark-border);padding:.5rem 1rem;border-radius:999px;box-shadow:0 8px 24px rgba(0,0,0,.4);z-index:50;}
+.nav-btn{background:linear-gradient(135deg,var(--blue-400),var(--blue-600));color:white;border:none;width:38px;height:38px;border-radius:50%;cursor:pointer;font-size:.95rem;display:inline-flex;align-items:center;justify-content:center;transition:all .3s ease;}
+.nav-btn:hover{transform:scale(1.1);box-shadow:0 4px 12px rgba(14,165,233,.5);}
+.nav-btn:disabled{background:var(--dark-border);color:var(--text-dim);cursor:not-allowed;transform:none;box-shadow:none;}
+.dots{display:flex;gap:.4rem;}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--dark-border);cursor:pointer;transition:all .3s ease;}
+.dot.active{background:var(--blue-400);width:24px;border-radius:999px;}
+.dot.completed{background:var(--green-400);}
+.card{background:var(--dark-card);border-radius:16px;padding:1.2rem;box-shadow:var(--shadow-soft);border:1px solid var(--dark-border);}
+.card-blue{background:linear-gradient(135deg,#0F172A 0%, #1E293B 100%);border-color:var(--blue-500);}
+.card-green{background:linear-gradient(135deg,#0F172A 0%, #1E293B 100%);border-color:var(--green-500);}
+.card-mint{background:linear-gradient(135deg,#0F172A 0%, #1E293B 100%);border-color:var(--green-400);}
+.btn-cute{background:linear-gradient(135deg,var(--blue-400),var(--blue-600));color:white;border:none;padding:.6rem 1.3rem;border-radius:8px;font-family:'Rajdhani',sans-serif;font-weight:600;cursor:pointer;transition:all .3s ease;box-shadow:var(--shadow-blue);font-size:.9rem;letter-spacing:.5px;display:inline-flex;align-items:center;gap:.4rem;justify-content:center;text-transform:uppercase;}
+.btn-cute:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(14,165,233,.4);}
+.btn-cute:active{transform:translateY(0) scale(.98);}
+.btn-cute.green{background:linear-gradient(135deg,var(--green-400),var(--green-500));box-shadow:var(--shadow-green);}
+.btn-cute.gold{background:linear-gradient(135deg,var(--orange),var(--orange-deep));}
+.btn-cute.outline{background:transparent;color:var(--blue-300);border:1px solid var(--blue-400);box-shadow:none;}
+.btn-cute.outline:hover{background:rgba(14,165,233,.1);}
+.btn-cute:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.input-cute{background:var(--dark-bg);border:1px solid var(--dark-border);border-radius:8px;padding:.6rem 1rem;font-family:'Poppins';font-size:.9rem;color:var(--text-light);transition:all .3s ease;width:100%;}
+.input-cute:focus{outline:none;border-color:var(--blue-400);box-shadow:0 0 0 3px rgba(14,165,233,.2);}
+.fill-input{background:var(--dark-bg);border:1px solid var(--dark-border);border-radius:8px;padding:.5rem .8rem;font-family:'Rajdhani';font-weight:600;font-size:1rem;width:100%;text-align:center;color:var(--text-light);transition:all .3s ease;}
+.fill-input:focus{outline:none;border-color:var(--blue-400);box-shadow:0 0 0 3px rgba(14,165,233,.2);}
+.fill-input.correct{background:rgba(34,197,94,.2);border-color:var(--green-400);color:var(--green-300);}
+.fill-input.wrong{background:rgba(239,68,68,.2);border-color:var(--red);color:var(--red);}
+.sparkle{position:absolute;color:var(--blue-300);font-size:1.2rem;animation:wiggle 3s ease-in-out infinite;pointer-events:none;}
+.title-gradient{background:linear-gradient(135deg,var(--blue-300),var(--green-300));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+.toast{position:fixed;top:1.5rem;left:50%;transform:translateX(-50%) translateY(-100px);background:var(--dark-card);border:1px solid var(--blue-400);padding:.8rem 1.5rem;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.4);font-weight:600;color:var(--text-light);z-index:100;transition:transform .4s ease;max-width:90vw;display:flex;align-items:center;gap:.5rem;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.toast.success{border-color:var(--green-400); color:var(--green-300);}
+.toast.error{border-color:var(--red); color:var(--red);}
+.tab-btn{background:var(--dark-card);border:1px solid var(--dark-border);color:var(--text-mid);padding:.5rem 1rem;border-radius:8px;font-family:'Rajdhani';font-weight:600;cursor:pointer;transition:all .3s ease;font-size:.85rem;text-transform:uppercase;}
+.tab-btn.active{background:var(--blue-500);color:white;border-color:transparent;box-shadow:var(--shadow-blue);}
+.subtab-btn{background:rgba(14,165,233,.1);border:1px solid var(--blue-500);color:var(--blue-300);padding:.35rem .8rem;border-radius:8px;font-family:'Rajdhani';font-weight:600;cursor:pointer;transition:all .3s ease;font-size:.75rem;text-transform:uppercase;}
+.subtab-btn.active{background:var(--blue-500);color:white;}
+.math-block{background:var(--dark-bg);border-left:3px solid var(--blue-400);padding:.6rem .9rem;border-radius:4px;font-size:.9rem;color:var(--text-light);margin:.5rem 0;}
+.math-block.lav{border-color:var(--green-400);}
+.math{font-family:'Times New Roman',serif;font-style:italic;}
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 3px;line-height:1.1;position:relative;top:-2px;}
+.frac .num,.frac .den{padding:0 3px;font-size:.9em;}
+.frac .num{border-bottom:1.5px solid currentColor;}
+.sqrt{border-top:1.5px solid currentColor;padding-top:1px;margin-top:2px;display:inline-block;}
+.sqrt::before{content:'√';margin-right:-2px;font-size:.95em;position:relative;top:2px;}
+.sup{font-size:.75em;vertical-align:super;line-height:0;}
+.q-card{border:1px solid var(--dark-border);border-radius:8px;padding:.8rem;margin-bottom:.6rem;background:var(--dark-card);transition:all .3s;}
+.q-card.correct{background:rgba(34,197,94,.1);border-color:var(--green-400);}
+.q-card.wrong{background:rgba(239,68,68,.1);border-color:var(--red);}
+.disc-box{background:var(--dark-bg);border-left:3px solid var(--green-400);padding:.5rem .8rem;border-radius:4px;font-size:.8rem;color:var(--text-mid);margin-top:.5rem;display:none;}
+.disc-box.show{display:block;animation:slideUp .3s ease;}
+.opt-btn{background:var(--dark-bg);border:1px solid var(--dark-border);color:var(--text-light);padding:.6rem .9rem;border-radius:8px;cursor:pointer;transition:all .2s ease;text-align:left;width:100%;display:flex;align-items:center;gap:.6rem;font-weight:500;font-size:.85rem;}
+.opt-btn:hover{border-color:var(--blue-400);background:rgba(14,165,233,.1);}
+.opt-btn.selected{border-color:var(--blue-400);background:rgba(14,165,233,.2);}
+.opt-btn.correct{background:rgba(34,197,94,.2);border-color:var(--green-400);color:var(--green-300);}
+.opt-btn.wrong{background:rgba(239,68,68,.2);border-color:var(--red);color:var(--red);}
+.opt-letter{background:var(--dark-border);color:var(--text-light);width:26px;height:26px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-family:'Rajdhani';flex-shrink:0;font-size:.8rem;}
+.opt-btn.selected .opt-letter{background:var(--blue-400);color:white;}
+.opt-btn.correct .opt-letter{background:var(--green-400);color:white;}
+.opt-btn.wrong .opt-letter{background:var(--red);color:white;}
+.confetti{position:fixed;width:10px;height:10px;pointer-events:none;animation:confettiFall 3s ease-out forwards;z-index:200;}
+@keyframes confettiFall{0%{transform:translateY(-100vh) rotate(0deg);opacity:1;}100%{transform:translateY(100vh) rotate(720deg);opacity:0;}}
+.stars{display:inline-flex;gap:.2rem;}
+.star{color:var(--dark-border);font-size:1.6rem;cursor:pointer;transition:transform .2s,color .2s;}
+.star:hover{transform:scale(1.2);}
+.star.active{color:var(--orange);}
+.formula-box{background:var(--dark-bg);border:1px dashed var(--blue-400);border-radius:8px;padding:.8rem;margin:.5rem 0;text-align:center;font-size:1rem;color:var(--blue-300);}
+.example-box{background:rgba(245,158,11,.1);border-left:4px solid var(--orange);padding:.7rem 1rem;border-radius:4px;margin:.5rem 0;font-size:.85rem;color:var(--text-light);}
+@media(max-width:900px){.slide{padding:1rem 1.2rem 5rem;}}
+</style>
+</head>
+<body>
+<div class="bg-decorations" id="bgDecor"></div>
+
+<div class="app-shell" id="appShell">
+
+<!-- SLIDE 1: COVER -->
+<section class="slide active" data-slide="1">
+  <div class="flex-1 flex flex-col items-center justify-center text-center relative">
+    <div class="sparkle" style="top:8%;left:12%;">🚀</div>
+    <div class="sparkle" style="top:14%;right:15%;animation-delay:.5s;">⚡</div>
+    <div class="sparkle" style="top:55%;left:5%;animation-delay:1s;">🎮</div>
+    <div class="sparkle" style="bottom:18%;right:8%;animation-delay:1.5s;">🔧</div>
+    <div class="sparkle" style="top:30%;right:5%;animation-delay:2s;">💡</div>
+    <div class="sparkle" style="bottom:30%;left:8%;animation-delay:2.5s;">📐</div>
+
+    <div class="text-sm font-cute tracking-[.3em] text-blue-400 mb-3">✦ MISSION MATH ✦</div>
+    <h1 class="font-display text-5xl md:text-7xl mb-3 title-gradient" style="line-height:1.1;">Pangkat & Akar</h1>
+    <div class="text-blue-300 text-lg md:text-xl mb-8 font-cute">Eksponensial ⚡ Kelas 9</div>
+
+    <div class="card max-w-md w-full">
+      <div class="text-blue-400 font-cute font-semibold mb-4 flex items-center justify-center gap-2 text-lg">
+        <i class="fas fa-user-astronaut"></i> Masukkan Namamu
+      </div>
+      <input type="text" id="studentName" class="input-cute text-center" placeholder="Nama Player..." maxlength="25" style="font-size:1.05rem;">
+      <button id="startBtn" class="btn-cute mt-5 mx-auto block" style="font-size:1.05rem;padding:.8rem 2.5rem;">
+        <i class="fas fa-play"></i> Start Game
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 2: TUJUAN -->
+<section class="slide" data-slide="2">
+  <div class="slide-header">
+    <div class="slide-tag"><span class="slide-num">2</span> Mission Objectives</div>
+    <div class="text-blue-400 text-sm font-cute"><i class="fas fa-bullseye"></i> Apa yang akan kamu kuasai?</div>
+  </div>
+  <div class="flex-1 flex flex-col items-center justify-center">
+    <h2 class="font-display text-3xl md:text-4xl text-center mb-2 title-gradient">Tujuan Pembelajaran 🎯</h2>
+    <p class="text-center text-blue-300 mb-6 font-cute">Setelah misi ini, kamu akan mampu...</p>
+    <div class="grid md:grid-cols-2 gap-4 max-w-4xl w-full">
+      <div class="card card-blue" style="animation:bounce-soft 3s ease-in-out infinite;">
+        <div class="text-4xl mb-2">🔢</div>
+        <div class="text-xs font-cute text-blue-400 mb-1">OBJECTIVE 1</div>
+        <h3 class="font-display text-xl text-blue-300 mb-1">Bilangan Berpangkat</h3>
+        <p class="text-sm text-gray-400">Memahami pengertian, sifat, menyederhanakan bentuk panjang, dan persamaan pangkat.</p>
+      </div>
+      <div class="card card-green" style="animation:bounce-soft 3s ease-in-out infinite .5s;">
+        <div class="text-4xl mb-2">√</div>
+        <div class="text-xs font-cute text-green-400 mb-1">OBJECTIVE 2</div>
+        <h3 class="font-display text-xl text-green-300 mb-1">Bentuk Akar</h3>
+        <p class="text-sm text-gray-400">Operasi hitung, menyederhanakan bentuk akar, dan merasionalkan penyebut.</p>
+      </div>
+      <div class="card card-blue" style="animation:bounce-soft 3s ease-in-out infinite 1s;">
+        <div class="text-4xl mb-2">🌍</div>
+        <div class="text-xs font-cute text-blue-400 mb-1">OBJECTIVE 3</div>
+        <h3 class="font-display text-xl text-blue-300 mb-1">Aplikasi Kehidupan</h3>
+        <p class="text-sm text-gray-400">Menerapkan konsep pangkat dan akar dalam masalah sehari-hari.</p>
+      </div>
+      <div class="card card-green" style="animation:bounce-soft 3s ease-in-out infinite 1.5s;">
+        <div class="text-4xl mb-2">🧠</div>
+        <div class="text-xs font-cute text-green-400 mb-1">OBJECTIVE 4</div>
+        <h3 class="font-display text-xl text-green-300 mb-1">Final Boss</h3>
+        <p class="text-sm text-gray-400">Menyelesaikan 20 soal pilihan ganda untuk menguji pemahaman.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 3: MATERI -->
+<section class="slide" data-slide="3">
+  <div class="slide-header">
+    <div class="slide-tag"><span class="slide-num">3</span> Materi Core</div>
+    <div class="flex gap-2 flex-wrap">
+      <button class="tab-btn active" data-mat="pangkat" onclick="switchMatTab('pangkat')">🔢 Pangkat</button>
+      <button class="tab-btn" data-mat="akar" onclick="switchMatTab('akar')">√ Akar</button>
+    </div>
+  </div>
+
+  <!-- MATERI PANGKAT -->
+  <div id="matPangkat">
+    <div class="flex gap-1 flex-wrap mb-3">
+      <button class="subtab-btn active" data-sub="p1" onclick="switchSubTab('p1')">Pengertian</button>
+      <button class="subtab-btn" data-sub="p2" onclick="switchSubTab('p2')">Sifat</button>
+      <button class="subtab-btn" data-sub="p3" onclick="switchSubTab('p3')">Persamaan</button>
+      <button class="subtab-btn" data-sub="p4" onclick="switchSubTab('p4')">Sederhana</button>
+    </div>
+
+    <!-- P1 -->
+    <div id="sub-p1" class="sub-tab">
+      <div class="card card-blue mb-3">
+        <h3 class="font-display font-bold text-blue-300 text-lg mb-2">📘 Pengertian Bilangan Berpangkat</h3>
+        <p class="text-sm text-gray-400 mb-2"><b>Bilangan berpangkat</b> adalah bentuk perkalian berulang dari bilangan yang sama.</p>
+        <div class="formula-box"><span class="math">a<span class="sup">n</span> = a × a × a × ... × a</span> (sebanyak n kali)</div>
+        <p class="text-sm text-gray-400 mt-2">Di mana: <b>a</b> = bilangan pokok (basis), <b>n</b> = pangkat (eksponen).</p>
+        <div class="example-box">
+          <b>Contoh:</b><br>
+          <span class="math">2<span class="sup">3</span> = 2 × 2 × 2 = 8</span><br>
+          <span class="math">5<span class="sup">2</span> = 5 × 5 = 25</span><br>
+          <span class="math">10<span class="sup">0</span> = 1</span> (bilangan apapun pangkat 0 = 1)
+        </div>
+      </div>
+      <div class="card">
+        <h4 class="font-cute font-bold text-blue-400 mb-2">📝 Latihan Soal: Pengertian</h4>
+        <div id="ex-p1"></div>
+      </div>
+    </div>
+
+    <!-- P2 -->
+    <div id="sub-p2" class="sub-tab" style="display:none;">
+      <div class="card card-blue mb-3">
+        <h3 class="font-display font-bold text-blue-300 text-lg mb-2">📗 Sifat-Sifat Bilangan Berpangkat</h3>
+        <div class="space-y-2">
+          <div class="math-block"><b>1. Perkalian sama basis:</b> <span class="math">a<span class="sup">m</span> × a<span class="sup">n</span> = a<span class="sup">m+n</span></span></div>
+          <div class="math-block"><b>2. Pembagian sama basis:</b> <span class="math">a<span class="sup">m</span> ÷ a<span class="sup">n</span> = a<span class="sup">m-n</span></span></div>
+          <div class="math-block"><b>3. Pangkat dari pangkat:</b> <span class="math">(a<span class="sup">m</span>)<span class="sup">n</span> = a<span class="sup">m×n</span></span></div>
+          <div class="math-block"><b>4. Pangkat nol:</b> <span class="math">a<span class="sup">0</span> = 1</span></div>
+          <div class="math-block"><b>5. Pangkat negatif:</b> <span class="math">a<span class="sup">-n</span> = 1/a<span class="sup">n</span></span></div>
+          <div class="math-block"><b>6. Pangkat pecahan:</b> <span class="math">a<span class="sup">1/n</span> = <span class="sqrt"><span class="num">a</span></span></span></div>
+        </div>
+      </div>
+      <div class="card">
+        <h4 class="font-cute font-bold text-blue-400 mb-2">📝 Latihan Soal: Sifat-Sifat</h4>
+        <div id="ex-p2"></div>
+      </div>
+    </div>
+
+    <!-- P3 -->
+    <div id="sub-p3" class="sub-tab" style="display:none;">
+      <div class="card card-blue mb-3">
+        <h3 class="font-display font-bold text-blue-300 text-lg mb-2">📙 Persamaan Bilangan Berpangkat</h3>
+        <p class="text-sm text-gray-400 mb-2">Gunakan sifat: <b>Jika basis sama, maka pangkatnya sama.</b></p>
+        <div class="formula-box">Jika <span class="math">a<span class="sup">f(x)</span> = a<span class="sup">g(x)</span></span>, maka <span class="math">f(x) = g(x)</span></div>
+        <div class="example-box">
+          <b>Contoh:</b> Selesaikan <span class="math">2<span class="sup">x</span> = 32</span><br>
+          Ubah 32: <span class="math">32 = 2<span class="sup">5</span></span><br>
+          Maka: <span class="math">2<span class="sup">x</span> = 2<span class="sup">5</span></span> → <b>x = 5</b>
+        </div>
+      </div>
+      <div class="card">
+        <h4 class="font-cute font-bold text-blue-400 mb-2">📝 Latihan Soal: Persamaan</h4>
+        <div id="ex-p3"></div>
+      </div>
+    </div>
+
+    <!-- P4: MENYEDERHANAKAN BENTUK PANGKAT -->
+    <div id="sub-p4" class="sub-tab" style="display:none;">
+      <div class="card card-blue mb-3">
+        <h3 class="font-display font-bold text-blue-300 text-lg mb-2">📕 Menyederhanakan Bentuk Pangkat</h3>
+        <p class="text-sm text-gray-400 mb-2">Untuk menyederhanakan bentuk pangkat yang panjang dan rumit, gunakan <b>gabungan semua sifat</b> bilangan berpangkat.</p>
+        <div class="example-box">
+          <b>Contoh:</b><br>
+          Sederhanakan <span class="math">(x<span class="sup">2</span>)<span class="sup">3</span> × x<span class="sup">4</span> / x<span class="sup">5</span></span><br>
+          1. Sederhanakan pangkat dalam kurung: <span class="math">x<span class="sup">2×3</span> = x<span class="sup">6</span></span><br>
+          2. Kalikan dengan suku di luar (sifat 1): <span class="math">x<span class="sup">6</span> × x<span class="sup">4</span> = x<span class="sup">6+4</span> = x<span class="sup">10</span></span><br>
+          3. Bagi dengan penyebut (sifat 2): <span class="math">x<span class="sup">10</span> / x<span class="sup">5</span> = x<span class="sup">10-5</span> = x<span class="sup">5</span></span><br>
+          <b>Hasil = x⁵</b>
+        </div>
+      </div>
+      <div class="card">
+        <h4 class="font-cute font-bold text-blue-400 mb-2">📝 Latihan Soal: Menyederhanakan (PG)</h4>
+        <div id="ex-p4"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MATERI AKAR -->
+  <div id="matAkar" style="display:none;">
+    <div class="flex gap-1 flex-wrap mb-3">
+      <button class="subtab-btn active" data-sub="a1" onclick="switchSubTab('a1')">Pengertian</button>
+      <button class="subtab-btn" data-sub="a2" onclick="switchSubTab('a2')">+/- Akar</button>
+      <button class="subtab-btn" data-sub="a3" onclick="switchSubTab('a3')">× Akar</button>
+      <button class="subtab-btn" data-sub="a4" onclick="switchSubTab('a4')">× Suku Dua</button>
+      <button class="subtab-btn" data-sub="a5" onclick="switchSubTab('a5')">÷ Akar</button>
+      <button class="subtab-btn" data-sub="a6" onclick="switchSubTab('a6')">Rasionalkan</button>
+      <button class="subtab-btn" data-sub="a7" onclick="switchSubTab('a7')">Sederhana</button>
+    </div>
+
+    <!-- A1 -->
+    <div id="sub-a1" class="sub-tab">
+      <div class="card card-green mb-3">
+        <h3 class="font-display font-bold text-green-300 text-lg mb-2">📘 Pengertian Bentuk Akar</h3>
+        <p class="text-sm text-gray-400 mb-2"><b>Bentuk akar</b> adalah bilangan irasional yang tidak dapat dinyatakan sebagai pecahan.</p>
+        <div class="formula-box"><span class="math"><span class="sqrt"><span class="num">a</span></span></span> dibaca "akar dari a"</div>
+        <div class="example-box">
+          <b>Contoh:</b><br>
+          <span class="math">√9 = 3</span> (karena <span class="math">3² = 9</span>)<br>
+          <span class="math">³√8 = 2</span> (akar pangkat 3, karena <span class="math">2³ = 8</span>)
+        </div>
+      </div>
+      <div class="card">
+        <h4 class="font-cute font-bold text-green-400 mb-2">📝 Latihan Soal: Pengertian</h4>
+        <div id="ex-a1"></div>
+      </div>
+    </div>
+
+    <!-- A2 -->
+    <div id="sub-a2" class="sub-tab" style="display:none;">
+      <div class="card card-green mb-3">
+        <h3 class="font-display font-bold text-green-300 text-lg mb-2">📗 Penjumlahan & Pengurangan Akar</h3>
+        <p class="text-sm text-gray-400 mb-2">Hanya bentuk akar yang <b>sejenis</b> (radicand sama) yang bisa dijumlahkan/dikurangkan.</p>
+        <div class="formula-box"><span class="math">a√x + b√x = (a+b)√x</span></div>
+        <div class="example-box">
+          <b>Contoh:</b> <span class="math">√8 + √2 = 2√2 + √2 = 3√2</span><br>
+          *(ingat: <span class="math">√8 = √(4×2) = 2√2</span>)
+        </div>
+      </div>
+      <div class="card">
+        <h4 class="font-cute font-bold text-green-400 mb-2">📝 Latihan Soal: +/- Akar</h4>
+        <div id="ex-a2"></div>
+      </div>
+    </div>
+
+    <!-- A3 -->
+    <div id="sub-a3" class="sub-tab" style="display:none;">
+      <div class="card card-green mb-3">
+        <h3 class="font-display font-bold text-green-300 text-lg mb-2">📙 Perkalian Bentuk Akar</h3>
+        <p class="text-sm text-gray-400 mb-2">Perkalian akar dengan akar: kalikan radicand-nya.</p>
+        <div class="formula-box"><span class="math">√a × √b = √(a×b)</span></div>
+        <div class="example-box">
+          <b>Contoh:</b> <span class="math">√8 × √2 = √16 = 4</span>
+        </div>
+      </div>
+      <div class="card">
+        <h4 class="font-cute font-bold text-green-400 mb-2">📝 Latihan Soal: Perkalian Akar</h4>
+        <div id="ex-a3"></div>
+      </div>
+    </div>
+
+    <!-- A4 -->
+    <div id="sub-a4" class="sub-tab" style="display:none;">
+      <div class="card card-green mb-3">
+        <h3 class="font-display font-bold text-green-300 text-lg mb-2">📕 Perkalian Suku Dua Akar</h3>
+        <p class="text-sm text-gray-400 mb-2">Gunakan identitas selisih kuadrat: <span class="math">(a+b)(a-b) = a² - b²</span></p>
+        <div class="example-box">
+          <b>Contoh:</b> <span class="math">(2+√3)(2-√3) = 2² - (√3)² = 4 - 3 = 1</span>
+        </div>
+      </div>
+      <div class="card">
+        <h4 class="font-cute font-bold text-green-400 mb-2">📝 Latihan Soal: Perkalian Suku Dua</h4>
+        <div id="ex-a4"></div>
+      </div>
+    </div>
+
+    <!-- A5 -->
+    <div id="sub-a5" class="sub-tab" style="display:none;">
+      <div class="card card-green mb-3">
+        <h3 class="font-display font-bold text-green-300 text-lg mb-2">📖 Pembagian Bentuk Akar</h3>
+        <p class="text-sm text-gray-400 mb-2">Pembagian akar dengan akar: bagi radicand-nya.</p>
+        <div class="formula-box"><span class="math">√a ÷ √b = √(a/b)</span></div>
+        <div class="example-box">
+          <b>Contoh:</b> <span class="math">√12 ÷ √3 = √(12/3) = √4 = 2</span>
+        </div>
+      </div>
+      <div class="card">
+        <h4 class="font-cute font-bold text-green-400 mb-2">📝 Latihan Soal: Pembagian Akar</h4>
+        <div id="ex-a5"></div>
+      </div>
+    </div>
+
+    <!-- A6 -->
+    <div id="sub-a6" class="sub-tab" style="display:none;">
+      <div class="card card-green mb-3">
+        <h3 class="font-display font-bold text-green-300 text-lg mb-2">📔 Merasionalkan Penyebut Akar</h3>
+        <p class="text-sm text-gray-400 mb-2">Menghilangkan akar dari penyebut pecahan dengan mengalikan sekawannya.</p>
+        <div class="formula-box">
+          <b>Penyebut √a:</b> kalikan dengan √a<br>
+          <b>Penyebut (a+√b):</b> kalikan dengan (a-√b)
+        </div>
+        <div class="example-box">
+          <b>Contoh:</b> <span class="math">3/√5 × √5/√5 = 3√5/5</span>
+        </div>
+      </div>
+      <div class="card">
+        <h4 class="font-cute font-bold text-green-400 mb-2">📝 Latihan Soal: Merasionalkan</h4>
+        <div id="ex-a6"></div>
+      </div>
+    </div>
+
+    <!-- A7: MENYEDERHANAKAN BENTUK AKAR -->
+    <div id="sub-a7" class="sub-tab" style="display:none;">
+      <div class="card card-green mb-3">
+        <h3 class="font-display font-bold text-green-300 text-lg mb-2">🚀 Menyederhanakan Bentuk Akar</h3>
+        <p class="text-sm text-gray-400 mb-2">Carilah faktor kuadrat (persegi) dari bilangan di dalam akar, lalu keluarkan akarnya.</p>
+        <div class="formula-box"><span class="math">√a = √(b² × c) = b√c</span></div>
+        <div class="example-box">
+          <b>Contoh:</b> Sederhanakan <span class="math">√72</span><br>
+          Cari faktor persegi terbesar dari 72 (yaitu 36). <span class="math">72 = 36 × 2</span><br>
+          <span class="math">√72 = √(36 × 2) = √36 × √2 = 6√2</span><br>
+          <b>Hasil = 6√2</b>
+        </div>
+      </div>
+      <div class="card">
+        <h4 class="font-cute font-bold text-green-400 mb-2">📝 Latihan Soal: Sederhanakan Akar</h4>
+        <div id="ex-a7"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 4: APLIKASI -->
+<section class="slide" data-slide="4">
+  <div class="slide-header">
+    <div class="slide-tag"><span class="slide-num">4</span> Real World Application</div>
+    <div class="text-blue-400 text-sm font-cute"><i class="fas fa-globe"></i> Pangkat & Akar di kehidupan</div>
+  </div>
+  <div class="flex-1">
+    <h2 class="font-display text-2xl md:text-3xl text-center mb-2 title-gradient">🌍 Aplikasi Pangkat & Akar</h2>
+    <p class="text-center text-blue-300 mb-4 font-cute text-sm">Konsep ini banyak digunakan dalam kehidupan sehari-hari!</p>
+    <div class="grid md:grid-cols-2 gap-3 mb-4">
+      <div class="card card-blue">
+        <div class="text-2xl mb-1">🏦</div>
+        <h3 class="font-cute font-bold text-blue-300">Bunga Majemuk</h3>
+        <p class="text-xs text-gray-400 mt-1">Rumus bunga bank: <span class="math">M = P(1+r)<span class="sup">n</span></span>.</p>
+      </div>
+      <div class="card card-green">
+        <div class="text-2xl mb-1">📐</div>
+        <h3 class="font-cute font-bold text-green-300">Teorema Pythagoras</h3>
+        <p class="text-xs text-gray-400 mt-1">Sisi miring: <span class="math">c = √(a² + b²)</span>.</p>
+      </div>
+      <div class="card card-blue">
+        <div class="text-2xl mb-1">🔬</div>
+        <h3 class="font-cute font-bold text-blue-300">Skala & Luas</h3>
+        <p class="text-xs text-gray-400 mt-1">Luas sebenarnya = luas peta × n².</p>
+      </div>
+      <div class="card card-green">
+        <div class="text-2xl mb-1">⚡</div>
+        <h3 class="font-cute font-bold text-green-300">Daya Listrik</h3>
+        <p class="text-xs text-gray-400 mt-1">Daya <span class="math">P = I²R</span>.</p>
+      </div>
+    </div>
+    <div class="card">
+      <h3 class="font-cute font-bold text-blue-400 mb-3">📝 5 Contoh Soal Aplikasi</h3>
+      <div id="appExercises" class="space-y-3"></div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 5: LATIHAN SOAL -->
+<section class="slide" data-slide="5">
+  <div class="slide-header">
+    <div class="slide-tag"><span class="slide-num">5</span> Final Quiz</div>
+    <div class="text-blue-400 text-sm font-cute">Skor: <span id="quizScore">0</span>/20</div>
+  </div>
+  <div class="flex-1">
+    <h2 class="font-display text-2xl text-center mb-2 title-gradient">🏆 Final Boss!</h2>
+    <p class="text-center text-blue-300 mb-4 font-cute text-sm">20 Soal Pilihan Ganda. Jawab dan cek satu per satu!</p>
+    <div id="quizGrid" class="space-y-3"></div>
+  </div>
+</section>
+
+<!-- SLIDE 6: KESIMPULAN -->
+<section class="slide" data-slide="6">
+  <div class="slide-header">
+    <div class="slide-tag"><span class="slide-num">6</span> Game Over</div>
+    <div class="text-blue-400 text-sm font-cute"><i class="fas fa-flag-checkered"></i> Finish</div>
+  </div>
+  <div class="flex-1 flex flex-col items-center justify-center text-center">
+    <div class="sparkle" style="top:10%;left:10%;">🚀</div>
+    <div class="sparkle" style="top:15%;right:12%;animation-delay:.7s;">⚡</div>
+    <div class="sparkle" style="bottom:20%;left:8%;animation-delay:1.4s;">🎮</div>
+    <div class="sparkle" style="bottom:25%;right:10%;animation-delay:2.1s;">⭐</div>
+
+    <h2 class="font-display text-3xl md:text-4xl mb-4 title-gradient">Kesimpulan 🌟</h2>
+    <div class="grid md:grid-cols-2 gap-3 max-w-3xl w-full mb-4">
+      <div class="card card-blue">
+        <div class="text-2xl mb-1">🔢</div>
+        <h3 class="font-cute font-bold text-blue-300">Pangkat</h3>
+        <p class="text-xs text-gray-400 mt-1"><span class="math">a<span class="sup">n</span></span> = perkalian berulang. Sifat: kali=+pangkat, bagi=-pangkat.</p>
+      </div>
+      <div class="card card-green">
+        <div class="text-2xl mb-1">√</div>
+        <h3 class="font-cute font-bold text-green-300">Akar</h3>
+        <p class="text-xs text-gray-400 mt-1"><span class="math">√a</span> = kebalikan pangkat. Sejenis untuk +/-. Faktor kuadrat dikeluarkan.</p>
+      </div>
+      <div class="card card-blue">
+        <div class="text-2xl mb-1">🌍</div>
+        <h3 class="font-cute font-bold text-blue-300">Aplikasi</h3>
+        <p class="text-xs text-gray-400 mt-1">Bunga majemuk, Pythagoras, skala, daya listrik.</p>
+      </div>
+      <div class="card card-green">
+        <div class="text-2xl mb-1">🧠</div>
+        <h3 class="font-cute font-bold text-green-300">Rasionalkan</h3>
+        <p class="text-xs text-gray-400 mt-1">Kalikan sekawan untuk hilangkan akar di penyebut.</p>
+      </div>
+    </div>
+
+    <div class="card max-w-md w-full mb-4">
+      <h3 class="font-cute font-bold text-blue-400 mb-3">💭 Refleksi: Bagaimana perasaanmu setelah misi ini?</h3>
+      <div class="stars flex justify-center gap-1 mb-3" id="refleksiStars">
+        <span class="star" data-r="1">★</span>
+        <span class="star" data-r="2">★</span>
+        <span class="star" data-r="3">★</span>
+        <span class="star" data-r="4">★</span>
+        <span class="star" data-r="5">★</span>
+      </div>
+      <textarea id="refleksiText" class="input-cute" rows="2" placeholder="Tulis kesan dan pesanmu hari ini..." style="font-size:.9rem;"></textarea>
+    </div>
+
+    <div class="text-center">
+      <h3 class="font-display text-2xl md:text-3xl title-gradient mb-2">Thank You For Today! ⚡</h3>
+      <p class="text-blue-300 font-cute mb-3">Kerja bagus, <span id="tyName" class="font-semibold">Player</span>!</p>
+      <p class="text-blue-400 text-xs font-cute mb-4">Kamu hebat! Sampai jumpa di misi matematika berikutnya ✨</p>
+      <button class="btn-cute gold" onclick="celebrate()"><i class="fas fa-trophy"></i> Rayakan!</button>
+      <button class="btn-cute outline ml-2" onclick="restart()"><i class="fas fa-rotate-left"></i> Main Lagi</button>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<div class="nav-bar" id="navBar" style="display:none;">
+  <button class="nav-btn" id="prevBtn"><i class="fas fa-chevron-left"></i></button>
+  <div class="dots" id="dots"></div>
+  <button class="nav-btn" id="nextBtn"><i class="fas fa-chevron-right"></i></button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============= DATA SOAL ============= */
+const exercises = {
+  p1: [
+    {q:"2³ = ?", a:"8", e:"2×2×2 = 8"},
+    {q:"5² = ?", a:"25", e:"5×5 = 25"},
+    {q:"3⁴ = ?", a:"81", e:"3×3×3×3 = 81"},
+    {q:"7⁰ = ?", a:"1", e:"Bilangan apapun pangkat 0 = 1"},
+    {q:"10¹ = ?", a:"10", e:"Pangkat 1 = dirinya sendiri"},
+    {q:"4³ = ?", a:"64", e:"4×4×4 = 64"},
+    {q:"6² = ?", a:"36", e:"6×6 = 36"},
+    {q:"2⁵ = ?", a:"32", e:"2×2×2×2×2 = 32"},
+    {q:"1¹⁰ = ?", a:"1", e:"1 pangkat berapapun = 1"},
+    {q:"9² = ?", a:"81", e:"9×9 = 81"}
+  ],
+  p2: [
+    {q:"2³ × 2² = ? (tulis 2ⁿ)", a:"2⁵", e:"2^(3+2) = 2⁵ = 32"},
+    {q:"3⁵ ÷ 3² = ? (tulis 3ⁿ)", a:"3³", e:"3^(5-2) = 3³ = 27"},
+    {q:"(2²)³ = ? (tulis 2ⁿ)", a:"2⁶", e:"2^(2×3) = 2⁶ = 64"},
+    {q:"5⁰ = ?", a:"1", e:"Pangkat 0 = 1"},
+    {q:"2⁻³ = ? (tulis pecahan)", a:"1/8", e:"2⁻³ = 1/2³ = 1/8"},
+    {q:"9^(1/2) = ?", a:"3", e:"9^(1/2) = √9 = 3"},
+    {q:"4³ × 4² = ? (tulis 4ⁿ)", a:"4⁵", e:"4^(3+2) = 4⁵"},
+    {q:"10⁴ ÷ 10² = ? (tulis 10ⁿ)", a:"10²", e:"10^(4-2) = 10² = 100"},
+    {q:"(3²)² = ? (tulis 3ⁿ)", a:"3⁴", e:"3^(2×2) = 3⁴ = 81"},
+    {q:"8^(1/3) = ?", a:"2", e:"8^(1/3) = ³√8 = 2"}
+  ],
+  p3: [
+    {q:"2ˣ = 16, x = ?", a:"4", e:"16 = 2⁴, jadi x = 4"},
+    {q:"3ˣ = 27, x = ?", a:"3", e:"27 = 3³, jadi x = 3"},
+    {q:"5ˣ = 125, x = ?", a:"3", e:"125 = 5³, jadi x = 3"},
+    {q:"2^(x+1) = 8, x = ?", a:"2", e:"8 = 2³, x+1 = 3, x = 2"},
+    {q:"3^(2x) = 81, x = ?", a:"2", e:"81 = 3⁴, 2x = 4, x = 2"},
+    {q:"10ˣ = 1000, x = ?", a:"3", e:"1000 = 10³, jadi x = 3"},
+    {q:"4ˣ = 64, x = ?", a:"3", e:"64 = 4³, jadi x = 3"},
+    {q:"2^(2x-1) = 32, x = ?", a:"3", e:"32 = 2⁵, 2x-1 = 5, x = 3"},
+    {q:"5^(x-1) = 25, x = ?", a:"3", e:"25 = 5², x-1 = 2, x = 3"},
+    {q:"7ˣ = 343, x = ?", a:"3", e:"343 = 7³, jadi x = 3"}
+  ],
+  // P4: Menyederhanakan bentuk pangkat (Pilihan Ganda)
+  p4: [
+    {q:"Sederhanakan: <span class='math'>x<span class='sup'>5</span> y<span class='sup'>3</span> / x<span class='sup'>2</span> y<span class='sup'>4</span></span>", opts:["x³ y⁻¹","x³ y","x⁷ y⁷","x³/y"], correct:0, e:"x^(5-2) y^(3-4) = x³ y⁻¹"},
+    {q:"Sederhanakan: <span class='math'>(2a<span class='sup'>3</span>)<span class='sup'>2</span> × 4a⁻¹</span>", opts:["8a⁵","16a⁵","8a⁷","16a⁷"], correct:1, e:"4a⁶ × 4a⁻¹ = 16a⁵"},
+    {q:"Sederhanakan: <span class='math'>(3<span class='sup'>2</span> × 3<span class='sup'>-3</span>)<span class='sup'>3</span></span>", opts:["1/27","27","1/9","9"], correct:0, e:"(3⁻¹)³ = 3⁻³ = 1/27"},
+    {q:"Sederhanakan: <span class='math'>12x<span class='sup'>5</span> y<span class='sup'>3</span> ÷ 4x<span class='sup'>2</span> y<span class='sup'>4</span></span>", opts:["3x³ y⁻¹","3x³ y⁷","3x⁷ y⁻¹","3x³/y"], correct:0, e:"3x³ y⁻¹"},
+    {q:"Sederhanakan: <span class='math'>p<span class='sup'>-2</span> q<span class='sup'>3</span> / p<span class='sup'>4</span> q<span class='sup'>-1</span></span>", opts:["q⁴ / p⁶","p⁶ / q⁴","p² q²","q² / p²"], correct:0, e:"p^(-2-4) q^(3-(-1)) = p⁻⁶ q⁴ = q⁴/p⁶"},
+    {q:"Sederhanakan: <span class='math'>(5<span class='sup'>3</span> / 5<span class='sup'>5</span>) × 5<span class='sup'>2</span></span>", opts:["1","5","25","1/5"], correct:0, e:"5⁻² × 5² = 5⁰ = 1"},
+    {q:"Sederhanakan: <span class='math'>(a<span class='sup'>2</span>b<span class='sup'>3</span>)<span class='sup'>2</span> × a<span class='sup'>-3</span></span>", opts:["a b⁶","a⁷ b⁶","a⁵ b⁶","a b⁵"], correct:0, e:"a⁴ b⁶ × a⁻³ = a¹ b⁶"},
+    {q:"Sederhanakan: <span class='math'>16x<span class='sup'>4</span> / (2x<span class='sup'>-2</span>)<span class='sup'>2</span></span>", opts:["4x⁸","4x⁰","8x⁸","16x⁸"], correct:0, e:"16x⁴ / 4x⁻⁴ = 4x⁸"},
+    {q:"Sederhanakan: <span class='math'>m<span class='sup'>4</span> n<span class='sup'>-2</span> / (m<span class='sup'>2</span> n)<span class='sup'>3</span></span>", opts:["1 / m² n⁵","m² n⁵","m⁶ n","1/m⁶ n"], correct:0, e:"m⁴ n⁻² / m⁶ n³ = m⁻² n⁻⁵"},
+    {q:"Sederhanakan: <span class='math'>(2<span class='sup'>-1</span> × 2<span class='sup'>4</span>) ÷ 2<span class='sup'>2</span></span>", opts:["2","4","1/2","8"], correct:0, e:"2³ / 2² = 2¹ = 2"}
+  ],
+  a1: [
+    {q:"√9 = ?", a:"3", e:"3² = 9"},
+    {q:"√16 = ?", a:"4", e:"4² = 16"},
+    {q:"√25 = ?", a:"5", e:"5² = 25"},
+    {q:"√36 = ?", a:"6", e:"6² = 36"},
+    {q:"√49 = ?", a:"7", e:"7² = 49"},
+    {q:"√100 = ?", a:"10", e:"10² = 100"},
+    {q:"√81 = ?", a:"9", e:"9² = 81"},
+    {q:"√64 = ?", a:"8", e:"8² = 64"},
+    {q:"√4 = ?", a:"2", e:"2² = 4"},
+    {q:"√144 = ?", a:"12", e:"12² = 144"}
+  ],
+  a2: [
+    {q:"3√2 + 5√2 = ?", a:"8√2", e:"(3+5)√2 = 8√2"},
+    {q:"7√3 - 4√3 = ?", a:"3√3", e:"(7-4)√3 = 3√3"},
+    {q:"√8 + √2 = ?", a:"3√2", e:"2√2 + √2 = 3√2"},
+    {q:"√50 - √18 = ?", a:"2√2", e:"5√2 - 3√2 = 2√2"},
+    {q:"2√5 + 3√5 = ?", a:"5√5", e:"(2+3)√5 = 5√5"},
+    {q:"√12 + √27 = ?", a:"5√3", e:"2√3 + 3√3 = 5√3"},
+    {q:"√32 - √8 = ?", a:"2√2", e:"4√2 - 2√2 = 2√2"},
+    {q:"√45 + √20 = ?", a:"5√5", e:"3√5 + 2√5 = 5√5"},
+    {q:"6√7 - 2√7 = ?", a:"4√7", e:"(6-2)√7 = 4√7"},
+    {q:"√72 - √50 = ?", a:"√2", e:"6√2 - 5√2 = √2"}
+  ],
+  a3: [
+    {q:"√3 × √5 = ?", a:"√15", e:"√(3×5) = √15"},
+    {q:"√8 × √2 = ?", a:"4", e:"√(8×2) = √16 = 4"},
+    {q:"2√3 × 4√5 = ?", a:"8√15", e:"(2×4)√(3×5) = 8√15"},
+    {q:"√2 × √18 = ?", a:"6", e:"√(2×18) = √36 = 6"},
+    {q:"3√7 × 2√7 = ?", a:"42", e:"(3×2)×7 = 42"},
+    {q:"√5 × √20 = ?", a:"10", e:"√(5×20) = √100 = 10"},
+    {q:"√6 × √6 = ?", a:"6", e:"√(6×6) = 6"},
+    {q:"2√3 × 3√3 = ?", a:"18", e:"(2×3)×3 = 18"},
+    {q:"√10 × √40 = ?", a:"20", e:"√400 = 20"},
+    {q:"√7 × √7 = ?", a:"7", e:"√(7×7) = 7"}
+  ],
+  a4: [
+    {q:"(2+√3)(2-√3) = ?", a:"1", e:"2² - 3 = 4 - 3 = 1"},
+    {q:"(3+√5)(3-√5) = ?", a:"4", e:"3² - 5 = 9 - 5 = 4"},
+    {q:"(√2+√3)(√2-√3) = ?", a:"-1", e:"2 - 3 = -1"},
+    {q:"(4+√7)(4-√7) = ?", a:"9", e:"16 - 7 = 9"},
+    {q:"(1+√2)(1-√2) = ?", a:"-1", e:"1 - 2 = -1"},
+    {q:"(5+√3)(5-√3) = ?", a:"22", e:"25 - 3 = 22"},
+    {q:"(√3+√5)(√3-√5) = ?", a:"-2", e:"3 - 5 = -2"},
+    {q:"(2+√7)(2-√7) = ?", a:"-3", e:"4 - 7 = -3"},
+    {q:"(6+√2)(6-√2) = ?", a:"34", e:"36 - 2 = 34"},
+    {q:"(√5+2)(√5-2) = ?", a:"1", e:"5 - 4 = 1"}
+  ],
+  a5: [
+    {q:"√12 ÷ √3 = ?", a:"2", e:"√(12/3) = √4 = 2"},
+    {q:"√50 ÷ √2 = ?", a:"5", e:"√(50/2) = √25 = 5"},
+    {q:"6√10 ÷ 2√2 = ?", a:"3√5", e:"(6/2)√(10/2) = 3√5"},
+    {q:"√72 ÷ √8 = ?", a:"3", e:"√(72/8) = √9 = 3"},
+    {q:"√45 ÷ √5 = ?", a:"3", e:"√(45/5) = √9 = 3"},
+    {q:"8√6 ÷ 4√2 = ?", a:"2√3", e:"(8/4)√(6/2) = 2√3"},
+    {q:"√98 ÷ √2 = ?", a:"7", e:"√(98/2) = √49 = 7"},
+    {q:"√32 ÷ √2 = ?", a:"4", e:"√(32/2) = √16 = 4"},
+    {q:"10√15 ÷ 5√3 = ?", a:"2√5", e:"(10/5)√(15/3) = 2√5"},
+    {q:"√200 ÷ √8 = ?", a:"5", e:"√(200/8) = √25 = 5"}
+  ],
+  a6: [
+    {q:"3/√5 (tulis 3√a/b)", a:"3√5/5", e:"× √5/√5 = 3√5/5"},
+    {q:"1/(2+√3) (tulis a-b√c)", a:"2-√3", e:"× (2-√3)/(2-√3) = (2-√3)/1"},
+    {q:"4/√2 (sederhanakan)", a:"2√2", e:"× √2/√2 = 4√2/2 = 2√2"},
+    {q:"5/(3-√2) (tulis (a+b√c)/d)", a:"15+5√2/7", e:"×(3+√2)/(3+√2) = 5(3+√2)/7"},
+    {q:"2/√3 (tulis 2√a/b)", a:"2√3/3", e:"× √3/√3 = 2√3/3"},
+    {q:"1/(1+√2) (tulis √a-b)", a:"√2-1", e:"×(1-√2)/(1-√2) = (1-√2)/-1 = √2-1"},
+    {q:"6/√3 (sederhanakan)", a:"2√3", e:"× √3/√3 = 6√3/3 = 2√3"},
+    {q:"1/(4-√3) (tulis a+b√c)/d)", a:"4+√3/13", e:"×(4+√3)/(4+√3) = (4+√3)/13"},
+    {q:"5/√7 (tulis 5√a/b)", a:"5√7/7", e:"× √7/√7 = 5√7/7"},
+    {q:"1/(√2+1) (tulis √a-b)", a:"√2-1", e:"×(√2-1)/(√2-1) = (√2-1)/1 = √2-1"}
+  ],
+  // A7: Menyederhanakan bentuk akar
+  a7: [
+    {q:"Sederhanakan √72", a:"6√2", e:"√(36×2) = 6√2"},
+    {q:"Sederhanakan √98", a:"7√2", e:"√(49×2) = 7√2"},
+    {q:"Sederhanakan √125", a:"5√5", e:"√(25×5) = 5√5"},
+    {q:"Sederhanakan √128", a:"8√2", e:"√(64×2) = 8√2"},
+    {q:"Sederhanakan √200", a:"10√2", e:"√(100×2) = 10√2"},
+    {q:"Sederhanakan √243", a:"9√3", e:"√(81×3) = 9√3"},
+    {q:"Sederhanakan √288", a:"12√2", e:"√(144×2) = 12√2"},
+    {q:"Sederhanakan √500", a:"10√5", e:"√(100×5) = 10√5"},
+    {q:"Sederhanakan √108", a:"6√3", e:"√(36×3) = 6√3"},
+    {q:"Sederhanakan √448", a:"8√7", e:"√(64×7) = 8√7"}
+  ]
+};
+
+/* ============= DATA APLIKASI ============= */
+const appExercises = [
+  {q:"Bank memberi bunga 10% per tahun. Uang Rp100.000 menjadi... setelah 2 tahun. (M = P(1+r)ⁿ)", a:"121000", e:"M = 100000 × (1+0.1)² = 100000 × 1.21 = 121000"},
+  {q:"Taman persegi luas 144 m². Panjang sisi?", a:"12", e:"sisi = √144 = 12 m"},
+  {q:"Tangga bersandar: kaki 3m, tinggi 4m. Panjang tangga? (c=√(a²+b²))", a:"5", e:"c = √(3²+4²) = √25 = 5 m"},
+  {q:"Arus listrik 2A, resistor 5Ω. Daya P = I²R. Berapa daya?", a:"20", e:"P = 2² × 5 = 4 × 5 = 20 Watt"},
+  {q:"Skala peta 1:1000. Luas kebun di peta 5 cm². Luas sebenarnya? (cm²)", a:"5000000", e:"Luas = 5 × 1000² = 5 × 1000000 = 5000000 cm²"}
+];
+
+/* ============= DATA QUIZ ============= */
+const quizQuestions = [
+  {q:"Hasil dari 2³ × 2² adalah...", opts:["2⁵","2⁶","2¹","4⁵"], correct:0, e:"2^(3+2) = 2⁵ = 32."},
+  {q:"Hasil dari 5⁰ adalah...", opts:["0","5","1","tidak terdefinisi"], correct:2, e:"Bilangan apapun pangkat 0 = 1."},
+  {q:"Bentuk sederhana dari √50 adalah...", opts:["5√2","2√5","10√5","25√2"], correct:0, e:"√50 = √(25×2) = 5√2."},
+  {q:"Hasil dari 2⁻³ adalah...", opts:["-8","-6","1/8","8"], correct:2, e:"2⁻³ = 1/2³ = 1/8."},
+  {q:"Jika 3ˣ = 81, maka x = ...", opts:["2","3","4","5"], correct:2, e:"81 = 3⁴, jadi x = 4."},
+  {q:"Hasil dari √8 + √2 adalah...", opts:["3√2","2√2","√10","4√2"], correct:0, e:"√8 = 2√2, lalu 2√2 + √2 = 3√2."},
+  {q:"Hasil dari √3 × √5 adalah...", opts:["√8","√15","√2","8"], correct:1, e:"√(3×5) = √15."},
+  {q:"Hasil dari (2+√3)(2-√3) adalah...", opts:["1","5","7","-1"], correct:0, e:"Selisih kuadrat: 2² - 3 = 4 - 3 = 1."},
+  {q:"Hasil rasionalisasi 3/√5 adalah...", opts:["3√5/5","3/5","5√3/3","3√5"], correct:0, e:"3/√5 × √5/√5 = 3√5/5."},
+  {q:"Hasil dari 9^(1/2) adalah...", opts:["3","81","4.5","81"], correct:0, e:"9^(1/2) = √9 = 3."},
+  {q:"Bentuk sederhana dari √72 adalah...", opts:["6√2","8√2","12√2","9√2"], correct:0, e:"√72 = √(36×2) = 6√2."},
+  {q:"Hasil dari √18 ÷ √2 adalah...", opts:["3","2","6","9"], correct:0, e:"√(18/2) = √9 = 3."},
+  {q:"Jika 2^(x+1) = 32, maka x = ...", opts:["3","4","5","2"], correct:1, e:"32 = 2⁵, x+1 = 5, x = 4."},
+  {q:"Hasil dari (2³)² adalah... (tulis 2ⁿ)", opts:["2⁶","2⁵","2⁸","2⁴"], correct:0, e:"(2³)² = 2^(3×2) = 2⁶ = 64."},
+  {q:"Hasil rasionalisasi 1/(2+√3) adalah...", opts:["2+√3","2-√3","-1","1"], correct:1, e:"×(2-√3)/(2-√3) = (2-√3)/(4-3) = 2-√3."},
+  {q:"Bank memberi bunga 20% per tahun. Uang Rp100.000 menjadi... setelah 1 tahun. (M = P(1+r)ⁿ)", opts:["120000","100020","200000","80000"], correct:0, e:"M = 100000 × (1+0.2)¹ = 120000."},
+  {q:"Luas kebun persegi 64 m². Panjang sisi?", opts:["6","8","10","16"], correct:1, e:"sisi = √64 = 8 m."},
+  {q:"Tangga bersandar: kaki 6m, tinggi 8m. Panjang tangga? (c=√(a²+b²))", opts:["10","12","14","100"], correct:0, e:"c = √(36+64) = √100 = 10 m."},
+  {q:"Hasil dari 3√5 - √5 adalah...", opts:["2√5","3√5","4√5","√5"], correct:0, e:"(3-1)√5 = 2√5."},
+  {q:"Hasil dari 5² × 5³ adalah... (tulis 5ⁿ)", opts:["5⁵","5⁶","5¹","25⁵"], correct:0, e:"5^(2+3) = 5⁵ = 3125."}
+];
+
+/* ============= STATE ============= */
+let currentSlide = 1;
+const totalSlides = 6;
+let studentName = '';
+let quizAnswers = {};
+let quizChecked = {}; // Track per-question check
+let exAnswers = {}; // Track multiple choice for materi
+let refleksiRating = 0;
+
+/* ============= UTILS ============= */
+function $(s){return document.querySelector(s);}
+function $$(s){return document.querySelectorAll(s);}
+function randInt(min,max){return Math.floor(Math.random()*(max-min+1))+min;}
+
+function showToast(msg, type='info', duration=2200){
+  const t = $('#toast');
+  let bg = 'var(--dark-card)', border = 'var(--blue-400)', color = 'var(--text-light)';
+  if(type==='success'){ bg='var(--dark-card)'; border='var(--green-400)'; color='var(--green-300)'; }
+  if(type==='error'){ bg='var(--dark-card)'; border='var(--red)'; color='var(--red)'; }
+  t.style.background = bg; t.style.borderColor = border; t.style.color = color;
+  t.innerHTML = `<span style="font-size:1.2rem">${type==='success'?'✅':type==='error'?'⚠️':'ℹ️'}</span> <span>${msg}</span>`;
+  t.classList.add('show');
+  clearTimeout(t._timeout);
+  t._timeout = setTimeout(()=>t.classList.remove('show'), duration);
+}
+
+function launchConfetti(){
+  const colors=['#0EA5E9','#22C55E','#F59E0B','#38BDF8','#4ADE80','#FB923C'];
+  for(let i=0;i<60;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.left=randInt(0,100)+'vw';
+    c.style.background=colors[randInt(0,colors.length-1)];
+    c.style.borderRadius=Math.random()>.5?'50%':'2px';
+    c.style.animationDelay=Math.random()*.5+'s';
+    c.style.animationDuration=(2+Math.random()*2)+'s';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),4000);
+  }
+}
+
+function initBgDecor(){
+  const decor = $('#bgDecor');
+  const chars = ['🚀','⚡','🎮','🔧','💡','📐','🤖','🎯','🛸'];
+  for(let i=0;i<14;i++){
+    const d=document.createElement('div');
+    d.className='deco';
+    d.textContent=chars[randInt(0,chars.length-1)];
+    d.style.left=randInt(0,100)+'vw';
+    d.style.fontSize=(1+Math.random()*1.5)+'rem';
+    d.style.animationDuration=(12+Math.random()*15)+'s';
+    d.style.animationDelay=(-Math.random()*15)+'s';
+    decor.appendChild(d);
+  }
+}
+
+/* ============= NAVIGATION ============= */
+function initDots(){
+  const dots = $('#dots');
+  dots.innerHTML='';
+  for(let i=1;i<=totalSlides;i++){
+    const d=document.createElement('div');
+    d.className='dot'+(i===1?' active':'');
+    d.onclick=()=>goToSlide(i);
+    dots.appendChild(d);
+  }
+}
+
+function goToSlide(n){
+  if(n<1||n>totalSlides) return;
+  $$('.slide').forEach(s=>s.classList.remove('active'));
+  document.querySelector(`.slide[data-slide="${n}"]`).classList.add('active');
+  $$('.dot').forEach((d,i)=>d.classList.toggle('active', i===n-1));
+  currentSlide = n;
+  $('#prevBtn').disabled = (n===1);
+  $('#nextBtn').disabled = (n===totalSlides);
+  if(n===1) $('#navBar').style.display='none';
+  else $('#navBar').style.display='flex';
+  if(n===6) $('#tyName').textContent = studentName||'Player';
+}
+
+function nextSlide(){ if(currentSlide<totalSlides) goToSlide(currentSlide+1); }
+function prevSlide(){ if(currentSlide>1) goToSlide(currentSlide-1); }
+
+/* ============= SLIDE 1: START ============= */
+function initSlide1(){
+  $('#startBtn').onclick = ()=>{
+    const name = $('#studentName').value.trim();
+    if(!name){
+      showToast('Masukkan namamu dulu! ⚡','error');
+      $('#studentName').focus();
+      return;
+    }
+    studentName = name;
+    showToast(`Let's go, ${name}! 🚀`,'success',3000);
+    launchConfetti();
+    setTimeout(()=>goToSlide(2),800);
+  };
+  $('#studentName').addEventListener('keypress',e=>{if(e.key==='Enter')$('#startBtn').click();});
+}
+
+/* ============= SLIDE 3: MATERI ============= */
+function switchMatTab(tab){
+  $$('.tab-btn[data-mat]').forEach(b=>b.classList.toggle('active', b.dataset.mat===tab));
+  $('#matPangkat').style.display = tab==='pangkat'?'block':'none';
+  $('#matAkar').style.display = tab==='akar'?'block':'none';
+  if(tab==='pangkat') switchSubTab('p1');
+  else switchSubTab('a1');
+}
+
+function switchSubTab(sub){
+  $$('.subtab-btn').forEach(b=>b.classList.toggle('active', b.dataset.sub===sub));
+  $$('.sub-tab').forEach(t=>t.style.display='none');
+  const target = $('#sub-'+sub);
+  if(target) target.style.display='block';
+  initExercises(sub);
+}
+
+function initExercises(sub){
+  const container = $('#ex-'+sub);
+  if(container.children.length > 0) return;
+  const qs = exercises[sub] || [];
+  qs.forEach((q,i)=>{
+    const div = document.createElement('div');
+    div.className = 'q-card';
+    div.id = `ex-${sub}-${i}`;
+    
+    let answerAreaHtml = '';
+    if (q.opts) {
+      // Multiple Choice (untuk p4)
+      answerAreaHtml = `<div class="space-y-1.5 mt-2">` + q.opts.map((opt,oi)=>`
+        <button class="opt-btn" onclick="selectExMC('${sub}',${i},${oi})" data-sub="${sub}" data-i="${i}" data-o="${oi}">
+          <span class="opt-letter">${String.fromCharCode(65+oi)}</span> <span>${opt}</span>
+        </button>
+      `).join('') + `</div>`;
+    } else {
+      // Fill in
+      answerAreaHtml = `<input type="text" class="fill-input mt-2" placeholder="Jawaban..." id="input-${sub}-${i}" style="max-width:200px;">`;
+    }
+
+    div.innerHTML = `
+      <div class="flex justify-between items-start gap-2 mb-2">
+        <div class="font-bold text-blue-400 text-sm">Soal ${i+1}</div>
+        <div class="flex gap-1">
+          <button class="btn-cute outline" style="padding:.3rem .8rem;font-size:.75rem;" onclick="checkEx('${sub}',${i})"><i class="fas fa-check"></i> Cek</button>
+          <button class="btn-cute outline" style="padding:.3rem .8rem;font-size:.75rem;" onclick="toggleExDisc('${sub}',${i})"><i class="fas fa-book"></i> Bahas</button>
+        </div>
+      </div>
+      <p class="text-sm text-gray-400 mb-2">${q.q}</p>
+      ${answerAreaHtml}
+      <div class="disc-box" id="disc-${sub}-${i}"><b>Pembahasan:</b> ${q.e}<br><b>Jawaban:</b> ${q.a}</div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function selectExMC(sub, i, oi){
+  exAnswers[`${sub}-${i}`] = oi;
+  $$(`#ex-${sub}-${i} .opt-btn`).forEach(b => b.classList.remove('selected'));
+  document.querySelector(`#ex-${sub}-${i} .opt-btn[data-o="${oi}"]`).classList.add('selected');
+}
+
+function checkEx(sub, i){
+  const card = $(`#ex-${sub}-${i}`);
+  const q = exercises[sub][i];
+  card.classList.remove('correct','wrong');
+  
+  if (q.opts) {
+    const userAns = exAnswers[`${sub}-${i}`];
+    if (userAns === undefined) {
+      showToast('Pilih jawaban dulu! ⚡','error');
+      return;
+    }
+    $$(`#ex-${sub}-${i} .opt-btn`).forEach(b => b.classList.remove('selected','correct','wrong'));
+    if (userAns === q.correct) {
+      card.classList.add('correct');
+      document.querySelector(`#ex-${sub}-${i} .opt-btn[data-o="${q.correct}"]`).classList.add('correct');
+      showToast('Benar! 🎯','success',1500);
+    } else {
+      card.classList.add('wrong');
+      document.querySelector(`#ex-${sub}-${i} .opt-btn[data-o="${userAns}"]`).classList.add('wrong');
+      document.querySelector(`#ex-${sub}-${i} .opt-btn[data-o="${q.correct}"]`).classList.add('correct');
+      showToast('Belum tepat, coba lagi! 🛠️','error',2000);
+    }
+  } else {
+    const input = $(`#input-${sub}-${i}`);
+    const userAns = input.value.trim().toLowerCase().replace(/\s+/g,'');
+    const correctAns = q.a.toLowerCase().replace(/\s+/g,'');
+    
+    input.classList.remove('correct','wrong');
+    
+    if(!userAns){
+      showToast('Isi jawaban dulu! ⚡','error');
+      input.focus();
+      return;
+    }
+    
+    if(userAns === correctAns){
+      input.classList.add('correct');
+      card.classList.add('correct');
+      showToast('Benar! 🎯','success',1500);
+    } else {
+      input.classList.add('wrong');
+      card.classList.add('wrong');
+      showToast('Belum tepat, coba lagi! 🛠️','error',2000);
+    }
+  }
+}
+
+function toggleExDisc(sub, i){
+  $(`#disc-${sub}-${i}`).classList.toggle('show');
+}
+
+/* ============= SLIDE 4: APLIKASI ============= */
+function initAppExercises(){
+  const container = $('#appExercises');
+  if(container.children.length > 0) return;
+  appExercises.forEach((ex,i)=>{
+    const div = document.createElement('div');
+    div.className = 'q-card';
+    div.id = `appEx-${i}`;
+    div.innerHTML = `
+      <div class="flex justify-between items-start gap-2 mb-2">
+        <div class="font-bold text-blue-400 text-sm">Contoh ${i+1}</div>
+        <button class="btn-cute outline" style="padding:.3rem .8rem;font-size:.75rem;" onclick="toggleAppDisc(${i})"><i class="fas fa-book"></i> Penyelesaian</button>
+      </div>
+      <p class="text-sm text-gray-400 mb-2">${ex.q}</p>
+      <div class="disc-box" id="appDisc-${i}"><b>Penyelesaian:</b> ${ex.e}<br><b>Jawaban:</b> ${ex.a}</div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function toggleAppDisc(i){
+  $(`#appDisc-${i}`).classList.toggle('show');
+}
+
+/* ============= SLIDE 5: QUIZ (CHECK PER SOAL) ============= */
+function initQuiz(){
+  const grid = $('#quizGrid');
+  if(grid.children.length > 0) return;
+  quizQuestions.forEach((q,i)=>{
+    const card = document.createElement('div');
+    card.className = 'q-card';
+    card.id = `quizQ-${i}`;
+    let optsHtml = q.opts.map((opt,oi)=>`
+      <button class="opt-btn" onclick="selectQuiz(${i},${oi})" data-q="${i}" data-o="${oi}">
+        <span class="opt-letter">${String.fromCharCode(65+oi)}</span> <span>${opt}</span>
+      </button>
+    `).join('');
+    card.innerHTML = `
+      <div class="flex justify-between items-start gap-2 mb-2">
+        <div class="font-bold text-blue-400 text-sm">Soal ${i+1}</div>
+        <div class="flex gap-1">
+          <button class="btn-cute green" style="padding:.3rem .8rem;font-size:.75rem;" onclick="checkSingleQuiz(${i})"><i class="fas fa-check"></i> Cek Jawaban</button>
+          <button class="btn-cute outline" style="padding:.3rem .8rem;font-size:.75rem;" onclick="toggleQuizDisc(${i})"><i class="fas fa-book"></i> Bahas</button>
+        </div>
+      </div>
+      <p class="text-sm text-gray-400 mb-2">${q.q}</p>
+      <div class="space-y-1.5">${optsHtml}</div>
+      <div class="disc-box" id="quizDisc-${i}"><b>Pembahasan:</b> ${q.e}</div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function selectQuiz(qIdx, oIdx){
+  if(quizChecked[qIdx]) return;
+  quizAnswers[qIdx] = oIdx;
+  $$(`#quizQ-${qIdx} .opt-btn`).forEach(b=>b.classList.remove('selected'));
+  document.querySelector(`#quizQ-${qIdx} .opt-btn[data-o="${oIdx}"]`).classList.add('selected');
+}
+
+function checkSingleQuiz(i) {
+  if (quizChecked[i]) return;
+  const q = quizQuestions[i];
+  const card = $(`#quizQ-${i}`);
+  const userAns = quizAnswers[i];
+  
+  card.classList.remove('correct', 'wrong');
+  $$(`#quizQ-${i} .opt-btn`).forEach(b => b.classList.remove('selected'));
+  
+  if (userAns === undefined) {
+    showToast('Pilih jawaban dulu! ⚡', 'error');
+    return;
+  }
+  
+  quizChecked[i] = true;
+  let score = parseInt($('#quizScore').textContent);
+  
+  if (userAns === q.correct) {
+    card.classList.add('correct');
+    score++;
+    document.querySelector(`#quizQ-${i} .opt-btn[data-o="${q.correct}"]`).classList.add('correct');
+    showToast('Benar! 🎯', 'success', 1500);
+  } else {
+    card.classList.add('wrong');
+    document.querySelector(`#quizQ-${i} .opt-btn[data-o="${userAns}"]`).classList.add('wrong');
+    document.querySelector(`#quizQ-${i} .opt-btn[data-o="${q.correct}"]`).classList.add('correct');
+    showToast('Belum tepat! 🛠️', 'error', 2000);
+  }
+  $('#quizScore').textContent = score;
+  if (score === quizQuestions.length) launchConfetti();
+}
+
+function toggleQuizDisc(i){
+  $(`#quizDisc-${i}`).classList.toggle('show');
+}
+
+/* ============= SLIDE 6: REFLEKSI ============= */
+function initRefleksi(){
+  $$('#refleksiStars .star').forEach(s=>{
+    s.onclick = ()=>{
+      refleksiRating = parseInt(s.dataset.r);
+      $$('#refleksiStars .star').forEach(x=>{
+        x.classList.toggle('active', parseInt(x.dataset.r)<=refleksiRating);
+      });
+      if(refleksiRating>=4) launchConfetti();
+    };
+  });
+}
+
+function celebrate(){
+  launchConfetti();
+  showToast('Kamu hebat! ⚡','success',3000);
+}
+
+function restart(){
+  currentSlide = 1;
+  quizAnswers = {};
+  quizChecked = {};
+  exAnswers = {};
+  refleksiRating = 0;
+  $('#quizScore').textContent = '0';
+  $$('.q-card').forEach(c=>c.classList.remove('correct','wrong'));
+  $$('.opt-btn').forEach(b=>b.classList.remove('selected','correct','wrong'));
+  $$('.fill-input').forEach(i=>{i.value='';i.classList.remove('correct','wrong');});
+  $$('.disc-box').forEach(b=>b.classList.remove('show'));
+  $$('#refleksiStars .star').forEach(x=>x.classList.remove('active'));
+  $('#studentName').value = '';
+  $('#refleksiText').value = '';
+  goToSlide(1);
+}
+
+/* ============= INIT ============= */
+window.addEventListener('DOMContentLoaded',()=>{
+  initBgDecor();
+  initDots();
+  initSlide1();
+  initAppExercises();
+  initQuiz();
+  initRefleksi();
+  $('#prevBtn').onclick = prevSlide;
+  $('#nextBtn').onclick = nextSlide;
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight' && currentSlide>1) nextSlide();
+    if(e.key==='ArrowLeft' && currentSlide>1) prevSlide();
+  });
+});
+</script>
+</body>
+</html>
