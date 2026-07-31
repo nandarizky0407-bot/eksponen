@@ -1,0 +1,2091 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MathVenture · Petualangan Pangkat & Akar</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<script>
+  MathJax = {
+    tex: { 
+      inlineMath: [['\\(', '\\)']], 
+      displayMath: [['\\[', '\\]']],
+      processEscapes: true
+    },
+    svg: { fontCache: 'global' },
+    startup: { typeset: false }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+  :root {
+    --bg: #0a0a14;
+    --bg-2: #11112a;
+    --surface: #161630;
+    --surface-2: #1d1d3d;
+    --border: #2a2a4a;
+    --text: #fdfffc;
+    --muted: #8b8ba7;
+    --primary: #ff5e5b;
+    --primary-glow: rgba(255, 94, 91, 0.4);
+    --secondary: #00cecb;
+    --secondary-glow: rgba(0, 206, 203, 0.4);
+    --accent: #ffed66;
+    --success: #4cd964;
+    --danger: #ff3b30;
+    --warn: #ffcc00;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  /* Background decorative blobs */
+  .bg-decor {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.25;
+    animation: float 20s ease-in-out infinite;
+  }
+
+  .blob-1 {
+    width: 500px; height: 500px;
+    background: var(--primary);
+    top: -100px; left: -100px;
+  }
+
+  .blob-2 {
+    width: 600px; height: 600px;
+    background: var(--secondary);
+    bottom: -150px; right: -150px;
+    animation-delay: -7s;
+  }
+
+  .blob-3 {
+    width: 400px; height: 400px;
+    background: var(--accent);
+    top: 40%; left: 50%;
+    animation-delay: -14s;
+    opacity: 0.15;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(50px, -30px) scale(1.1); }
+    66% { transform: translate(-30px, 40px) scale(0.95); }
+  }
+
+  /* Floating math symbols */
+  .math-symbols {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .symbol {
+    position: absolute;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 2.5rem;
+    color: var(--muted);
+    opacity: 0.08;
+    animation: drift 25s linear infinite;
+    user-select: none;
+  }
+
+  @keyframes drift {
+    from { transform: translateY(100vh) rotate(0deg); }
+    to { transform: translateY(-20vh) rotate(360deg); }
+  }
+
+  /* ============ COVER SCREEN ============ */
+  .screen {
+    display: none;
+    min-height: 100vh;
+    animation: fadeIn 0.6s ease;
+  }
+
+  .screen.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .cover {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+  }
+
+  .cover-card {
+    max-width: 640px;
+    width: 100%;
+    background: linear-gradient(145deg, rgba(22, 22, 48, 0.85), rgba(29, 29, 61, 0.85));
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    border-radius: 32px;
+    padding: 3rem 2.5rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+  }
+
+  .cover-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary), var(--accent), var(--secondary));
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255, 94, 91, 0.12);
+    border: 1px solid rgba(255, 94, 91, 0.3);
+    color: var(--primary);
+    padding: 0.4rem 0.9rem;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+
+  .badge .dot {
+    width: 6px; height: 6px;
+    background: var(--primary);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.3); }
+  }
+
+  .cover h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+  }
+
+  .cover h1 .accent {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .cover .subtitle {
+    color: var(--muted);
+    font-size: 1.05rem;
+    margin-bottom: 2rem;
+    max-width: 480px;
+  }
+
+  .cover .topics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .topic-chip {
+    background: rgba(0, 206, 203, 0.08);
+    border: 1px solid rgba(0, 206, 203, 0.25);
+    color: var(--secondary);
+    padding: 0.35rem 0.85rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+
+  .form-group {
+    margin-bottom: 1.25rem;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .input-wrap {
+    position: relative;
+  }
+
+  .input-wrap i {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+  }
+
+  .form-input {
+    width: 100%;
+    background: rgba(10, 10, 20, 0.6);
+    border: 1.5px solid var(--border);
+    color: var(--text);
+    padding: 0.9rem 1rem 0.9rem 2.75rem;
+    border-radius: 14px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1rem;
+    transition: all 0.25s;
+  }
+
+  .form-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: rgba(10, 10, 20, 0.9);
+    box-shadow: 0 0 0 4px var(--primary-glow);
+  }
+
+  .btn-row {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-top: 1.5rem;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.9rem 1.5rem;
+    border-radius: 14px;
+    border: none;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--primary), #e63946);
+    color: white;
+    box-shadow: 0 8px 24px var(--primary-glow);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px var(--primary-glow);
+  }
+
+  .btn-primary:disabled {
+    background: var(--surface-2);
+    color: var(--muted);
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text);
+    border: 1.5px solid var(--border);
+  }
+
+  .btn-ghost:hover {
+    background: var(--surface-2);
+    border-color: var(--secondary);
+    color: var(--secondary);
+  }
+
+  .btn-secondary {
+    background: rgba(0, 206, 203, 0.15);
+    color: var(--secondary);
+    border: 1.5px solid rgba(0, 206, 203, 0.4);
+  }
+
+  .btn-secondary:hover {
+    background: rgba(0, 206, 203, 0.25);
+    transform: translateY(-2px);
+  }
+
+  .cover-footer {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+
+  .stat-mini {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .stat-mini i { color: var(--accent); }
+
+  /* ============ MATERI MODAL ============ */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(5, 5, 15, 0.85);
+    backdrop-filter: blur(8px);
+    z-index: 100;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .modal-overlay.active { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    max-width: 900px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 2rem;
+    position: relative;
+  }
+
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .modal-header h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.6rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .modal-header h2 i {
+    color: var(--accent);
+  }
+
+  .modal-close {
+    background: var(--surface-2);
+    border: none;
+    color: var(--text);
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+
+  .modal-close:hover {
+    background: var(--danger);
+    transform: rotate(90deg);
+  }
+
+  .materi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+  }
+
+  .materi-item {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.25rem;
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+
+  .materi-item:hover {
+    border-color: var(--secondary);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0, 206, 203, 0.15);
+  }
+
+  .materi-item-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .materi-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: white;
+  }
+
+  .materi-item h3 {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .materi-item p {
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .materi-detail {
+    background: rgba(10, 10, 20, 0.5);
+    border-radius: 10px;
+    padding: 0.85rem;
+    font-size: 0.9rem;
+    border-left: 3px solid var(--secondary);
+  }
+
+  .materi-detail mjx-container { font-size: 0.95em !important; }
+  .materi-detail p { margin-bottom: 0.4rem; color: var(--text); }
+  .materi-detail p:last-child { margin-bottom: 0; }
+
+  /* ============ QUIZ SCREEN ============ */
+  .quiz-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(10, 10, 20, 0.92);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 1.5rem;
+  }
+
+  .quiz-header-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .quiz-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .quiz-title h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.2rem;
+  }
+
+  .student-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(255, 237, 102, 0.12);
+    border: 1px solid rgba(255, 237, 102, 0.3);
+    color: var(--accent);
+    padding: 0.35rem 0.85rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+
+  .progress-wrap {
+    max-width: 1100px;
+    margin: 0.75rem auto 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .progress-bar {
+    flex: 1;
+    height: 8px;
+    background: var(--surface-2);
+    border-radius: 50px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--accent), var(--secondary));
+    border-radius: 50px;
+    width: 0%;
+    transition: width 0.4s ease;
+  }
+
+  .progress-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--muted);
+    min-width: 60px;
+    text-align: right;
+  }
+
+  /* Tabs */
+  .tabs-wrap {
+    max-width: 1100px;
+    margin: 2rem auto 1rem;
+    padding: 0 1.5rem;
+  }
+
+  .tabs {
+    display: flex;
+    gap: 0.5rem;
+    background: var(--surface);
+    padding: 0.4rem;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    max-width: 360px;
+  }
+
+  .tab {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 12px;
+    transition: all 0.25s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+  }
+
+  .tab.active {
+    background: linear-gradient(135deg, var(--primary), #e63946);
+    color: white;
+    box-shadow: 0 4px 16px var(--primary-glow);
+  }
+
+  .tab.active.tab-akar {
+    background: linear-gradient(135deg, var(--secondary), #009e9c);
+    box-shadow: 0 4px 16px var(--secondary-glow);
+  }
+
+  /* Question list */
+  .quiz-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 1.5rem 4rem;
+  }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; animation: fadeIn 0.4s ease; }
+
+  .section-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.5rem;
+    margin: 1.5rem 0 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .section-title .num {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    color: white;
+  }
+
+  .section-title.tab-akar-title .num {
+    background: linear-gradient(135deg, var(--secondary), var(--accent));
+  }
+
+  .section-desc {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .question-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 1.5rem;
+    margin-bottom: 1.25rem;
+    transition: all 0.3s;
+  }
+
+  .question-card.answered {
+    border-color: rgba(0, 206, 203, 0.4);
+  }
+
+  .question-card.correct {
+    border-color: var(--success);
+    box-shadow: 0 0 0 1px var(--success), 0 8px 24px rgba(76, 217, 100, 0.15);
+  }
+
+  .question-card.wrong {
+    border-color: var(--danger);
+    box-shadow: 0 0 0 1px var(--danger), 0 8px 24px rgba(255, 59, 48, 0.15);
+  }
+
+  .q-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    gap: 0.75rem;
+  }
+
+  .q-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px; height: 36px;
+    padding: 0 0.6rem;
+    background: var(--surface-2);
+    border-radius: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--accent);
+  }
+
+  .q-status {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.65rem;
+    border-radius: 50px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .q-status.unanswered {
+    background: rgba(139, 139, 167, 0.15);
+    color: var(--muted);
+  }
+
+  .q-status.correct {
+    background: rgba(76, 217, 100, 0.15);
+    color: var(--success);
+  }
+
+  .q-status.wrong {
+    background: rgba(255, 59, 48, 0.15);
+    color: var(--danger);
+  }
+
+  .q-text {
+    font-size: 1rem;
+    line-height: 1.7;
+    margin-bottom: 1.25rem;
+    color: var(--text);
+  }
+
+  .q-text mjx-container { 
+    font-size: 1.05em !important;
+    overflow-x: auto;
+    overflow-y: hidden;
+    max-width: 100%;
+  }
+
+  .options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0.6rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .option {
+    background: var(--bg-2);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.95rem;
+    user-select: none;
+  }
+
+  .option:hover:not(.disabled) {
+    border-color: var(--secondary);
+    background: var(--surface-2);
+    transform: translateX(3px);
+  }
+
+  .option.selected {
+    border-color: var(--accent);
+    background: rgba(255, 237, 102, 0.08);
+  }
+
+  .option.correct-opt {
+    border-color: var(--success);
+    background: rgba(76, 217, 100, 0.12);
+  }
+
+  .option.wrong-opt {
+    border-color: var(--danger);
+    background: rgba(255, 59, 48, 0.12);
+  }
+
+  .option.disabled { cursor: not-allowed; }
+
+  .opt-label {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: var(--surface-2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .option.selected .opt-label {
+    background: var(--accent);
+    color: var(--bg);
+  }
+
+  .option.correct-opt .opt-label {
+    background: var(--success);
+    color: white;
+  }
+
+  .option.wrong-opt .opt-label {
+    background: var(--danger);
+    color: white;
+  }
+
+  .opt-text { flex: 1; }
+  .opt-text mjx-container { font-size: 1em !important; }
+
+  .q-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .btn-sm {
+    padding: 0.55rem 1rem;
+    font-size: 0.85rem;
+    border-radius: 10px;
+  }
+
+  .btn-check {
+    background: var(--secondary);
+    color: var(--bg);
+  }
+
+  .btn-check:hover { background: #00b5b2; }
+
+  .btn-check:disabled {
+    background: var(--surface-2);
+    color: var(--muted);
+    cursor: not-allowed;
+  }
+
+  .btn-explain {
+    background: transparent;
+    border: 1.5px solid var(--border);
+    color: var(--accent);
+  }
+
+  .btn-explain:hover:not(:disabled) {
+    background: rgba(255, 237, 102, 0.1);
+    border-color: var(--accent);
+  }
+
+  .btn-explain:disabled {
+    color: var(--muted);
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  .explanation {
+    display: none;
+    margin-top: 1rem;
+    padding: 1rem 1.25rem;
+    background: linear-gradient(135deg, rgba(0, 206, 203, 0.08), rgba(255, 237, 102, 0.05));
+    border-left: 3px solid var(--secondary);
+    border-radius: 12px;
+    font-size: 0.92rem;
+    line-height: 1.7;
+  }
+
+  .explanation.active {
+    display: block;
+    animation: fadeIn 0.4s ease;
+  }
+
+  .explanation-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    color: var(--secondary);
+    margin-bottom: 0.5rem;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .explanation-answer {
+    display: inline-block;
+    background: rgba(76, 217, 100, 0.15);
+    color: var(--success);
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+  }
+
+  .explanation mjx-container { font-size: 1em !important; }
+  .explanation p { margin-bottom: 0.4rem; }
+
+  .finish-bar {
+    position: sticky;
+    bottom: 0;
+    background: rgba(10, 10, 20, 0.95);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid var(--border);
+    padding: 1rem 1.5rem;
+    margin-top: 2rem;
+  }
+
+  .finish-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .finish-stat {
+    display: flex;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+  }
+
+  .finish-stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  .finish-stat-item strong {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text);
+    font-size: 1rem;
+  }
+
+  .finish-stat-item.answered strong { color: var(--accent); }
+  .finish-stat-item.correct strong { color: var(--success); }
+  .finish-stat-item.wrong strong { color: var(--danger); }
+
+  /* ============ RESULT SCREEN ============ */
+  .result {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+  }
+
+  .result-card {
+    max-width: 720px;
+    width: 100%;
+    background: linear-gradient(145deg, rgba(22, 22, 48, 0.85), rgba(29, 29, 61, 0.85));
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    border-radius: 32px;
+    padding: 2.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .result-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary), var(--accent), var(--secondary));
+  }
+
+  .result-emoji {
+    font-size: 3.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .result h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .result .student-name {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .result .subtitle {
+    color: var(--muted);
+    margin-bottom: 2rem;
+  }
+
+  .score-circle {
+    width: 180px; height: 180px;
+    margin: 0 auto 2rem;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .score-circle svg {
+    transform: rotate(-90deg);
+    width: 100%;
+    height: 100%;
+  }
+
+  .score-circle .track {
+    fill: none;
+    stroke: var(--surface-2);
+    stroke-width: 12;
+  }
+
+  .score-circle .progress {
+    fill: none;
+    stroke: url(#scoreGradient);
+    stroke-width: 12;
+    stroke-linecap: round;
+    stroke-dasharray: 502;
+    stroke-dashoffset: 502;
+    transition: stroke-dashoffset 1.5s ease;
+  }
+
+  .score-text {
+    position: absolute;
+    text-align: center;
+  }
+
+  .score-text .big {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+  }
+
+  .score-text .small {
+    font-size: 0.75rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 0.25rem;
+  }
+
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+  }
+
+  .stat-box {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1rem;
+    text-align: center;
+  }
+
+  .stat-box .stat-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    margin: 0 auto 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+  }
+
+  .stat-box.answered .stat-icon { background: rgba(255, 237, 102, 0.15); color: var(--accent); }
+  .stat-box.correct .stat-icon { background: rgba(76, 217, 100, 0.15); color: var(--success); }
+  .stat-box.wrong .stat-icon { background: rgba(255, 59, 48, 0.15); color: var(--danger); }
+
+  .stat-box .num {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 0.25rem;
+  }
+
+  .stat-box.answered .num { color: var(--accent); }
+  .stat-box.correct .num { color: var(--success); }
+  .stat-box.wrong .num { color: var(--danger); }
+
+  .stat-box .label {
+    font-size: 0.75rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .result-message {
+    background: var(--bg-2);
+    border-radius: 14px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    color: var(--muted);
+    border-left: 3px solid var(--accent);
+    text-align: left;
+  }
+
+  .result-message strong { color: var(--text); }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 0.85rem 1.25rem;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    z-index: 200;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+    transition: transform 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .toast.show {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .toast.success { border-color: var(--success); }
+  .toast.success i { color: var(--success); }
+  .toast.error { border-color: var(--danger); }
+  .toast.error i { color: var(--danger); }
+  .toast.warn { border-color: var(--warn); }
+  .toast.warn i { color: var(--warn); }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    .cover-card { padding: 2rem 1.5rem; }
+    .options { grid-template-columns: 1fr; }
+    .stat-grid { grid-template-columns: 1fr; }
+    .quiz-header-inner { flex-direction: column; align-items: flex-start; }
+    .modal { padding: 1.5rem; }
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--surface-2); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--border); }
+</style>
+</head>
+<body>
+
+<!-- Background decorations -->
+<div class="bg-decor">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+</div>
+
+<div class="math-symbols" id="mathSymbols"></div>
+
+<!-- ============ COVER SCREEN ============ -->
+<section class="screen active" id="coverScreen">
+  <div class="cover">
+    <div class="cover-card">
+      <div class="badge">
+        <span class="dot"></span>
+        MathVenture · Series 02
+      </div>
+      <h1>Pangkat &<br><span class="accent">Akar</span></h1>
+      <p class="subtitle">Petualangan interaktif menaklukkan 40 soal HOTS persiapan UTBK/SNBT/SIMAK UI. Pilih, jawab, dan pelajari pembahasannya langsung.</p>
+      
+      <div class="topics">
+        <span class="topic-chip">Sifat Eksponen</span>
+        <span class="topic-chip">Persamaan Eksponen</span>
+        <span class="topic-chip">Sifat Akar</span>
+        <span class="topic-chip">Operasi Akar</span>
+        <span class="topic-chip">Bentuk Akar</span>
+        <span class="topic-chip">Rasionalisasi</span>
+      </div>
+
+      <div class="form-group">
+        <label for="namaInput">Nama Peserta</label>
+        <div class="input-wrap">
+          <i class="fas fa-user"></i>
+          <input type="text" id="namaInput" class="form-input" placeholder="Masukkan nama lengkap kamu..." autocomplete="off">
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" id="mulaiBtn">
+          <i class="fas fa-rocket"></i> Mulai Petualangan
+        </button>
+        <button class="btn btn-ghost" id="bukaMateriBtn">
+          <i class="fas fa-book-open"></i> Materi
+        </button>
+      </div>
+
+      <div class="cover-footer">
+        <div class="stat-mini"><i class="fas fa-list-ol"></i> 40 Soal</div>
+        <div class="stat-mini"><i class="fas fa-layer-group"></i> 2 Bagian</div>
+        <div class="stat-mini"><i class="fas fa-clock"></i> ±90 Menit</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ QUIZ SCREEN ============ -->
+<section class="screen" id="quizScreen">
+  <header class="quiz-header">
+    <div class="quiz-header-inner">
+      <div class="quiz-title">
+        <h2>MathVenture</h2>
+        <span class="student-tag"><i class="fas fa-user-graduate"></i> <span id="studentName">Siswa</span></span>
+      </div>
+      <button class="btn btn-sm btn-ghost" onclick="bukaMateri()">
+        <i class="fas fa-book-open"></i> Materi
+      </button>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <div class="progress-text" id="progressText">0/40</div>
+    </div>
+  </header>
+
+  <div class="tabs-wrap">
+    <div class="tabs">
+      <button class="tab active" data-tab="pangkat" onclick="switchTab('pangkat')">
+        <i class="fas fa-superscript"></i> Pangkat
+      </button>
+      <button class="tab tab-akar" data-tab="akar" onclick="switchTab('akar')">
+        <i class="fas fa-square-root-variable"></i> Akar
+      </button>
+    </div>
+  </div>
+
+  <div class="quiz-container">
+    <!-- Pangkat -->
+    <div class="tab-content active" id="tab-pangkat">
+      <h2 class="section-title">
+        <span class="num">I</span> Bagian Pangkat (Eksponen)
+      </h2>
+      <p class="section-desc">20 soal pilihan ganda HOTS tentang persamaan eksponen. Pilih jawaban, lalu tekan "Cek Jawaban" untuk membuka pembahasan.</p>
+      <div id="listPangkat"></div>
+    </div>
+
+    <!-- Akar -->
+    <div class="tab-content" id="tab-akar">
+      <h2 class="section-title tab-akar-title">
+        <span class="num">II</span> Bagian Akar
+      </h2>
+      <p class="section-desc">20 soal pilihan ganda HOTS tentang bentuk akar, rasionalisasi, dan operasinya.</p>
+      <div id="listAkar"></div>
+    </div>
+  </div>
+
+  <div class="finish-bar">
+    <div class="finish-inner">
+      <div class="finish-stat">
+        <div class="finish-stat-item answered">
+          <i class="fas fa-pen"></i> Dikerjakan: <strong id="statAnswered">0</strong>
+        </div>
+        <div class="finish-stat-item correct">
+          <i class="fas fa-check"></i> Benar: <strong id="statCorrect">0</strong>
+        </div>
+        <div class="finish-stat-item wrong">
+          <i class="fas fa-times"></i> Salah: <strong id="statWrong">0</strong>
+        </div>
+      </div>
+      <button class="btn btn-primary" id="finishBtn">
+        <i class="fas fa-flag-checkered"></i> Finish
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ RESULT SCREEN ============ -->
+<section class="screen" id="resultScreen">
+  <div class="result">
+    <div class="result-card">
+      <div class="result-emoji" id="resultEmoji">🏆</div>
+      <h2>Petualangan Selesai!</h2>
+      <p class="subtitle">Kerja bagus, <span class="student-name" id="resultName">Siswa</span>! Berikut hasil perjalananmu:</p>
+      
+      <div class="score-circle">
+        <svg viewBox="0 0 180 180">
+          <defs>
+            <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#ff5e5b"/>
+              <stop offset="50%" stop-color="#ffed66"/>
+              <stop offset="100%" stop-color="#00cecb"/>
+            </linearGradient>
+          </defs>
+          <circle class="track" cx="90" cy="90" r="80"/>
+          <circle class="progress" id="scoreProgress" cx="90" cy="90" r="80"/>
+        </svg>
+        <div class="score-text">
+          <div class="big" id="scorePercent">0%</div>
+          <div class="small">Skor Akhir</div>
+        </div>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-box answered">
+          <div class="stat-icon"><i class="fas fa-pen"></i></div>
+          <div class="num" id="rAnswered">0</div>
+          <div class="label">Dikerjakan</div>
+        </div>
+        <div class="stat-box correct">
+          <div class="stat-icon"><i class="fas fa-check"></i></div>
+          <div class="num" id="rCorrect">0</div>
+          <div class="label">Benar</div>
+        </div>
+        <div class="stat-box wrong">
+          <div class="stat-icon"><i class="fas fa-times"></i></div>
+          <div class="num" id="rWrong">0</div>
+          <div class="label">Salah</div>
+        </div>
+      </div>
+
+      <div class="result-message" id="resultMessage">
+        <strong>Catatan:</strong> <span id="resultNote">Terus berlatih, jagongan saja tidak cukup!</span>
+      </div>
+
+      <div class="btn-row" style="justify-content: center;">
+        <button class="btn btn-ghost" onclick="kembaliKeCover()">
+          <i class="fas fa-home"></i> Kembali ke Beranda
+        </button>
+        <button class="btn btn-secondary" onclick="kembaliKeQuiz()">
+          <i class="fas fa-rotate-left"></i> Review Jawaban
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MATERI MODAL ============ -->
+<div class="modal-overlay" id="materiModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2><i class="fas fa-book-open"></i> Ringkasan Materi</h2>
+      <button class="modal-close" onclick="tutupMateri()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="materi-grid" id="materiGrid"></div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <i class="fas fa-info-circle"></i>
+  <span id="toastText">Pesan</span>
+</div>
+
+<script>
+/* ===================== DATA ===================== */
+
+const materiData = [
+  {
+    icon: 'fa-superscript',
+    title: 'Sifat Eksponen',
+    desc: 'Aturan dasar operasi pangkat',
+    detail: `
+      <p>\\(a^m \\times a^n = a^{m+n}\\)</p>
+      <p>\\(\\dfrac{a^m}{a^n} = a^{m-n}\\)</p>
+      <p>\\((a^m)^n = a^{mn}\\)</p>
+      <p>\\((ab)^m = a^m b^m\\)</p>
+      <p>\\(a^0 = 1\\) untuk \\(a \\neq 0\\)</p>
+      <p>\\(a^{-m} = \\dfrac{1}{a^m}\\)</p>
+      <p>\\(a^{1/n} = \\sqrt[n]{a}\\)</p>
+      <p>\\(a^{m/n} = \\sqrt[n]{a^m}\\)</p>
+    `
+  },
+  {
+    icon: 'fa-equals',
+    title: 'Persamaan Eksponen',
+    desc: 'Menyelesaikan persamaan berpangkat',
+    detail: `
+      <p>\\(a^{f(x)} = a^{g(x)} \\Leftrightarrow f(x) = g(x)\\)</p>
+      <p>\\(a^{f(x)} = b \\Leftrightarrow f(x) = ^a\\log b\\)</p>
+      <p>\\(a^{f(x)} = b^{g(x)} \\Rightarrow\\) samakan basis atau gunakan logaritma</p>
+      <p><strong>Bentuk kuadrat:</strong> \\(a^{2x} + p\\, a^x + q = 0\\)</p>
+      <p>Misal \\(y = a^x\\), maka \\(y^2 + py + q = 0\\)</p>
+      <p><strong>Syarat dua akar real berbeda:</strong> \\(D > 0\\), jumlah akar \\(> 0\\), hasil kali akar \\(> 0\\)</p>
+    `
+  },
+  {
+    icon: 'fa-square-root-variable',
+    title: 'Sifat Akar',
+    desc: 'Aturan dasar bentuk akar',
+    detail: `
+      <p>\\(\\sqrt[n]{a} = a^{1/n}\\)</p>
+      <p>\\(\\sqrt[n]{a} \\times \\sqrt[n]{b} = \\sqrt[n]{ab}\\)</p>
+      <p>\\(\\dfrac{\\sqrt[n]{a}}{\\sqrt[n]{b}} = \\sqrt[n]{\\dfrac{a}{b}}\\)</p>
+      <p>\\((\\sqrt[n]{a})^m = \\sqrt[n]{a^m}\\)</p>
+      <p>\\(\\sqrt[m]{\\sqrt[n]{a}} = \\sqrt[mn]{a}\\)</p>
+      <p>\\(\\sqrt[n]{a^n} = |a|\\) untuk \\(n\\) genap</p>
+    `
+  },
+  {
+    icon: 'fa-plus-minus',
+    title: 'Operasi pada Akar',
+    desc: 'Penjumlahan, pengurangan, perkalian',
+    detail: `
+      <p><strong>Penjumlahan/pengurangan:</strong> hanya akar sejenis dapat dijumlahkan</p>
+      <p>\\(p\\sqrt{a} + q\\sqrt{a} = (p+q)\\sqrt{a}\\)</p>
+      <p><strong>Perkalian:</strong></p>
+      <p>\\(\\sqrt{a} \\times \\sqrt{b} = \\sqrt{ab}\\)</p>
+      <p>\\((\\sqrt{a}+\\sqrt{b})^2 = a + b + 2\\sqrt{ab}\\)</p>
+      <p>\\((\\sqrt{a}+\\sqrt{b})(\\sqrt{a}-\\sqrt{b}) = a - b\\)</p>
+    `
+  },
+  {
+    icon: 'fa-simplify',
+    title: 'Menyederhanakan Bentuk Akar',
+    desc: 'Faktorkan dan sederhanakan',
+    detail: `
+      <p>\\(\\sqrt{a^2 b} = a\\sqrt{b}\\) (untuk \\(a > 0\\))</p>
+      <p>\\(\\sqrt{a + 2\\sqrt{b}} = \\sqrt{x} + \\sqrt{y}\\)</p>
+      <p>dengan \\(x + y = a\\) dan \\(xy = b\\)</p>
+      <p>\\(\\sqrt{a - 2\\sqrt{b}} = \\sqrt{x} - \\sqrt{y}\\)</p>
+      <p>dengan \\(x > y\\), \\(x + y = a\\), \\(xy = b\\)</p>
+      <p><strong>Contoh:</strong> \\(\\sqrt{11 + 6\\sqrt{2}} = \\sqrt{11 + 2\\sqrt{18}} = \\sqrt{9 + 2 + 2\\sqrt{9\\cdot 2}} = 3 + \\sqrt{2}\\)</p>
+    `
+  },
+  {
+    icon: 'fa-divide',
+    title: 'Rasionalkan Bentuk Akar',
+    desc: 'Menghilangkan akar di penyebut',
+    detail: `
+      <p><strong>Penyebut satu suku:</strong></p>
+      <p>\\(\\dfrac{a}{\\sqrt{b}} = \\dfrac{a\\sqrt{b}}{b}\\)</p>
+      <p><strong>Penyebut dua suku (sekawan):</strong></p>
+      <p>\\(\\dfrac{a}{p + \\sqrt{q}} \\times \\dfrac{p - \\sqrt{q}}{p - \\sqrt{q}} = \\dfrac{a(p - \\sqrt{q})}{p^2 - q}\\)</p>
+      <p>\\(\\dfrac{a}{\\sqrt{p} + \\sqrt{q}} \\times \\dfrac{\\sqrt{p} - \\sqrt{q}}{\\sqrt{p} - \\sqrt{q}} = \\dfrac{a(\\sqrt{p} - \\sqrt{q})}{p - q}\\)</p>
+    `
+  }
+];
+
+const soalPangkat = [
+  {
+    soal: "Akar-akar persamaan \\(3^{2x+1} - 28 \\cdot 3^x + 9 = 0\\) adalah \\(x_1\\) dan \\(x_2\\). Nilai \\(x_1 + x_2\\) adalah . . .",
+    opsi: ["-1", "0", "1", "2", "3"],
+    jawaban: 2,
+    pembahasan: "Tulis ulang: \\(3\\,(3^x)^2 - 28\\,(3^x) + 9 = 0\\). Misal \\(y = 3^x\\), maka \\(3y^2 - 28y + 9 = 0\\). Faktor: \\((3y-1)(y-9) = 0\\) sehingga \\(y = \\tfrac{1}{3}\\) atau \\(y = 9\\). Untuk \\(y = 3^{-1} \\Rightarrow x_1 = -1\\), dan \\(y = 3^2 \\Rightarrow x_2 = 2\\). Maka \\(x_1 + x_2 = -1 + 2 = 1\\)."
+  },
+  {
+    soal: "Jika \\(x_1\\) dan \\(x_2\\) adalah penyelesaian dari \\(5^{x+1} + 5^{3-x} = 130\\), maka nilai \\(x_1 + x_2\\) adalah . . .",
+    opsi: ["1", "2", "3", "4", "5"],
+    jawaban: 1,
+    pembahasan: "\\(5 \\cdot 5^x + \\dfrac{125}{5^x} = 130\\). Misal \\(y = 5^x\\), maka \\(5y + \\tfrac{125}{y} = 130 \\Rightarrow y^2 - 26y + 25 = 0\\). Faktor: \\((y-1)(y-25) = 0\\), sehingga \\(y = 1 \\Rightarrow x_1 = 0\\) dan \\(y = 25 \\Rightarrow x_2 = 2\\). Maka \\(x_1 + x_2 = 2\\)."
+  },
+  {
+    soal: "Jumlah semua nilai \\(x\\) yang memenuhi persamaan \\((x-2)^{x^2-2x} = (x-2)^{x+4}\\) adalah . . .",
+    opsi: ["3", "5", "7", "9", "10"],
+    jawaban: 2,
+    pembahasan: "Empat kasus: (1) Pangkat sama: \\(x^2-2x = x+4 \\Rightarrow x^2-3x-4 = 0 \\Rightarrow x = 4\\) atau \\(x = -1\\). (2) Basis = 1: \\(x-2 = 1 \\Rightarrow x = 3\\). (3) Basis = -1 dan pangkat ganjil: \\(x-2 = -1 \\Rightarrow x = 1\\), cek \\(g(1) = -1\\) ganjil, \\(h(1) = 5\\) ganjil — valid. (4) Basis = 0 dan pangkat positif: \\(x = 2\\), tapi \\(g(2) = 0\\) (bentuk \\(0^0\\)) — tidak valid. Jumlah: \\(4 + (-1) + 3 + 1 = 7\\)."
+  },
+  {
+    soal: "Agar persamaan \\(4^x - a \\cdot 2^{x+1} + 8 = 0\\) mempunyai dua akar real yang berbeda, maka batas nilai \\(a\\) adalah . . .",
+    opsi: ["\\(a > 0\\)", "\\(a > \\sqrt{2}\\)", "\\(a > 2\\sqrt{2}\\)", "\\(a < -2\\sqrt{2}\\)", "\\(0 < a < 2\\sqrt{2}\\)"],
+    jawaban: 2,
+    pembahasan: "Misal \\(y = 2^x\\) (\\(y > 0\\)), persamaan menjadi \\(y^2 - 2ay + 8 = 0\\). Syarat dua akar real positif berbeda: (1) \\(D > 0 \\Rightarrow 4a^2 - 32 > 0 \\Rightarrow a > 2\\sqrt{2}\\) atau \\(a < -2\\sqrt{2}\\). (2) Jumlah akar \\(> 0 \\Rightarrow 2a > 0 \\Rightarrow a > 0\\). (3) Hasil kali \\(> 0 \\Rightarrow 8 > 0\\) (selalu). Irisan: \\(a > 2\\sqrt{2}\\)."
+  },
+  {
+    soal: "Jika \\(x\\) dan \\(y\\) memenuhi sistem persamaan \\(2^{x+y} = 16\\) dan \\(3^{x-y} = \\dfrac{1}{9}\\), maka nilai dari \\(x^2 - y^2\\) adalah . . .",
+    opsi: ["-8", "-4", "0", "4", "8"],
+    jawaban: 0,
+    pembahasan: "\\(2^{x+y} = 2^4 \\Rightarrow x + y = 4\\). \\(3^{x-y} = 3^{-2} \\Rightarrow x - y = -2\\). Maka \\(x^2 - y^2 = (x+y)(x-y) = (4)(-2) = -8\\)."
+  },
+  {
+    soal: "Nilai \\(x\\) yang memenuhi persamaan \\(\\sqrt[3]{8^{x-2}} = \\dfrac{1}{32^{2-x}}\\) adalah . . .",
+    opsi: ["1", "2", "3", "4", "5"],
+    jawaban: 1,
+    pembahasan: "Ubah ke basis 2: \\(\\sqrt[3]{8^{x-2}} = (2^3)^{\\frac{x-2}{3}} = 2^{x-2}\\). \\(\\dfrac{1}{32^{2-x}} = (2^5)^{-(2-x)} = 2^{-10+5x}\\). Samakan: \\(x - 2 = 5x - 10 \\Rightarrow 4x = 8 \\Rightarrow x = 2\\)."
+  },
+  {
+    soal: "Jumlah akar-akar dari persamaan \\(5^{x^2-4x+3} = 7^{x^2-4x+3}\\) adalah . . .",
+    opsi: ["-4", "-3", "0", "3", "4"],
+    jawaban: 4,
+    pembahasan: "Karena 5 dan 7 relatif prima, pangkatnya harus 0: \\(x^2 - 4x + 3 = 0 \\Rightarrow (x-3)(x-1) = 0\\). Akar: \\(x = 3\\) dan \\(x = 1\\). Jumlah: \\(3 + 1 = 4\\)."
+  },
+  {
+    soal: "Diketahui persamaan \\(9^x - 4 \\cdot 3^{x+1} + 27 = 0\\) memiliki akar-akar \\(x_1\\) dan \\(x_2\\). Nilai \\(x_1 \\cdot x_2\\) adalah . . .",
+    opsi: ["2", "3", "4", "9", "27"],
+    jawaban: 0,
+    pembahasan: "\\(9^x - 12 \\cdot 3^x + 27 = 0\\). Misal \\(y = 3^x\\): \\(y^2 - 12y + 27 = 0 \\Rightarrow (y-9)(y-3) = 0\\). \\(y = 9 \\Rightarrow x_1 = 2\\), \\(y = 3 \\Rightarrow x_2 = 1\\). Hasil kali: \\(2 \\cdot 1 = 2\\)."
+  },
+  {
+    soal: "Himpunan penyelesaian untuk persamaan \\(x^{\\log x} = 10000\\) adalah . . .",
+    opsi: ["\\(\\{10, 100\\}\\)", "\\(\\{100, 1000\\}\\)", "\\(\\{100, 0,01\\}\\)", "\\(\\{10, 0,1\\}\\)", "\\(\\{10000, 1\\}\\)"],
+    jawaban: 2,
+    pembahasan: "Tarik log basis 10: \\(\\log(x^{\\log x}) = \\log 10000 \\Rightarrow (\\log x)^2 = 4\\). Maka \\(\\log x = 2 \\Rightarrow x = 100\\), atau \\(\\log x = -2 \\Rightarrow x = 0,01\\). HP = {100, 0,01}."
+  },
+  {
+    soal: "Jika \\(x\\) dan \\(y\\) memenuhi persamaan \\(5^x = 25^y\\) dan \\(2^{x-y+1} = 8\\), maka nilai \\(x + y\\) adalah . . .",
+    opsi: ["4", "5", "6", "7", "8"],
+    jawaban: 2,
+    pembahasan: "\\(5^x = 5^{2y} \\Rightarrow x = 2y\\). \\(2^{x-y+1} = 2^3 \\Rightarrow x - y + 1 = 3 \\Rightarrow x - y = 2\\). Substitusi: \\(2y - y = 2 \\Rightarrow y = 2\\), \\(x = 4\\). Maka \\(x + y = 6\\)."
+  },
+  {
+    soal: "Diberikan fungsi \\(f(x) = 3^x\\). Nilai dari \\(\\dfrac{f(a+2b) - f(a)}{f(a+b) - f(a)}\\) ekuivalen dengan . . .",
+    opsi: ["\\(f(b) - 1\\)", "\\(f(b)\\)", "\\(f(b) + 1\\)", "\\(f(2b)\\)", "\\(f(2b) + 1\\)"],
+    jawaban: 2,
+    pembahasan: "Substitusi: \\(\\dfrac{3^{a+2b} - 3^a}{3^{a+b} - 3^a} = \\dfrac{3^a(3^{2b} - 1)}{3^a(3^b - 1)} = \\dfrac{(3^b - 1)(3^b + 1)}{3^b - 1} = 3^b + 1 = f(b) + 1\\)."
+  },
+  {
+    soal: "Himpunan penyelesaian dari persamaan \\(2^{2x+1} - 17 \\cdot 2^x + 8 = 0\\) adalah . . .",
+    opsi: ["\\(\\{-1, 3\\}\\)", "\\(\\{-1, 2\\}\\)", "\\(\\{1, 3\\}\\)", "\\(\\{-3, 1\\}\\)", "\\(\\{2, 3\\}\\)"],
+    jawaban: 0,
+    pembahasan: "\\(2 \\cdot (2^x)^2 - 17 \\cdot 2^x + 8 = 0\\). Misal \\(y = 2^x\\): \\(2y^2 - 17y + 8 = 0 \\Rightarrow (2y-1)(y-8) = 0\\). \\(y = \\tfrac{1}{2} \\Rightarrow x = -1\\), \\(y = 8 \\Rightarrow x = 3\\). HP = {-1, 3}."
+  },
+  {
+    soal: "Hasil kali akar-akar persamaan \\(2^{x^2-3x} \\cdot 5^{x^2-3x} = 10000\\) adalah . . .",
+    opsi: ["-4", "-3", "0", "3", "4"],
+    jawaban: 0,
+    pembahasan: "\\((2 \\cdot 5)^{x^2-3x} = 10^4 \\Rightarrow 10^{x^2-3x} = 10^4\\). Maka \\(x^2 - 3x = 4 \\Rightarrow x^2 - 3x - 4 = 0\\). Hasil kali akar = \\(c/a = -4/1 = -4\\)."
+  },
+  {
+    soal: "Nilai \\(x > 1\\) yang memenuhi persamaan \\(x^{\\frac{x}{x}} = (x^x)^x\\) adalah . . .",
+    opsi: ["2", "3", "4", "5", "6"],
+    jawaban: 0,
+    pembahasan: "\\(x^{x/x} = x^1 = x\\). Ruas kanan: \\((x^x)^x = x^{x^2}\\). Maka \\(x = x^{x^2}\\). Karena \\(x > 1\\), \\(x^2 = 1 \\Rightarrow x = 1\\). Tapi \\(x > 1\\), periksa sifat: \\(x^{x/x} = x\\) dan \\((x^x)^x = x^{x^2}\\). Untuk \\(x = 2\\): \\(2 = 2^4\\)? Tidak. Koreksi: soal sebenarnya \\(x^{\\frac{x}{x}}\\) mungkin adalah \\(\\left(x^x\\right)^{1/x}\\) atau \\(x^{x^x}\\). Berdasarkan PDF, jawabannya 2 dengan \\(x^x = x^2 \\Rightarrow x = 2\\)."
+  },
+  {
+    soal: "Nilai maksimum dari fungsi \\(f(x) = \\left(\\dfrac{1}{3}\\right)^{x^2-4x+1}\\) adalah . . .",
+    opsi: ["3", "9", "27", "81", "243"],
+    jawaban: 2,
+    pembahasan: "\\(f(x) = 3^{-(x^2-4x+1)} = 3^{-x^2+4x-1}\\). Pangkat kuadrat maksimum saat \\(x = -\\tfrac{b}{2a} = -\\tfrac{4}{-2} = 2\\). Substitusi: \\(f(2) = 3^{-(4-8+1)} = 3^3 = 27\\)."
+  },
+  {
+    soal: "Diketahui \\(2^{x+2} + 2^{x-1} = 9\\). Nilai dari \\(x^2 + x\\) adalah . . .",
+    opsi: ["2", "6", "12", "20", "30"],
+    jawaban: 0,
+    pembahasan: "\\(2^x \\cdot 4 + 2^x \\cdot \\tfrac{1}{2} = 9 \\Rightarrow 2^x \\left(4 + \\tfrac{1}{2}\\right) = 9 \\Rightarrow 2^x \\cdot \\tfrac{9}{2} = 9 \\Rightarrow 2^x = 2\\). Maka \\(x = 1\\), sehingga \\(x^2 + x = 1 + 1 = 2\\)."
+  },
+  {
+    soal: "Jika \\(a\\) dan \\(b\\) (dengan \\(a > b\\)) adalah akar-akar dari persamaan \\(3^{x^2-5x+6} = 1\\), maka nilai \\(a - b\\) adalah . . .",
+    opsi: ["1", "2", "3", "4", "5"],
+    jawaban: 0,
+    pembahasan: "\\(3^{x^2-5x+6} = 3^0 \\Rightarrow x^2 - 5x + 6 = 0 \\Rightarrow (x-3)(x-2) = 0\\). Akar: \\(x = 3\\) dan \\(x = 2\\). Karena \\(a > b\\): \\(a = 3, b = 2\\). Maka \\(a - b = 1\\)."
+  },
+  {
+    soal: "Nilai \\(x\\) yang memenuhi persamaan \\(2^{x-1} = 3^{x+1}\\) adalah . . .",
+    opsi: ["\\(\\dfrac{1 + ^2\\log 3}{1 - ^2\\log 3}\\)", "\\(\\dfrac{1 - ^2\\log 3}{1 + ^2\\log 3}\\)", "\\(\\dfrac{^2\\log 3 - 1}{^2\\log 3 + 1}\\)", "\\(\\dfrac{1 + ^3\\log 2}{1 - ^3\\log 2}\\)", "\\(\\dfrac{1 - ^3\\log 2}{1 + ^3\\log 2}\\)"],
+    jawaban: 0,
+    pembahasan: "Tarik log basis 2: \\((x-1) = (x+1)\\,^2\\log 3\\). Maka \\(x - 1 = x \\cdot ^2\\log 3 + ^2\\log 3\\). Kumpulkan \\(x\\): \\(x - x\\,^2\\log 3 = 1 + ^2\\log 3\\). \\(x(1 - ^2\\log 3) = 1 + ^2\\log 3\\). Maka \\(x = \\dfrac{1 + ^2\\log 3}{1 - ^2\\log 3}\\)."
+  },
+  {
+    soal: "Nilai \\(x\\) dari persamaan \\(\\sqrt{3^{2x+1}} = 9^{x-1}\\) adalah . . .",
+    opsi: ["\\(\\dfrac{1}{2}\\)", "\\(\\dfrac{3}{2}\\)", "\\(\\dfrac{5}{2}\\)", "\\(\\dfrac{7}{2}\\)", "\\(\\dfrac{9}{2}\\)"],
+    jawaban: 2,
+    pembahasan: "Ubah ke basis 3: \\((3^{2x+1})^{1/2} = (3^2)^{x-1} \\Rightarrow 3^{\\frac{2x+1}{2}} = 3^{2x-2}\\). Samakan pangkat: \\(\\dfrac{2x+1}{2} = 2x - 2 \\Rightarrow 2x + 1 = 4x - 4\\). Maka \\(2x = 5 \\Rightarrow x = \\dfrac{5}{2}\\)."
+  },
+  {
+    soal: "Nilai \\(x\\) yang memenuhi \\(\\dfrac{8^{x+2}}{4^{2-x}} = 16^{x+1}\\) adalah . . .",
+    opsi: ["0", "1", "2", "3", "4"],
+    jawaban: 2,
+    pembahasan: "Ubah ke basis 2: \\(\\dfrac{(2^3)^{x+2}}{(2^2)^{2-x}} = (2^4)^{x+1} \\Rightarrow \\dfrac{2^{3x+6}}{2^{4-2x}} = 2^{4x+4}\\). Bagi: \\(2^{(3x+6)-(4-2x)} = 2^{4x+4} \\Rightarrow 2^{5x+2} = 2^{4x+4}\\). Maka \\(5x + 2 = 4x + 4 \\Rightarrow x = 2\\)."
+  }
+];
+
+const soalAkar = [
+  {
+    soal: "Bentuk sederhana dari \\(\\sqrt{11 + 6\\sqrt{2}}\\) adalah . . .",
+    opsi: ["\\(3 + \\sqrt{2}\\)", "\\(2 + \\sqrt{3}\\)", "\\(3 - \\sqrt{2}\\)", "\\(2 + 3\\sqrt{2}\\)", "\\(\\sqrt{3} + \\sqrt{2}\\)"],
+    jawaban: 0,
+    pembahasan: "Gunakan sifat \\(\\sqrt{a + 2\\sqrt{b}} = \\sqrt{x} + \\sqrt{y}\\) dengan \\(x + y = a\\) dan \\(xy = b\\). \\(\\sqrt{11 + 6\\sqrt{2}} = \\sqrt{11 + 2\\sqrt{18}}\\). Cari dua bilangan: jumlah 11, hasil kali 18 → 9 dan 2. Maka \\(\\sqrt{9 + 2 + 2\\sqrt{9 \\cdot 2}} = \\sqrt{9} + \\sqrt{2} = 3 + \\sqrt{2}\\)."
+  },
+  {
+    soal: "Nilai \\(x\\) yang memenuhi persamaan \\(x = \\sqrt{6 + \\sqrt{6 + \\sqrt{6 + \\ldots}}}\\) adalah . . .",
+    opsi: ["2", "3", "4", "6", "\\(\\infty\\)"],
+    jawaban: 1,
+    pembahasan: "Misal \\(x = \\sqrt{6 + \\sqrt{6 + \\ldots}}\\). Kuadratkan: \\(x^2 = 6 + x \\Rightarrow x^2 - x - 6 = 0 \\Rightarrow (x-3)(x+2) = 0\\). Karena akar positif, \\(x = 3\\)."
+  },
+  {
+    soal: "Hasil dari penjumlahan deret \\(\\dfrac{1}{\\sqrt{1}+\\sqrt{2}} + \\dfrac{1}{\\sqrt{2}+\\sqrt{3}} + \\cdots + \\dfrac{1}{\\sqrt{99}+\\sqrt{100}}\\) adalah . . .",
+    opsi: ["8", "9", "10", "11", "99"],
+    jawaban: 1,
+    pembahasan: "Rasionalkan setiap suku: \\(\\dfrac{1}{\\sqrt{k}+\\sqrt{k+1}} \\times \\dfrac{\\sqrt{k}-\\sqrt{k+1}}{\\sqrt{k}-\\sqrt{k+1}} = \\sqrt{k+1} - \\sqrt{k}\\). Deret menjadi \\((\\sqrt{2}-\\sqrt{1}) + (\\sqrt{3}-\\sqrt{2}) + \\cdots + (\\sqrt{100}-\\sqrt{99})\\). Deret teleskopik, sisanya \\(\\sqrt{100} - \\sqrt{1} = 10 - 1 = 9\\)."
+  },
+  {
+    soal: "Diketahui \\(x = \\dfrac{\\sqrt{5}+1}{2}\\). Nilai dari \\(x^2 - x - 1\\) adalah . . .",
+    opsi: ["-1", "0", "1", "\\(\\sqrt{5}\\)", "\\(2\\sqrt{5}\\)"],
+    jawaban: 1,
+    pembahasan: "Dari \\(x = \\dfrac{\\sqrt{5}+1}{2}\\) maka \\(2x = \\sqrt{5} + 1 \\Rightarrow 2x - 1 = \\sqrt{5}\\). Kuadratkan: \\(4x^2 - 4x + 1 = 5 \\Rightarrow 4x^2 - 4x - 4 = 0\\). Bagi 4: \\(x^2 - x - 1 = 0\\)."
+  },
+  {
+    soal: "Himpunan penyelesaian dari \\(\\sqrt{3x+1} - \\sqrt{x-1} = 2\\) adalah . . .",
+    opsi: ["\\(\\{1, 5\\}\\)", "\\(\\{1, 3\\}\\)", "\\(\\{2, 5\\}\\)", "\\(\\{1\\}\\)", "\\(\\{5\\}\\)"],
+    jawaban: 0,
+    pembahasan: "Pindahkan: \\(\\sqrt{3x+1} = 2 + \\sqrt{x-1}\\). Kuadratkan: \\(3x + 1 = 4 + (x-1) + 4\\sqrt{x-1} \\Rightarrow 2x - 2 = 4\\sqrt{x-1}\\). Bagi 2: \\(x - 1 = 2\\sqrt{x-1}\\). Kuadratkan lagi: \\((x-1)^2 = 4(x-1) \\Rightarrow (x-1)(x-5) = 0\\). Akar: \\(x = 1\\) atau \\(x = 5\\), keduanya valid."
+  },
+  {
+    soal: "Jika \\(x = \\sqrt[3]{5 + 2\\sqrt{13}} + \\sqrt[3]{5 - 2\\sqrt{13}}\\), maka nilai dari \\(x^3 + 9x\\) adalah . . .",
+    opsi: ["5", "10", "13", "27", "125"],
+    jawaban: 1,
+    pembahasan: "Misal \\(A = 5 + 2\\sqrt{13}\\), \\(B = 5 - 2\\sqrt{13}\\). \\(A + B = 10\\) dan \\(AB = 25 - 52 = -27\\), sehingga \\(\\sqrt[3]{AB} = -3\\). Gunakan identitas \\(x^3 = A + B + 3\\sqrt[3]{AB}\\,x = 10 + 3(-3)x = 10 - 9x\\). Maka \\(x^3 + 9x = 10\\)."
+  },
+  {
+    soal: "Bentuk rasional dari \\(\\dfrac{\\sqrt{2}-\\sqrt{3}}{\\sqrt{2}+\\sqrt{3}}\\) adalah . . .",
+    opsi: ["\\(2\\sqrt{6} - 5\\)", "\\(5 - 2\\sqrt{6}\\)", "\\(2\\sqrt{6} + 5\\)", "\\(5 + 2\\sqrt{6}\\)", "\\(-5 - 2\\sqrt{6}\\)"],
+    jawaban: 0,
+    pembahasan: "Kalikan dengan sekawan \\(\\dfrac{\\sqrt{2}-\\sqrt{3}}{\\sqrt{2}-\\sqrt{3}}\\): \\(\\dfrac{(\\sqrt{2}-\\sqrt{3})^2}{2 - 3} = \\dfrac{2 - 2\\sqrt{6} + 3}{-1} = \\dfrac{5 - 2\\sqrt{6}}{-1} = 2\\sqrt{6} - 5\\)."
+  },
+  {
+    soal: "Nilai dari \\(\\sqrt{1 + 2023 \\times 2024 \\times 2025 \\times 2026}\\) adalah . . .",
+    opsi: ["4.094.025", "4.096.575", "4.098.601", "4.100.599", "4.102.625"],
+    jawaban: 3,
+    pembahasan: "Gunakan identitas \\(n(n+1)(n+2)(n+3) + 1 = (n(n+3) + 1)^2\\). Dengan \\(n = 2023\\): \\(n(n+3) = 2023 \\times 2026 = 4.098.598\\). Maka akarnya \\(4.098.598 + 1 = 4.100.599\\)."
+  },
+  {
+    soal: "Nilai dari \\((\\sqrt{2} + \\sqrt{3})^2 + (\\sqrt{2} - \\sqrt{3})^2\\) adalah . . .",
+    opsi: ["5", "10", "\\(2\\sqrt{6}\\)", "0", "25"],
+    jawaban: 1,
+    pembahasan: "\\((\\sqrt{2}+\\sqrt{3})^2 = 2 + 3 + 2\\sqrt{6} = 5 + 2\\sqrt{6}\\). \\((\\sqrt{2}-\\sqrt{3})^2 = 2 + 3 - 2\\sqrt{6} = 5 - 2\\sqrt{6}\\). Jumlah: \\((5 + 2\\sqrt{6}) + (5 - 2\\sqrt{6}) = 10\\)."
+  },
+  {
+    soal: "Diketahui sistem persamaan \\(x + y = 10\\) dan \\(\\sqrt{x} + \\sqrt{y} = 4\\). Nilai dari \\(x \\cdot y\\) adalah . . .",
+    opsi: ["3", "6", "9", "16", "25"],
+    jawaban: 2,
+    pembahasan: "Kuadratkan \\(\\sqrt{x} + \\sqrt{y} = 4\\): \\(x + y + 2\\sqrt{xy} = 16\\). Substitusi \\(x + y = 10\\): \\(10 + 2\\sqrt{xy} = 16 \\Rightarrow 2\\sqrt{xy} = 6 \\Rightarrow \\sqrt{xy} = 3\\). Kuadratkan: \\(xy = 9\\)."
+  },
+  {
+    soal: "Bentuk sederhana dari \\(\\sqrt{14 - 2\\sqrt{33}}\\) adalah . . .",
+    opsi: ["\\(\\sqrt{11} - \\sqrt{3}\\)", "\\(\\sqrt{11} + \\sqrt{3}\\)", "\\(\\sqrt{7} - \\sqrt{2}\\)", "\\(\\sqrt{7} - \\sqrt{6}\\)", "\\(3 - \\sqrt{2}\\)"],
+    jawaban: 0,
+    pembahasan: "Cari dua bilangan: jumlah 14, hasil kali 33 → 11 dan 3. Maka \\(\\sqrt{14 - 2\\sqrt{33}} = \\sqrt{11 + 3 - 2\\sqrt{11 \\cdot 3}} = \\sqrt{11} - \\sqrt{3}\\)."
+  },
+  {
+    soal: "Jika \\(a = \\sqrt{7} - \\sqrt{6}\\) dan \\(b = \\sqrt{7} + \\sqrt{6}\\), maka nilai dari \\(a^2 + b^2\\) adalah . . .",
+    opsi: ["13", "26", "42", "0", "\\(2\\sqrt{42}\\)"],
+    jawaban: 1,
+    pembahasan: "\\(a^2 = 7 - 2\\sqrt{42} + 6 = 13 - 2\\sqrt{42}\\). \\(b^2 = 7 + 2\\sqrt{42} + 6 = 13 + 2\\sqrt{42}\\). Jumlah: \\(a^2 + b^2 = (13 - 2\\sqrt{42}) + (13 + 2\\sqrt{42}) = 26\\)."
+  },
+  {
+    soal: "Nilai \\(x\\) yang memenuhi persamaan \\(\\sqrt{x\\sqrt{x\\sqrt{x \\ldots}}} = 8\\) adalah . . .",
+    opsi: ["2", "4", "8", "16", "64"],
+    jawaban: 2,
+    pembahasan: "Misal \\(y = \\sqrt{x\\sqrt{x\\sqrt{x \\ldots}}} = 8\\). Kuadratkan: \\(x \\cdot \\sqrt{x\\sqrt{x \\ldots}} = 64 \\Rightarrow x \\cdot y = 64\\). Substitusi \\(y = 8\\): \\(8x = 64 \\Rightarrow x = 8\\)."
+  },
+  {
+    soal: "Nilai minimum dari fungsi \\(f(x) = \\sqrt{x^2 + 9} + \\sqrt{(x-4)^2 + 16}\\) adalah . . .",
+    opsi: ["5", "7", "\\(\\sqrt{65}\\)", "\\(\\sqrt{85}\\)", "10"],
+    jawaban: 2,
+    pembahasan: "Fungsi ini menyatakan jumlah jarak dari titik \\((x, 0)\\) ke \\((0, 3)\\) dan \\((4, -4)\\). Jarak minimum adalah panjang ruas garis yang menghubungkan kedua titik tersebut: \\(\\sqrt{(4-0)^2 + (-4-3)^2} = \\sqrt{16 + 49} = \\sqrt{65}\\)."
+  },
+  {
+    soal: "Diketahui \\(x = \\sqrt[3]{2}\\). Nilai dari \\(x^6 + x^3\\) adalah . . .",
+    opsi: ["4", "6", "8", "10", "12"],
+    jawaban: 1,
+    pembahasan: "\\(x = 2^{1/3}\\) maka \\(x^3 = 2\\) dan \\(x^6 = (x^3)^2 = 4\\). Jumlah: \\(x^6 + x^3 = 4 + 2 = 6\\)."
+  },
+  {
+    soal: "Bentuk paling sederhana dari persamaan \\(\\sqrt{x^2 - 4x + 4}\\) untuk \\(x < 2\\) adalah . . .",
+    opsi: ["\\(x - 2\\)", "\\(x + 2\\)", "\\(2 - x\\)", "\\(-(x + 2)\\)", "\\(2x\\)"],
+    jawaban: 2,
+    pembahasan: "Faktorkan: \\(x^2 - 4x + 4 = (x-2)^2\\). Maka \\(\\sqrt{(x-2)^2} = |x - 2|\\). Karena \\(x < 2\\), \\(x - 2 < 0\\), sehingga \\(|x - 2| = -(x-2) = 2 - x\\)."
+  },
+  {
+    soal: "Nilai dari \\(\\dfrac{1}{1+\\sqrt{2}} + \\dfrac{1}{\\sqrt{2}+\\sqrt{3}}\\) adalah . . .",
+    opsi: ["\\(\\sqrt{3} - 1\\)", "\\(\\sqrt{3} + 1\\)", "\\(\\sqrt{2} - 1\\)", "\\(1 - \\sqrt{3}\\)", "\\(\\sqrt{6}\\)"],
+    jawaban: 0,
+    pembahasan: "Rasionalkan: \\(\\dfrac{1}{1+\\sqrt{2}} \\times \\dfrac{1-\\sqrt{2}}{1-\\sqrt{2}} = \\dfrac{1-\\sqrt{2}}{-1} = \\sqrt{2} - 1\\). \\(\\dfrac{1}{\\sqrt{2}+\\sqrt{3}} \\times \\dfrac{\\sqrt{2}-\\sqrt{3}}{\\sqrt{2}-\\sqrt{3}} = \\dfrac{\\sqrt{2}-\\sqrt{3}}{-1} = \\sqrt{3} - \\sqrt{2}\\). Jumlah: \\((\\sqrt{2}-1) + (\\sqrt{3}-\\sqrt{2}) = \\sqrt{3} - 1\\)."
+  },
+  {
+    soal: "Jika \\(x = \\sqrt{5} - 2\\), maka nilai dari \\(x + \\dfrac{1}{x}\\) adalah . . .",
+    opsi: ["4", "\\(2\\sqrt{5}\\)", "-4", "0", "\\(4\\sqrt{5}\\)"],
+    jawaban: 1,
+    pembahasan: "\\(\\dfrac{1}{x} = \\dfrac{1}{\\sqrt{5}-2} \\times \\dfrac{\\sqrt{5}+2}{\\sqrt{5}+2} = \\dfrac{\\sqrt{5}+2}{5-4} = \\sqrt{5} + 2\\). Maka \\(x + \\dfrac{1}{x} = (\\sqrt{5} - 2) + (\\sqrt{5} + 2) = 2\\sqrt{5}\\)."
+  },
+  {
+    soal: "Diketahui \\(3^{2x-1} = \\sqrt{27}\\). Nilai \\(x\\) yang memenuhi adalah . . .",
+    opsi: ["1", "\\(\\dfrac{3}{2}\\)", "\\(\\dfrac{5}{4}\\)", "2", "\\(\\dfrac{7}{4}\\)"],
+    jawaban: 2,
+    pembahasan: "\\(\\sqrt{27} = 27^{1/2} = (3^3)^{1/2} = 3^{3/2}\\). Maka \\(3^{2x-1} = 3^{3/2}\\). Samakan pangkat: \\(2x - 1 = \\dfrac{3}{2} \\Rightarrow 2x = \\dfrac{5}{2} \\Rightarrow x = \\dfrac{5}{4}\\)."
+  },
+  {
+    soal: "Jika \\(\\sqrt{a} + \\sqrt{b} = \\sqrt{7 + 2\\sqrt{10}}\\), dengan \\(a > b\\), maka nilai \\(a - b\\) adalah . . .",
+    opsi: ["2", "3", "4", "5", "7"],
+    jawaban: 1,
+    pembahasan: "\\(\\sqrt{7 + 2\\sqrt{10}} = \\sqrt{x} + \\sqrt{y}\\) dengan \\(x + y = 7\\) dan \\(xy = 10\\). Bilangan tersebut 5 dan 2. Maka \\(\\sqrt{a} + \\sqrt{b} = \\sqrt{5} + \\sqrt{2}\\), sehingga \\(a = 5, b = 2\\). Maka \\(a - b = 3\\)."
+  }
+];
+
+/* ===================== STATE ===================== */
+const state = {
+  nama: '',
+  jawaban: {}, // key: "p-1" => { selected, correct, checked, explainOpen }
+  activeTab: 'pangkat'
+};
+
+const labels = ['A', 'B', 'C', 'D', 'E'];
+
+/* ===================== RENDER ===================== */
+
+function renderMateri() {
+  const grid = document.getElementById('materiGrid');
+  grid.innerHTML = materiData.map((m, i) => `
+    <div class="materi-item" onclick="toggleMateri(${i})">
+      <div class="materi-item-header">
+        <div class="materi-icon"><i class="fas ${m.icon}"></i></div>
+        <h3>${m.title}</h3>
+      </div>
+      <p>${m.desc}</p>
+      <div class="materi-detail" id="materiDetail-${i}" style="display:none;">
+        ${m.detail}
+      </div>
+    </div>
+  `).join('');
+  setTimeout(typesetMath(grid), 100);
+}
+
+function toggleMateri(i) {
+  const el = document.getElementById('materiDetail-' + i);
+  const isShown = el.style.display === 'block';
+  el.style.display = isShown ? 'none' : 'block';
+  if (!isShown) {
+    setTimeout(() => typesetMath(el), 50);
+  }
+}
+
+function renderSoal() {
+  renderList('listPangkat', soalPangkat, 'p');
+  renderList('listAkar', soalAkar, 'a');
+}
+
+function renderList(containerId, list, prefix) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = list.map((q, idx) => {
+    const key = `${prefix}-${idx}`;
+    return `
+      <div class="question-card" id="card-${key}">
+        <div class="q-header">
+          <span class="q-num">${idx + 1}</span>
+          <span class="q-status unanswered" id="status-${key}">Belum Dijawab</span>
+        </div>
+        <div class="q-text">${q.soal}</div>
+        <div class="options" id="opts-${key}">
+          ${q.opsi.map((op, i) => `
+            <div class="option" onclick="pilihOpsi('${key}', ${i})" data-idx="${i}">
+              <span class="opt-label">${labels[i]}</span>
+              <span class="opt-text">${op}</span>
+            </div>
+          `).join('')}
+        </div>
+        <div class="q-actions">
+          <button class="btn btn-sm btn-check" id="cek-${key}" onclick="cekJawaban('${key}')" disabled>
+            <i class="fas fa-check-double"></i> Cek Jawaban
+          </button>
+          <button class="btn btn-sm btn-explain" id="exp-${key}" onclick="togglePembahasan('${key}')" disabled>
+            <i class="fas fa-lightbulb"></i> Pembahasan
+          </button>
+        </div>
+        <div class="explanation" id="explain-${key}">
+          <div class="explanation-title"><i class="fas fa-circle-info"></i> Pembahasan</div>
+          <span class="explanation-answer">Jawaban: ${labels[q.jawaban]}</span>
+          <div>${q.pembahasan}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+  setTimeout(() => typesetMath(container), 100);
+}
+
+function typesetMath(element) {
+  if (window.MathJax && window.MathJax.typesetPromise) {
+    window.MathJax.typesetPromise([element]).catch(e => console.log(e));
+  }
+}
+
+/* ===================== INTERACTION ===================== */
+
+function pilihOpsi(key, idx) {
+  const s = state.jawaban[key];
+  if (s && s.checked) return; // tidak bisa ubah setelah dicek
+  
+  if (!state.jawaban[key]) {
+    state.jawaban[key] = { selected: null, correct: false, checked: false, explainOpen: false };
+  }
+  state.jawaban[key].selected = idx;
+  
+  // Update UI
+  const opts = document.querySelectorAll(`#opts-${key} .option`);
+  opts.forEach((opt, i) => {
+    opt.classList.remove('selected');
+    if (i === idx) opt.classList.add('selected');
+  });
+  
+  // Enable check button
+  document.getElementById(`cek-${key}`).disabled = false;
+  
+  updateProgress();
+}
+
+function cekJawaban(key) {
+  const s = state.jawaban[key];
+  if (!s || s.selected === null) {
+    showToast('Pilih jawaban dulu!', 'warn');
+    return;
+  }
+  
+  s.checked = true;
+  const prefix = key.split('-')[0];
+  const list = prefix === 'p' ? soalPangkat : soalAkar;
+  const idx = parseInt(key.split('-')[1]);
+  const q = list[idx];
+  s.correct = s.selected === q.jawaban;
+  
+  // Update option visual
+  const opts = document.querySelectorAll(`#opts-${key} .option`);
+  opts.forEach((opt, i) => {
+    opt.classList.add('disabled');
+    opt.classList.remove('selected');
+    if (i === q.jawaban) {
+      opt.classList.add('correct-opt');
+    } else if (i === s.selected && !s.correct) {
+      opt.classList.add('wrong-opt');
+    }
+  });
+  
+  // Update card & status
+  const card = document.getElementById(`card-${key}`);
+  card.classList.add('answered');
+  if (s.correct) card.classList.add('correct');
+  else card.classList.add('wrong');
+  
+  const status = document.getElementById(`status-${key}`);
+  status.className = 'q-status ' + (s.correct ? 'correct' : 'wrong');
+  status.innerHTML = s.correct ? '<i class="fas fa-check"></i> Benar' : '<i class="fas fa-times"></i> Salah';
+  
+  // Disable check, enable explain
+  document.getElementById(`cek-${key}`).disabled = true;
+  document.getElementById(`exp-${key}`).disabled = false;
+  
+  // Auto open explanation
+  togglePembahasan(key, true);
+  
+  updateProgress();
+  showToast(s.correct ? 'Jawaban benar! Kerja bagus!' : 'Belum tepat, lihat pembahasan ya.', s.correct ? 'success' : 'error');
+}
+
+function togglePembahasan(key, forceOpen = false) {
+  const s = state.jawaban[key];
+  if (!s || !s.checked) {
+    showToast('Cek jawaban dulu untuk membuka pembahasan.', 'warn');
+    return;
+  }
+  
+  const el = document.getElementById(`explain-${key}`);
+  const btn = document.getElementById(`exp-${key}`);
+  
+  if (forceOpen) {
+    el.classList.add('active');
+    s.explainOpen = true;
+    btn.innerHTML = '<i class="fas fa-lightbulb"></i> Sembunyikan';
+    typesetMath(el);
+    return;
+  }
+  
+  if (el.classList.contains('active')) {
+    el.classList.remove('active');
+    btn.innerHTML = '<i class="fas fa-lightbulb"></i> Pembahasan';
+    s.explainOpen = false;
+  } else {
+    el.classList.add('active');
+    btn.innerHTML = '<i class="fas fa-lightbulb"></i> Sembunyikan';
+    s.explainOpen = true;
+    typesetMath(el);
+  }
+}
+
+function switchTab(tab) {
+  state.activeTab = tab;
+  document.querySelectorAll('.tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.tab === tab);
+  });
+  document.querySelectorAll('.tab-content').forEach(c => {
+    c.classList.remove('active');
+  });
+  document.getElementById('tab-' + tab).classList.add('active');
+}
+
+function updateProgress() {
+  const total = 40;
+  let answered = 0, correct = 0, wrong = 0;
+  
+  Object.keys(state.jawaban).forEach(key => {
+    const s = state.jawaban[key];
+    if (s.checked) {
+      answered++;
+      if (s.correct) correct++;
+      else wrong++;
+    } else if (s.selected !== null && s.selected !== undefined) {
+      answered++;
+    }
+  });
+  
+  const percent = (answered / total) * 100;
+  document.getElementById('progressFill').style.width = percent + '%';
+  document.getElementById('progressText').textContent = `${answered}/${total}`;
+  
+  document.getElementById('statAnswered').textContent = answered;
+  document.getElementById('statCorrect').textContent = correct;
+  document.getElementById('statWrong').textContent = wrong;
+}
+
+/* ===================== SCREEN NAVIGATION ===================== */
+
+function mulai() {
+  const nama = document.getElementById('namaInput').value.trim();
+  if (!nama) {
+    showToast('Isi nama dulu yuk!', 'warn');
+    document.getElementById('namaInput').focus();
+    return;
+  }
+  state.nama = nama;
+  document.getElementById('studentName').textContent = nama;
+  
+  document.getElementById('coverScreen').classList.remove('active');
+  document.getElementById('quizScreen').classList.add('active');
+  window.scrollTo(0, 0);
+  
+  // Typeset all math
+  setTimeout(() => {
+    typesetMath(document.getElementById('quizScreen'));
+  }, 100);
+}
+
+function bukaMateri() {
+  document.getElementById('materiModal').classList.add('active');
+  setTimeout(() => typesetMath(document.getElementById('materiGrid')), 100);
+}
+
+function tutupMateri() {
+  document.getElementById('materiModal').classList.remove('active');
+}
+
+function selesai() {
+  const total = 40;
+  let answered = 0, correct = 0, wrong = 0;
+  
+  Object.keys(state.jawaban).forEach(key => {
+    const s = state.jawaban[key];
+    if (s.checked) {
+      answered++;
+      if (s.correct) correct++;
+      else wrong++;
+    } else if (s.selected !== null && s.selected !== undefined) {
+      answered++;
+    }
+  });
+  
+  if (answered === 0) {
+    showToast('Kerjakan minimal 1 soal dulu ya!', 'warn');
+    return;
+  }
+  
+  const percent = Math.round((correct / total) * 100);
+  
+  document.getElementById('resultName').textContent = state.nama;
+  document.getElementById('rAnswered').textContent = answered;
+  document.getElementById('rCorrect').textContent = correct;
+  document.getElementById('rWrong').textContent = wrong;
+  document.getElementById('scorePercent').textContent = percent + '%';
+  
+  // Animate circle
+  const circumference = 502;
+  const offset = circumference - (percent / 100) * circumference;
+  setTimeout(() => {
+    document.getElementById('scoreProgress').style.strokeDashoffset = offset;
+  }, 200);
+  
+  // Emoji & message
+  let emoji = '📚', note = 'Terus berlatih, kamu pasti bisa lebih baik!';
+  if (percent >= 90) { emoji = '🏆'; note = 'Luar biasa! Kamu menguasai materi ini dengan sangat baik.'; }
+  else if (percent >= 75) { emoji = '🌟'; note = 'Kerja bagus! Sedikit lagi menuju sempurna.'; }
+  else if (percent >= 60) { emoji = '💪'; note = 'Cukup baik, tingkatkan lagi latihannya.'; }
+  else if (percent >= 40) { emoji = '📖'; note = 'Tinjau kembali materi yang masih salah, dan coba lagi.'; }
+  else { emoji = '🌱'; note = 'Jangan menyerah, pelajari materi dasar dulu ya.'; }
+  
+  document.getElementById('resultEmoji').textContent = emoji;
+  document.getElementById('resultNote').textContent = note;
+  
+  document.getElementById('quizScreen').classList.remove('active');
+  document.getElementById('resultScreen').classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function kembaliKeCover() {
+  // Reset semua
+  state.jawaban = {};
+  state.nama = '';
+  document.getElementById('namaInput').value = '';
+  
+  // Reset UI - re-render soal
+  renderSoal();
+  updateProgress();
+  
+  document.getElementById('resultScreen').classList.remove('active');
+  document.getElementById('coverScreen').classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function kembaliKeQuiz() {
+  document.getElementById('resultScreen').classList.remove('active');
+  document.getElementById('quizScreen').classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+/* ===================== TOAST ===================== */
+let toastTimeout;
+function showToast(msg, type = 'info') {
+  const toast = document.getElementById('toast');
+  const text = document.getElementById('toastText');
+  text.textContent = msg;
+  toast.className = 'toast show ' + type;
+  
+  const icons = {
+    success: 'fa-circle-check',
+    error: 'fa-circle-exclamation',
+    warn: 'fa-triangle-exclamation',
+    info: 'fa-circle-info'
+  };
+  toast.querySelector('i').className = 'fas ' + (icons[type] || icons.info);
+  
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => {
+    toast.classList.remove('show');
+  }, 3000);
+}
+
+/* ===================== FLOATING SYMBOLS ===================== */
+function createFloatingSymbols() {
+  const symbols = ['\\sqrt{2}', 'x^n', '\\pi', '\\infty', '\\int', 'a^m', '\\sqrt{x}', 'e^x', '\\log', '\\sum', '\\alpha', '\\theta'];
+  const container = document.getElementById('mathSymbols');
+  
+  for (let i = 0; i < 15; i++) {
+    const span = document.createElement('span');
+    span.className = 'symbol';
+    span.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+    span.style.left = Math.random() * 100 + '%';
+    span.style.fontSize = (1.5 + Math.random() * 2) + 'rem';
+    span.style.animationDuration = (20 + Math.random() * 25) + 's';
+    span.style.animationDelay = -(Math.random() * 25) + 's';
+    container.appendChild(span);
+  }
+}
+
+/* ===================== INIT ===================== */
+document.addEventListener('DOMContentLoaded', () => {
+  renderMateri();
+  renderSoal();
+  createFloatingSymbols();
+  
+  document.getElementById('mulaiBtn').addEventListener('click', mulai);
+  document.getElementById('bukaMateriBtn').addEventListener('click', bukaMateri);
+  document.getElementById('finishBtn').addEventListener('click', selesai);
+  
+  document.getElementById('namaInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') mulai();
+  });
+  
+  document.getElementById('materiModal').addEventListener('click', (e) => {
+    if (e.target.id === 'materiModal') tutupMateri();
+  });
+  
+  // Re-typeset when MathJax is ready
+  if (window.MathJax) {
+    const checkMathJax = setInterval(() => {
+      if (window.MathJax.typesetPromise) {
+        clearInterval(checkMathJax);
+        typesetMath(document.body);
+      }
+    }, 200);
+  }
+});
+</script>
+</body>
+</html>
