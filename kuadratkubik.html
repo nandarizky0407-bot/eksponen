@@ -1,0 +1,2198 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bilangan Kuadrat, Pangkat Tiga & Bentuk Akar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root {
+  --bg: #0a0e1a;
+  --bg-2: #131830;
+  --surface: #1a2138;
+  --surface-2: #232b45;
+  --fg: #f5f5f7;
+  --muted: #8a92ad;
+  --primary: #ff7849;
+  --secondary: #4ade80;
+  --accent: #fbbf24;
+  --pink: #f472b6;
+  --danger: #ef4444;
+  --border: rgba(255,255,255,0.08);
+  --card: rgba(255,255,255,0.03);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  overflow: hidden;
+  height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: 
+    radial-gradient(circle at 15% 25%, rgba(255,120,73,0.18) 0%, transparent 40%),
+    radial-gradient(circle at 85% 75%, rgba(74,222,128,0.12) 0%, transparent 40%),
+    radial-gradient(circle at 50% 50%, rgba(251,191,36,0.06) 0%, transparent 60%);
+  z-index: -2;
+}
+
+/* Floating math symbols */
+.floating-symbols {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.floating-symbols span {
+  position: absolute;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  color: rgba(255,255,255,0.03);
+  font-size: 80px;
+  animation: float 20s infinite linear;
+}
+
+@keyframes float {
+  0% { transform: translateY(100vh) rotate(0deg); }
+  100% { transform: translateY(-200px) rotate(360deg); }
+}
+
+.presentation {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  padding: 40px 60px 110px;
+  opacity: 0;
+  transform: translateX(60px);
+  transition: opacity 0.5s, transform 0.5s;
+  overflow-y: auto;
+  pointer-events: none;
+}
+
+.slide.active {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: all;
+}
+
+.slide.prev { transform: translateX(-60px); }
+
+.slide::-webkit-scrollbar { width: 6px; }
+.slide::-webkit-scrollbar-track { background: transparent; }
+.slide::-webkit-scrollbar-thumb { background: var(--surface); border-radius: 3px; }
+
+.slide-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.slide-number {
+  font-family: 'Space Grotesk', sans-serif;
+  color: var(--accent);
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  font-weight: 600;
+}
+
+.slide-topic {
+  color: var(--muted);
+  font-size: 13px;
+  padding: 4px 12px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+}
+
+.slide-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(34px, 4.5vw, 56px);
+  font-weight: 700;
+  line-height: 1.05;
+  margin-bottom: 14px;
+  letter-spacing: -0.02em;
+}
+
+.accent { color: var(--primary); }
+.accent2 { color: var(--secondary); }
+.accent3 { color: var(--accent); }
+
+.slide-subtitle {
+  font-size: 17px;
+  color: var(--muted);
+  margin-bottom: 26px;
+  max-width: 760px;
+  line-height: 1.5;
+}
+
+/* Navigation */
+.nav-bar {
+  position: fixed;
+  bottom: 0; left: 0;
+  width: 100%;
+  height: 80px;
+  background: rgba(10,14,26,0.92);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  z-index: 100;
+}
+
+.nav-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--fg);
+  padding: 11px 22px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s;
+}
+
+.nav-btn:hover:not(:disabled) {
+  background: var(--primary);
+  border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255,120,73,0.3);
+}
+
+.nav-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.progress-container {
+  flex: 1;
+  margin: 0 30px;
+}
+
+.progress-bar {
+  height: 4px;
+  background: var(--surface);
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  transition: width 0.5s;
+  width: 12.5%;
+  border-radius: 2px;
+}
+
+.progress-dots {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  gap: 4px;
+}
+
+.dot {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--surface);
+  cursor: pointer;
+  transition: all 0.3s;
+  max-width: 40px;
+}
+
+.dot.active {
+  background: var(--primary);
+  transform: scaleY(1.5);
+}
+
+.dot:hover:not(.active) { background: var(--surface-2); }
+
+/* Slide 1 - Cover */
+.cover {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  position: relative;
+  max-width: 800px;
+}
+
+.cover-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 8px 16px;
+  border-radius: 100px;
+  font-size: 12px;
+  color: var(--accent);
+  width: fit-content;
+  margin-bottom: 24px;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+}
+
+.cover-tag i { font-size: 8px; color: var(--primary); }
+
+.cover h1 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(44px, 7vw, 92px);
+  font-weight: 700;
+  line-height: 0.95;
+  margin-bottom: 24px;
+  letter-spacing: -0.03em;
+}
+
+.cover h1 .l1 { color: var(--primary); display: block; }
+.cover h1 .l2 { color: var(--secondary); display: block; }
+.cover h1 .l3 { color: var(--accent); display: block; }
+
+.cover p {
+  font-size: 19px;
+  color: var(--muted);
+  max-width: 580px;
+  line-height: 1.6;
+  margin-bottom: 40px;
+}
+
+.cover-meta {
+  display: flex;
+  gap: 40px;
+  padding-top: 30px;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.meta-item .label {
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-weight: 600;
+}
+
+.meta-item .value {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 18px;
+  color: var(--fg);
+  font-weight: 600;
+}
+
+/* Cover decoration */
+.cover-deco {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 380px;
+  height: 380px;
+  pointer-events: none;
+}
+
+.deco-square {
+  position: absolute;
+  border: 2px solid var(--primary);
+  border-radius: 12px;
+  animation: rotateSlow 20s infinite linear;
+}
+
+.deco-square.s1 {
+  width: 200px; height: 200px;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%) rotate(0deg);
+  border-color: var(--primary);
+  background: linear-gradient(135deg, rgba(255,120,73,0.1), transparent);
+}
+
+.deco-square.s2 {
+  width: 280px; height: 280px;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%) rotate(45deg);
+  border-color: var(--secondary);
+  background: linear-gradient(135deg, rgba(74,222,128,0.05), transparent);
+  animation-direction: reverse;
+}
+
+.deco-square.s3 {
+  width: 360px; height: 360px;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%) rotate(0deg);
+  border-color: var(--accent);
+  opacity: 0.4;
+}
+
+@keyframes rotateSlow {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.deco-square.s2 { animation: rotateSlow 25s infinite linear reverse; }
+
+.deco-numbers {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.deco-numbers .big {
+  font-size: 90px;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1;
+}
+
+.deco-numbers .small {
+  font-size: 14px;
+  color: var(--muted);
+  letter-spacing: 0.2em;
+  margin-top: 8px;
+}
+
+/* Concept cards */
+.concept-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.concept-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s;
+}
+
+.concept-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 4px; height: 100%;
+  background: var(--accent);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 0.4s;
+}
+
+.concept-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--primary);
+  background: rgba(255,120,73,0.04);
+}
+
+.concept-card:hover::before { transform: scaleY(1); }
+
+.concept-card .icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: rgba(255,120,73,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  font-size: 20px;
+  margin-bottom: 16px;
+}
+
+.concept-card h3 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 20px;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.concept-card p {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.concept-card .formula {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 17px;
+  color: var(--accent);
+  margin-top: 14px;
+  padding: 10px 14px;
+  background: rgba(251,191,36,0.1);
+  border-radius: 8px;
+  display: inline-block;
+  font-weight: 600;
+}
+
+/* Visualisasi */
+.visual-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin-top: 24px;
+}
+
+.viz-canvas {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 380px;
+  position: relative;
+}
+
+.grid-display {
+  display: grid;
+  gap: 3px;
+  margin: 20px 0;
+  justify-content: center;
+}
+
+.grid-cell {
+  background: linear-gradient(135deg, var(--primary), #ff9a6c);
+  border-radius: 3px;
+  animation: cellAppear 0.3s backwards;
+  box-shadow: 0 2px 6px rgba(255,120,73,0.3);
+}
+
+@keyframes cellAppear {
+  from { opacity: 0; transform: scale(0); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.slider-container {
+  width: 100%;
+  margin-top: 16px;
+}
+
+.slider-label {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  align-items: center;
+}
+
+.slider-label span:first-child {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.slider-label span:last-child {
+  font-family: 'Space Grotesk', sans-serif;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 20px;
+  background: rgba(251,191,36,0.1);
+  padding: 2px 12px;
+  border-radius: 6px;
+}
+
+input[type="range"] {
+  width: 100%;
+  -webkit-appearance: none;
+  height: 6px;
+  background: var(--surface);
+  border-radius: 3px;
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px; height: 22px;
+  background: var(--primary);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 0 4px rgba(255,120,73,0.2), 0 4px 12px rgba(255,120,73,0.4);
+  transition: transform 0.2s;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+
+input[type="range"]::-moz-range-thumb {
+  width: 22px; height: 22px;
+  background: var(--primary);
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 0 0 4px rgba(255,120,73,0.2);
+}
+
+.info-panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 30px;
+}
+
+.info-panel h3 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 22px;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.info-row:last-child { border: none; padding-bottom: 0; }
+.info-row:first-child { padding-top: 0; }
+
+.info-label {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.info-value {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* 3D Cube */
+.cube-container {
+  perspective: 800px;
+  width: 220px;
+  height: 220px;
+  margin: 30px auto 20px;
+}
+
+.cube {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  animation: rotate 14s infinite linear;
+}
+
+@keyframes rotate {
+  from { transform: rotateX(-20deg) rotateY(0); }
+  to { transform: rotateX(-20deg) rotateY(360deg); }
+}
+
+.cube-face {
+  position: absolute;
+  width: 220px;
+  height: 220px;
+  background: rgba(74,222,128,0.15);
+  border: 2px solid var(--secondary);
+  display: grid;
+  gap: 2px;
+  padding: 6px;
+}
+
+.cube-face > div {
+  background: rgba(74,222,128,0.5);
+  border-radius: 2px;
+}
+
+.cube-face.front { transform: translateZ(110px); }
+.cube-face.back { transform: rotateY(180deg) translateZ(110px); }
+.cube-face.right { transform: rotateY(90deg) translateZ(110px); }
+.cube-face.left { transform: rotateY(-90deg) translateZ(110px); }
+.cube-face.top { transform: rotateX(90deg) translateZ(110px); }
+.cube-face.bottom { transform: rotateX(-90deg) translateZ(110px); }
+
+/* Tabel */
+.table-container {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 24px 30px;
+  margin-top: 24px;
+}
+
+.table-container h3 {
+  font-family: 'Space Grotesk', sans-serif;
+  margin-bottom: 16px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.power-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.power-table th, .power-table td {
+  padding: 11px 12px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+}
+
+.power-table th {
+  font-family: 'Space Grotesk', sans-serif;
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.power-table td {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 17px;
+}
+
+.power-table tbody tr:hover td {
+  background: rgba(255,120,73,0.05);
+  color: var(--fg);
+}
+
+.power-table .num-cell {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+/* Bentuk Akar */
+.root-display {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 20px;
+}
+
+.root-card {
+  padding: 32px;
+  border-radius: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.root-card.sqrt {
+  background: linear-gradient(135deg, rgba(255,120,73,0.15), rgba(255,120,73,0.03));
+  border: 1px solid rgba(255,120,73,0.3);
+}
+
+.root-card.cbrt {
+  background: linear-gradient(135deg, rgba(74,222,128,0.15), rgba(74,222,128,0.03));
+  border: 1px solid rgba(74,222,128,0.3);
+}
+
+.root-card h3 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 22px;
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+.root-symbol {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 72px;
+  font-weight: 700;
+  line-height: 1;
+  display: inline-block;
+}
+
+.root-card.sqrt .root-symbol { color: var(--primary); }
+.root-card.cbrt .root-symbol { color: var(--secondary); }
+
+.root-card .formula {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 22px;
+  margin: 14px 0 16px;
+  font-weight: 600;
+}
+
+.root-card.sqrt .formula { color: var(--primary); }
+.root-card.cbrt .formula { color: var(--secondary); }
+
+.root-card p {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.root-card .examples {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--fg);
+  line-height: 1.8;
+}
+
+.root-card .examples strong {
+  color: var(--accent);
+  display: block;
+  margin-bottom: 6px;
+}
+
+/* Latihan */
+.exercise-section h3 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 18px;
+  margin: 24px 0 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.exercise-section h3::before {
+  content: '';
+  width: 4px;
+  height: 20px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+
+.exercise-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.exercise-grid-20 {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.exercise-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  transition: all 0.3s;
+}
+
+.exercise-item.correct {
+  border-color: var(--secondary);
+  background: rgba(74,222,128,0.06);
+}
+
+.exercise-item.wrong {
+  border-color: var(--danger);
+  background: rgba(239,68,68,0.06);
+}
+
+.exercise-question {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 16px;
+  color: var(--fg);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.exercise-question .num {
+  color: var(--accent);
+  margin-right: 6px;
+}
+
+.exercise-input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 9px 12px;
+  color: var(--fg);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 16px;
+  text-align: center;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.exercise-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(255,120,73,0.15);
+}
+
+.exercise-feedback {
+  font-size: 11px;
+  margin-top: 6px;
+  height: 14px;
+  font-weight: 500;
+}
+
+.exercise-feedback.correct { color: var(--secondary); }
+.exercise-feedback.wrong { color: var(--danger); }
+
+.exercise-controls {
+  display: flex;
+  gap: 12px;
+  margin-top: 22px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.btn {
+  background: var(--primary);
+  border: none;
+  color: white;
+  padding: 11px 22px;
+  border-radius: 11px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(255,120,73,0.35);
+}
+
+.btn.secondary {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--fg);
+}
+
+.btn.secondary:hover {
+  background: var(--accent);
+  color: var(--bg);
+  box-shadow: 0 8px 22px rgba(251,191,36,0.3);
+}
+
+.btn.green {
+  background: var(--secondary);
+  color: var(--bg);
+}
+
+.btn.green:hover { box-shadow: 0 8px 22px rgba(74,222,128,0.35); }
+
+.score-display {
+  margin-left: auto;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 18px;
+  color: var(--accent);
+  font-weight: 700;
+  padding: 8px 16px;
+  background: rgba(251,191,36,0.1);
+  border-radius: 10px;
+  border: 1px solid rgba(251,191,36,0.2);
+}
+
+/* Soal cerita */
+.story-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-top: 16px;
+}
+
+.story-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  transition: all 0.3s;
+}
+
+.story-item.answered { border-color: var(--accent); }
+.story-item.correct { border-color: var(--secondary); background: rgba(74,222,128,0.04); }
+.story-item.wrong { border-color: var(--danger); background: rgba(239,68,68,0.04); }
+
+.story-question {
+  font-size: 15.5px;
+  line-height: 1.6;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.story-number {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, var(--primary), #ff9a6c);
+  color: white;
+  border-radius: 9px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  box-shadow: 0 4px 10px rgba(255,120,73,0.3);
+}
+
+.story-options {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.story-option {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+}
+
+.story-option:hover:not(.locked) {
+  border-color: var(--accent);
+  background: rgba(251,191,36,0.05);
+  transform: translateX(2px);
+}
+
+.story-option.selected {
+  background: rgba(255,120,73,0.1);
+  border-color: var(--primary);
+}
+
+.story-option.correct {
+  background: rgba(74,222,128,0.12);
+  border-color: var(--secondary);
+}
+
+.story-option.wrong {
+  background: rgba(239,68,68,0.12);
+  border-color: var(--danger);
+}
+
+.option-letter {
+  width: 26px;
+  height: 26px;
+  background: var(--surface);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.story-option.selected .option-letter { background: var(--primary); color: white; }
+.story-option.correct .option-letter { background: var(--secondary); color: var(--bg); }
+.story-option.wrong .option-letter { background: var(--danger); color: white; }
+
+.story-controls {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.story-controls .btn {
+  padding: 8px 16px;
+  font-size: 13px;
+}
+
+.story-explanation {
+  margin-top: 14px;
+  padding: 16px 18px;
+  background: rgba(251,191,36,0.05);
+  border-left: 3px solid var(--accent);
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--fg);
+  display: none;
+}
+
+.story-explanation.show {
+  display: block;
+  animation: slideDown 0.4s;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.story-explanation strong { color: var(--accent); }
+
+/* Result Banner */
+.result-banner {
+  position: fixed;
+  top: 30px;
+  right: 30px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 18px 26px;
+  z-index: 200;
+  transform: translateX(450px);
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  min-width: 280px;
+}
+
+.result-banner.show { transform: translateX(0); }
+.result-banner.success { border-color: var(--secondary); }
+.result-banner.fail { border-color: var(--danger); }
+
+.result-banner .title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.result-banner.success .title { color: var(--secondary); }
+.result-banner.fail .title { color: var(--danger); }
+
+.result-banner .desc {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.slide.active > * {
+  animation: fadeInUp 0.6s backwards;
+}
+
+.slide.active > *:nth-child(1) { animation-delay: 0.05s; }
+.slide.active > *:nth-child(2) { animation-delay: 0.15s; }
+.slide.active > *:nth-child(3) { animation-delay: 0.25s; }
+.slide.active > *:nth-child(4) { animation-delay: 0.35s; }
+.slide.active > *:nth-child(5) { animation-delay: 0.45s; }
+.slide.active > *:nth-child(6) { animation-delay: 0.55s; }
+
+.legend {
+  display: flex;
+  gap: 20px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.legend-dot.orange { background: var(--primary); }
+.legend-dot.green { background: var(--secondary); }
+.legend-dot.amber { background: var(--accent); }
+
+@media (max-width: 900px) {
+  .slide { padding: 30px 30px 110px; }
+  .visual-section, .root-display { grid-template-columns: 1fr; }
+  .story-options { grid-template-columns: 1fr; }
+  .cover-deco { display: none; }
+  .nav-bar { padding: 0 20px; }
+  .progress-container { margin: 0 14px; }
+  .nav-btn { padding: 9px 14px; font-size: 13px; }
+}
+
+@media (max-width: 600px) {
+  .slide { padding: 20px 18px 100px; }
+  .slide-title { font-size: 30px; }
+  .cover h1 { font-size: 42px; }
+  .cover-meta { gap: 20px; }
+  .meta-item .value { font-size: 15px; }
+}
+</style>
+</head>
+<body>
+
+<div class="floating-symbols" id="floatingSymbols"></div>
+
+<div class="presentation" id="presentation">
+  
+  <!-- Slide 1: Cover -->
+  <section class="slide active" data-slide="1">
+    <div class="cover">
+      <div class="cover-tag">
+        <i class="fas fa-circle"></i>
+        <span>MATEMATIKA · BILANGAN PANGKAT</span>
+      </div>
+      <h1>
+        <span class="l1">Kuadrat &</span>
+        <span class="l2">Pangkat Tiga</span>
+        <span class="l3">& Bentuk Akar</span>
+      </h1>
+      <p>Presentasi interaktif untuk memahami konsep perpangkatan dan bentuk akar melalui visualisasi, latihan langsung, dan soal cerita yang kontekstual.</p>
+      
+      <div class="cover-meta">
+        <div class="meta-item">
+          <span class="label">Materi</span>
+          <span class="value">Bilangan Pangkat</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Total Slide</span>
+          <span class="value">8 Bagian</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Total Latihan</span>
+          <span class="value">60 Soal</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Estimasi</span>
+          <span class="value">45 Menit</span>
+        </div>
+      </div>
+    </div>
+    <div class="cover-deco">
+      <div class="deco-square s3"></div>
+      <div class="deco-square s2"></div>
+      <div class="deco-square s1"></div>
+      <div class="deco-numbers">
+        <div class="big">n²</div>
+        <div class="small">PANGKAT & AKAR</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 2: Konsep Kuadrat -->
+  <section class="slide" data-slide="2">
+    <div class="slide-header">
+      <div class="slide-number">02 / 08</div>
+      <div class="slide-topic">Konsep Dasar</div>
+    </div>
+    <h2 class="slide-title">Bilangan <span class="accent">Kuadrat</span></h2>
+    <p class="slide-subtitle">Bilangan kuadrat adalah hasil perkalian sebuah bilangan dengan dirinya sendiri. Notasinya ditulis dengan pangkat 2. Geometrisnya membentuk persegi.</p>
+    
+    <div class="visual-section">
+      <div class="viz-canvas">
+        <div class="slider-label">
+          <span>Ubah nilai n</span>
+          <span id="squareValue">5</span>
+        </div>
+        <div class="grid-display" id="gridDisplay"></div>
+        <div class="slider-container">
+          <input type="range" id="squareSlider" min="1" max="10" value="5">
+        </div>
+      </div>
+      <div class="info-panel">
+        <h3>Informasi Persegi</h3>
+        <div class="info-row">
+          <span class="info-label">Sisi (n)</span>
+          <span class="info-value" id="sideInfo">5</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Rumus</span>
+          <span class="info-value">n² = n × n</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Perhitungan</span>
+          <span class="info-value" id="calcInfo">5 × 5</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Luas / Hasil</span>
+          <span class="info-value" id="resultInfo">25</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Notasi</span>
+          <span class="info-value" id="notationInfo">5² = 25</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot orange"></div><span>Setiap kotak = 1 unit</span></div>
+      <div class="legend-item"><div class="legend-dot amber"></div><span>Total kotak = n² (hasil kuadrat)</span></div>
+    </div>
+  </section>
+
+  <!-- Slide 3: Konsep Pangkat Tiga -->
+  <section class="slide" data-slide="3">
+    <div class="slide-header">
+      <div class="slide-number">03 / 08</div>
+      <div class="slide-topic">Konsep Dasar</div>
+    </div>
+    <h2 class="slide-title">Bilangan <span class="accent2">Pangkat Tiga</span></h2>
+    <p class="slide-subtitle">Bilangan pangkat tiga adalah hasil perkalian sebuah bilangan dengan dirinya sendiri sebanyak tiga kali. Geometrisnya membentuk bangun kubus.</p>
+    
+    <div class="visual-section">
+      <div class="viz-canvas">
+        <div class="slider-label">
+          <span>Ubah nilai n</span>
+          <span id="cubeValue">3</span>
+        </div>
+        <div class="cube-container">
+          <div class="cube" id="cubeDisplay">
+            <div class="cube-face front" id="face1"></div>
+            <div class="cube-face back" id="face2"></div>
+            <div class="cube-face right" id="face3"></div>
+            <div class="cube-face left" id="face4"></div>
+            <div class="cube-face top" id="face5"></div>
+            <div class="cube-face bottom" id="face6"></div>
+          </div>
+        </div>
+        <div class="slider-container">
+          <input type="range" id="cubeSlider" min="1" max="6" value="3">
+        </div>
+      </div>
+      <div class="info-panel">
+        <h3>Informasi Kubus</h3>
+        <div class="info-row">
+          <span class="info-label">Sisi (n)</span>
+          <span class="info-value" id="cubeSideInfo">3</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Rumus</span>
+          <span class="info-value">n³ = n × n × n</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Perhitungan</span>
+          <span class="info-value" id="cubeCalcInfo">3 × 3 × 3</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Volume / Hasil</span>
+          <span class="info-value" id="cubeResultInfo">27</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Notasi</span>
+          <span class="info-value" id="cubeNotationInfo">3³ = 27</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="table-container">
+      <h3>Tabel Kuadrat & Pangkat Tiga (1 - 10)</h3>
+      <table class="power-table">
+        <thead>
+          <tr>
+            <th>n</th>
+            <th>n² (Kuadrat)</th>
+            <th>n³ (Pangkat Tiga)</th>
+            <th>n</th>
+            <th>n² (Kuadrat)</th>
+            <th>n³ (Pangkat Tiga)</th>
+          </tr>
+        </thead>
+        <tbody id="powerTableBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Slide 4: Bentuk Akar -->
+  <section class="slide" data-slide="4">
+    <div class="slide-header">
+      <div class="slide-number">04 / 08</div>
+      <div class="slide-topic">Konsep Dasar</div>
+    </div>
+    <h2 class="slide-title">Mengenal <span class="accent3">Bentuk Akar</span></h2>
+    <p class="slide-subtitle">Bentuk akar adalah kebalikan (invers) dari perpangkatan. Akar kuadrat mencari bilangan yang jika dikuadratkan menghasilkan bilangan tersebut.</p>
+    
+    <div class="root-display">
+      <div class="root-card sqrt">
+        <h3>Akar Kuadrat (√)</h3>
+        <div class="root-symbol">√</div>
+        <div class="formula">√25 = 5</div>
+        <p>Akar kuadrat dari suatu bilangan adalah bilangan yang jika dikuadratkan akan menghasilkan bilangan tersebut. √25 = 5 karena 5² = 25.</p>
+        <div class="examples">
+          <strong>Contoh:</strong>
+          • √36 = 6 (karena 6² = 36)<br>
+          • √81 = 9 (karena 9² = 81)<br>
+          • √100 = 10 (karena 10² = 100)<br>
+          • √144 = 12 (karena 12² = 144)
+        </div>
+      </div>
+      <div class="root-card cbrt">
+        <h3>Akar Pangkat Tiga (∛)</h3>
+        <div class="root-symbol">∛</div>
+        <div class="formula">∛27 = 3</div>
+        <p>Akar pangkat tiga dari suatu bilangan adalah bilangan yang jika dipangkatkan tiga akan menghasilkan bilangan tersebut. ∛27 = 3 karena 3³ = 27.</p>
+        <div class="examples">
+          <strong>Contoh:</strong>
+          • ∛8 = 2 (karena 2³ = 8)<br>
+          • ∛64 = 4 (karena 4³ = 64)<br>
+          • ∛125 = 5 (karena 5³ = 125)<br>
+          • ∛1000 = 10 (karena 10³ = 1000)
+        </div>
+      </div>
+    </div>
+    
+    <div class="concept-grid">
+      <div class="concept-card">
+        <div class="icon"><i class="fas fa-exchange-alt"></i></div>
+        <h3>Hubungan Invers</h3>
+        <p>Kuadrat dan akar saling berkebalikan. Jika a² = b, maka √b = a.</p>
+        <div class="formula">a² = b ⟺ √b = a</div>
+      </div>
+      <div class="concept-card">
+        <div class="icon"><i class="fas fa-cube"></i></div>
+        <h3>Hubungan Pangkat Tiga</h3>
+        <p>Pangkat tiga dan akar pangkat tiga saling berkebalikan.</p>
+        <div class="formula">a³ = b ⟺ ∛b = a</div>
+      </div>
+      <div class="concept-card">
+        <div class="icon"><i class="fas fa-lightbulb"></i></div>
+        <h3>Tips Menghitung</h3>
+        <p>Hafalkan kuadrat 1-15 dan pangkat tiga 1-10 untuk mempermudah menentukan bentuk akar.</p>
+        <div class="formula">10² = 100 · 10³ = 1000</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 5: Latihan Kuadrat & Pangkat 3 (1-10) -->
+  <section class="slide" data-slide="5">
+    <div class="slide-header">
+      <div class="slide-number">05 / 08</div>
+      <div class="slide-topic">Latihan Dasar</div>
+    </div>
+    <h2 class="slide-title">Latihan <span class="accent">Kuadrat</span> & <span class="accent2">Pangkat Tiga</span></h2>
+    <p class="slide-subtitle">Tentukan hasil dari kuadrat dan pangkat tiga bilangan cacah 1 sampai 10. Isi jawaban pada kolom yang tersedia lalu tekan tombol cek.</p>
+    
+    <div class="exercise-section">
+      <h3>A. Bilangan Kuadrat (n²)</h3>
+      <div class="exercise-grid" id="squareExercise"></div>
+      
+      <h3>B. Bilangan Pangkat Tiga (n³)</h3>
+      <div class="exercise-grid" id="cubeExercise"></div>
+      
+      <div class="exercise-controls">
+        <button class="btn" onclick="checkBasicExercise()"><i class="fas fa-check"></i> Cek Jawaban</button>
+        <button class="btn secondary" onclick="resetBasicExercise()"><i class="fas fa-redo"></i> Reset</button>
+        <button class="btn secondary" onclick="showBasicAnswers()"><i class="fas fa-eye"></i> Lihat Kunci</button>
+        <div class="score-display" id="basicScore">Skor: 0 / 20</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 6: Latihan Akar Kuadrat -->
+  <section class="slide" data-slide="6">
+    <div class="slide-header">
+      <div class="slide-number">06 / 08</div>
+      <div class="slide-topic">Latihan Akar Kuadrat</div>
+    </div>
+    <h2 class="slide-title">Akar <span class="accent">Kuadrat</span> Bilangan Ribuan</h2>
+    <p class="slide-subtitle">Tentukan hasil akar kuadrat dari 20 bilangan di bawah ini. Semua soal merupakan bilangan ribuan (1.000 - 10.000) dengan hasil berupa puluhan.</p>
+    
+    <div class="exercise-section">
+      <div class="exercise-grid-20" id="sqrtExercise"></div>
+      
+      <div class="exercise-controls">
+        <button class="btn" onclick="checkSqrtExercise()"><i class="fas fa-check"></i> Cek Jawaban</button>
+        <button class="btn secondary" onclick="resetSqrtExercise()"><i class="fas fa-redo"></i> Reset</button>
+        <button class="btn secondary" onclick="showSqrtAnswers()"><i class="fas fa-eye"></i> Lihat Kunci</button>
+        <div class="score-display" id="sqrtScore">Skor: 0 / 20</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 7: Latihan Akar Pangkat Tiga -->
+  <section class="slide" data-slide="7">
+    <div class="slide-header">
+      <div class="slide-number">07 / 08</div>
+      <div class="slide-topic">Latihan Akar Pangkat Tiga</div>
+    </div>
+    <h2 class="slide-title">Akar <span class="accent2">Pangkat Tiga</span> Bilangan Ribuan</h2>
+    <p class="slide-subtitle">Tentukan hasil akar pangkat tiga dari 20 bilangan di bawah ini. Semua soal merupakan bilangan ribuan (1.000 - 100.000) dengan hasil berupa puluhan.</p>
+    
+    <div class="exercise-section">
+      <div class="exercise-grid-20" id="cbrtExercise"></div>
+      
+      <div class="exercise-controls">
+        <button class="btn" onclick="checkCbrtExercise()"><i class="fas fa-check"></i> Cek Jawaban</button>
+        <button class="btn secondary" onclick="resetCbrtExercise()"><i class="fas fa-redo"></i> Reset</button>
+        <button class="btn secondary" onclick="showCbrtAnswers()"><i class="fas fa-eye"></i> Lihat Kunci</button>
+        <div class="score-display" id="cbrtScore">Skor: 0 / 20</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 8: Soal Cerita -->
+  <section class="slide" data-slide="8">
+    <div class="slide-header">
+      <div class="slide-number">08 / 08</div>
+      <div class="slide-topic">Soal Cerita</div>
+    </div>
+    <h2 class="slide-title">Soal <span class="accent3">Cerita</span> & Aplikasi</h2>
+    <p class="slide-subtitle">Sepuluh soal cerita yang berkaitan dengan kuadrat, pangkat tiga, dan bentuk akar. Pilih jawaban paling tepat, lalu cek jawaban dan lihat pembahasan.</p>
+    
+    <div class="exercise-section">
+      <div class="story-list" id="storyList"></div>
+      
+      <div class="exercise-controls" style="margin-top: 24px;">
+        <button class="btn green" onclick="checkStoryAnswers()"><i class="fas fa-check-double"></i> Cek Semua Jawaban</button>
+        <button class="btn secondary" onclick="showAllExplanations()"><i class="fas fa-book-open"></i> Tampilkan Semua Pembahasan</button>
+        <button class="btn secondary" onclick="resetStoryAnswers()"><i class="fas fa-redo"></i> Reset Semua</button>
+        <div class="score-display" id="storyScore">Skor: 0 / 10</div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- Navigation -->
+<div class="nav-bar">
+  <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">
+    <i class="fas fa-arrow-left"></i> Sebelumnya
+  </button>
+  <div class="progress-container">
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div class="progress-dots" id="progressDots"></div>
+  </div>
+  <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">
+    Selanjutnya <i class="fas fa-arrow-right"></i>
+  </button>
+</div>
+
+<!-- Result Banner -->
+<div class="result-banner" id="resultBanner">
+  <div class="title" id="bannerTitle"><i class="fas fa-check-circle"></i> <span>Berhasil!</span></div>
+  <div class="desc" id="bannerDesc">Skor Anda: 20/20</div>
+</div>
+
+<script>
+// =============== DATA ===============
+
+// Soal kuadrat 1-10 (diacak urutannya)
+const squareProblems = [
+  { q: '7²', a: 49 },
+  { q: '4²', a: 16 },
+  { q: '9²', a: 81 },
+  { q: '3²', a: 9 },
+  { q: '8²', a: 64 },
+  { q: '2²', a: 4 },
+  { q: '10²', a: 100 },
+  { q: '6²', a: 36 },
+  { q: '5²', a: 25 },
+  { q: '1²', a: 1 },
+];
+
+// Soal pangkat tiga 1-10 (diacak urutannya)
+const cubeProblems = [
+  { q: '5³', a: 125 },
+  { q: '2³', a: 8 },
+  { q: '8³', a: 512 },
+  { q: '3³', a: 27 },
+  { q: '7³', a: 343 },
+  { q: '4³', a: 64 },
+  { q: '10³', a: 1000 },
+  { q: '6³', a: 216 },
+  { q: '9³', a: 729 },
+  { q: '1³', a: 1 },
+];
+
+// 20 soal akar kuadrat — bilangan ribuan (1000-10000), hasil puluhan
+const sqrtProblems = [
+  { q: '√1.024', a: 32 },
+  { q: '√1.156', a: 34 },
+  { q: '√1.225', a: 35 },
+  { q: '√1.296', a: 36 },
+  { q: '√1.369', a: 37 },
+  { q: '√1.444', a: 38 },
+  { q: '√1.521', a: 39 },
+  { q: '√1.600', a: 40 },
+  { q: '√1.681', a: 41 },
+  { q: '√1.764', a: 42 },
+  { q: '√1.849', a: 43 },
+  { q: '√1.936', a: 44 },
+  { q: '√2.025', a: 45 },
+  { q: '√2.116', a: 46 },
+  { q: '√2.209', a: 47 },
+  { q: '√2.500', a: 50 },
+  { q: '√3.025', a: 55 },
+  { q: '√3.600', a: 60 },
+  { q: '√4.900', a: 70 },
+  { q: '√6.400', a: 80 },
+];
+
+// 20 soal akar pangkat tiga — bilangan ribuan (1000-100000), hasil puluhan
+const cbrtProblems = [
+  { q: '∛1.000', a: 10 },
+  { q: '∛1.331', a: 11 },
+  { q: '∛1.728', a: 12 },
+  { q: '∛2.197', a: 13 },
+  { q: '∛2.744', a: 14 },
+  { q: '∛3.375', a: 15 },
+  { q: '∛4.096', a: 16 },
+  { q: '∛4.913', a: 17 },
+  { q: '∛5.832', a: 18 },
+  { q: '∛6.859', a: 19 },
+  { q: '∛8.000', a: 20 },
+  { q: '∛9.261', a: 21 },
+  { q: '∛10.648', a: 22 },
+  { q: '∛12.167', a: 23 },
+  { q: '∛13.824', a: 24 },
+  { q: '∛15.625', a: 25 },
+  { q: '∛27.000', a: 30 },
+  { q: '∛42.875', a: 35 },
+  { q: '∛64.000', a: 40 },
+  { q: '∛91.125', a: 45 },
+];
+
+// 10 soal cerita pilihan ganda
+const storyProblems = [
+  {
+    q: 'Sebuah taman berbentuk persegi memiliki luas 225 m². Berapa panjang sisi taman tersebut?',
+    options: ['12 m', '13 m', '15 m', '17 m'],
+    correct: 2,
+    explanation: 'Luas persegi = sisi × sisi = sisi². Maka sisi = √luas = √225 = 15 m. (Karena 15² = 225)'
+  },
+  {
+    q: 'Sebuah kolam berbentuk kubus memiliki volume 343 m³. Berapa panjang rusuk kolam tersebut?',
+    options: ['5 m', '6 m', '7 m', '8 m'],
+    correct: 2,
+    explanation: 'Volume kubus = sisi³. Maka sisi = ∛volume = ∛343 = 7 m. (Karena 7³ = 7 × 7 × 7 = 343)'
+  },
+  {
+    q: 'Maya menyusun 64 tile keramik membentuk persegi. Berapa tile yang menyusun satu sisi persegi tersebut?',
+    options: ['6 tile', '7 tile', '8 tile', '9 tile'],
+    correct: 2,
+    explanation: 'Jumlah total tile = sisi² = 64. Maka sisi = √64 = 8 tile. (Karena 8² = 64)'
+  },
+  {
+    q: 'Sebuah kotak berbentuk kubus berisi tepat 512 kubus kecil berukuran 1 cm³. Berapa panjang sisi kotak tersebut?',
+    options: ['6 cm', '7 cm', '8 cm', '9 cm'],
+    correct: 2,
+    explanation: 'Volume kotak = 512 cm³. Sisi = ∛512 = 8 cm. (Karena 8³ = 8 × 8 × 8 = 512)'
+  },
+  {
+    q: 'Sebuah persegi memiliki sisi 12 cm. Berapa luas persegi tersebut?',
+    options: ['124 cm²', '144 cm²', '164 cm²', '24 cm²'],
+    correct: 1,
+    explanation: 'Luas persegi = sisi² = 12² = 12 × 12 = 144 cm².'
+  },
+  {
+    q: 'Doni memiliki kubus dengan rusuk 9 cm. Berapa volume kubus tersebut?',
+    options: ['81 cm³', '243 cm³', '729 cm³', '999 cm³'],
+    correct: 2,
+    explanation: 'Volume kubus = rusuk³ = 9³ = 9 × 9 × 9 = 729 cm³.'
+  },
+  {
+    q: 'Sebuah lapangan persegi memiliki luas 900 m². Jika di sekeliling lapangan dipasang pagar, berapa panjang pagar yang dibutuhkan?',
+    options: ['90 m', '100 m', '110 m', '120 m'],
+    correct: 3,
+    explanation: 'Sisi = √900 = 30 m. Keliling persegi = 4 × sisi = 4 × 30 = 120 m.'
+  },
+  {
+    q: 'Sebuah akuarium berbentuk kubus memiliki volume 27.000 cm³. Berapa panjang sisi akuarium?',
+    options: ['20 cm', '25 cm', '30 cm', '35 cm'],
+    correct: 2,
+    explanation: 'Sisi = ∛27.000. Karena 30³ = 30 × 30 × 30 = 27.000, maka sisi akuarium = 30 cm.'
+  },
+  {
+    q: 'Jumlah siswa di suatu kelas membentuk barisan persegi. Jika total siswa 49 orang, berapa siswa di setiap baris?',
+    options: ['5 siswa', '6 siswa', '7 siswa', '8 siswa'],
+    correct: 2,
+    explanation: 'Barisan persegi berarti banyak baris = banyak kolom. Total = baris² = 49. Maka baris = √49 = 7 siswa.'
+  },
+  {
+    q: 'Sebuah balok kayu berbentuk kubus dengan rusuk 11 cm dipotong menjadi kubus-kubus kecil berukuran 1 cm³. Berapa banyak kubus kecil yang diperoleh?',
+    options: ['121 kubus', '242 kubus', '1.331 kubus', '1.463 kubus'],
+    correct: 2,
+    explanation: 'Volume kubus besar = 11³ = 11 × 11 × 11 = 1.331 cm³. Setiap kubus kecil = 1 cm³, maka banyaknya = 1.331 kubus.'
+  }
+];
+
+// =============== STATE ===============
+let currentSlide = 1;
+const totalSlides = 8;
+const storyAnswers = new Array(storyProblems.length).fill(null);
+const storyAnswered = new Array(storyProblems.length).fill(false);
+
+// =============== FLOATING SYMBOLS ===============
+function createFloatingSymbols() {
+  const container = document.getElementById('floatingSymbols');
+  const symbols = ['n²', 'n³', '√', '∛', '5²', '7³', '√9', '∛8', '10²', '4³'];
+  for (let i = 0; i < 12; i++) {
+    const span = document.createElement('span');
+    span.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+    span.style.left = Math.random() * 100 + '%';
+    span.style.animationDelay = Math.random() * 20 + 's';
+    span.style.animationDuration = (15 + Math.random() * 15) + 's';
+    span.style.fontSize = (40 + Math.random() * 80) + 'px';
+    container.appendChild(span);
+  }
+}
+
+// =============== SLIDE NAVIGATION ===============
+function changeSlide(direction) {
+  const newSlide = currentSlide + direction;
+  if (newSlide < 1 || newSlide > totalSlides) return;
+  goToSlide(newSlide);
+}
+
+function goToSlide(n) {
+  if (n < 1 || n > totalSlides) return;
+  document.querySelectorAll('.slide').forEach(s => s.classList.remove('active', 'prev'));
+  document.querySelector(`[data-slide="${currentSlide}"]`).classList.add('prev');
+  document.querySelector(`[data-slide="${n}"]`).classList.add('active');
+  currentSlide = n;
+  updateNav();
+  document.querySelector(`[data-slide="${n}"]`).scrollTop = 0;
+}
+
+function updateNav() {
+  document.getElementById('prevBtn').disabled = currentSlide === 1;
+  document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+  const progress = (currentSlide / totalSlides) * 100;
+  document.getElementById('progressFill').style.width = progress + '%';
+  document.querySelectorAll('.dot').forEach((dot, i) => {
+    dot.classList.toggle('active', i + 1 === currentSlide);
+  });
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT') return;
+  if (e.key === 'ArrowRight' || e.key === 'PageDown') changeSlide(1);
+  if (e.key === 'ArrowLeft' || e.key === 'PageUp') changeSlide(-1);
+  if (e.key === 'Home') goToSlide(1);
+  if (e.key === 'End') goToSlide(totalSlides);
+});
+
+// =============== PROGRESS DOTS ===============
+function createDots() {
+  const container = document.getElementById('progressDots');
+  for (let i = 1; i <= totalSlides; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'dot' + (i === 1 ? ' active' : '');
+    dot.onclick = () => goToSlide(i);
+    container.appendChild(dot);
+  }
+}
+
+// =============== SQUARE VISUALIZATION ===============
+const squareSlider = document.getElementById('squareSlider');
+squareSlider.addEventListener('input', updateSquareViz);
+
+function updateSquareViz() {
+  const n = parseInt(squareSlider.value);
+  document.getElementById('squareValue').textContent = n;
+  document.getElementById('sideInfo').textContent = n;
+  document.getElementById('calcInfo').textContent = `${n} × ${n}`;
+  document.getElementById('resultInfo').textContent = n * n;
+  document.getElementById('notationInfo').textContent = `${n}² = ${n * n}`;
+  
+  const grid = document.getElementById('gridDisplay');
+  grid.style.gridTemplateColumns = `repeat(${n}, 1fr)`;
+  grid.innerHTML = '';
+  const cellSize = Math.max(12, Math.min(36, 220/n));
+  for (let i = 0; i < n * n; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'grid-cell';
+    cell.style.animationDelay = (i * 0.015) + 's';
+    cell.style.width = cellSize + 'px';
+    cell.style.height = cellSize + 'px';
+    grid.appendChild(cell);
+  }
+}
+
+// =============== CUBE VISUALIZATION ===============
+const cubeSlider = document.getElementById('cubeSlider');
+cubeSlider.addEventListener('input', updateCubeViz);
+
+function updateCubeViz() {
+  const n = parseInt(cubeSlider.value);
+  document.getElementById('cubeValue').textContent = n;
+  document.getElementById('cubeSideInfo').textContent = n;
+  document.getElementById('cubeCalcInfo').textContent = `${n} × ${n} × ${n}`;
+  document.getElementById('cubeResultInfo').textContent = n * n * n;
+  document.getElementById('cubeNotationInfo').textContent = `${n}³ = ${n * n * n}`;
+  
+  for (let i = 1; i <= 6; i++) {
+    const face = document.getElementById('face' + i);
+    face.style.gridTemplateColumns = `repeat(${n}, 1fr)`;
+    face.innerHTML = '';
+    for (let j = 0; j < n * n; j++) {
+      face.appendChild(document.createElement('div'));
+    }
+  }
+}
+
+// =============== POWER TABLE ===============
+function createPowerTable() {
+  const tbody = document.getElementById('powerTableBody');
+  tbody.innerHTML = '';
+  for (let i = 1; i <= 5; i++) {
+    const j = i + 5;
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td class="num-cell">${i}</td>
+      <td>${i * i}</td>
+      <td>${i * i * i}</td>
+      <td class="num-cell">${j}</td>
+      <td>${j * j}</td>
+      <td>${j * j * j}</td>
+    `;
+    tbody.appendChild(row);
+  }
+}
+
+// =============== BASIC EXERCISE ===============
+function createBasicExercise() {
+  const squareContainer = document.getElementById('squareExercise');
+  squareContainer.innerHTML = '';
+  squareProblems.forEach((p, i) => {
+    const div = document.createElement('div');
+    div.className = 'exercise-item';
+    div.id = 'sq-item-' + i;
+    div.innerHTML = `
+      <div class="exercise-question"><span class="num">${i+1}.</span> ${p.q} =</div>
+      <input type="number" class="exercise-input" id="sq-input-${i}" placeholder="...">
+      <div class="exercise-feedback" id="sq-feedback-${i}"></div>
+    `;
+    squareContainer.appendChild(div);
+  });
+  
+  const cubeContainer = document.getElementById('cubeExercise');
+  cubeContainer.innerHTML = '';
+  cubeProblems.forEach((p, i) => {
+    const div = document.createElement('div');
+    div.className = 'exercise-item';
+    div.id = 'cb-item-' + i;
+    div.innerHTML = `
+      <div class="exercise-question"><span class="num">${i+1}.</span> ${p.q} =</div>
+      <input type="number" class="exercise-input" id="cb-input-${i}" placeholder="...">
+      <div class="exercise-feedback" id="cb-feedback-${i}"></div>
+    `;
+    cubeContainer.appendChild(div);
+  });
+}
+
+function checkBasicExercise() {
+  let correct = 0;
+  const allProbs = [
+    { arr: squareProblems, prefix: 'sq' },
+    { arr: cubeProblems, prefix: 'cb' }
+  ];
+  
+  allProbs.forEach(({ arr, prefix }) => {
+    arr.forEach((p, i) => {
+      const input = document.getElementById(`${prefix}-input-${i}`);
+      const item = document.getElementById(`${prefix}-item-${i}`);
+      const feedback = document.getElementById(`${prefix}-feedback-${i}`);
+      const val = parseInt(input.value);
+      
+      item.classList.remove('correct', 'wrong');
+      feedback.classList.remove('correct', 'wrong');
+      
+      if (input.value === '' || isNaN(val)) {
+        feedback.textContent = 'Belum diisi';
+        feedback.classList.add('wrong');
+        item.classList.add('wrong');
+      } else if (val === p.a) {
+        item.classList.add('correct');
+        feedback.textContent = '✓ Benar';
+        feedback.classList.add('correct');
+        correct++;
+      } else {
+        item.classList.add('wrong');
+        feedback.textContent = `✗ Jawaban: ${p.a}`;
+        feedback.classList.add('wrong');
+      }
+    });
+  });
+  
+  document.getElementById('basicScore').textContent = `Skor: ${correct} / 20`;
+  showResult(correct, 20);
+}
+
+function resetBasicExercise() {
+  squareProblems.forEach((p, i) => {
+    document.getElementById('sq-input-' + i).value = '';
+    document.getElementById('sq-item-' + i).classList.remove('correct', 'wrong');
+    document.getElementById('sq-feedback-' + i).textContent = '';
+    document.getElementById('sq-feedback-' + i).className = 'exercise-feedback';
+  });
+  cubeProblems.forEach((p, i) => {
+    document.getElementById('cb-input-' + i).value = '';
+    document.getElementById('cb-item-' + i).classList.remove('correct', 'wrong');
+    document.getElementById('cb-feedback-' + i).textContent = '';
+    document.getElementById('cb-feedback-' + i).className = 'exercise-feedback';
+  });
+  document.getElementById('basicScore').textContent = 'Skor: 0 / 20';
+}
+
+function showBasicAnswers() {
+  squareProblems.forEach((p, i) => {
+    document.getElementById('sq-input-' + i).value = p.a;
+  });
+  cubeProblems.forEach((p, i) => {
+    document.getElementById('cb-input-' + i).value = p.a;
+  });
+}
+
+// =============== SQRT EXERCISE ===============
+function createSqrtExercise() {
+  const container = document.getElementById('sqrtExercise');
+  container.innerHTML = '';
+  sqrtProblems.forEach((p, i) => {
+    const div = document.createElement('div');
+    div.className = 'exercise-item';
+    div.id = 'sqrt-item-' + i;
+    div.innerHTML = `
+      <div class="exercise-question"><span class="num">${i+1}.</span> ${p.q} =</div>
+      <input type="number" class="exercise-input" id="sqrt-input-${i}" placeholder="...">
+      <div class="exercise-feedback" id="sqrt-feedback-${i}"></div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function checkSqrtExercise() {
+  let correct = 0;
+  sqrtProblems.forEach((p, i) => {
+    const input = document.getElementById('sqrt-input-' + i);
+    const item = document.getElementById('sqrt-item-' + i);
+    const feedback = document.getElementById('sqrt-feedback-' + i);
+    const val = parseInt(input.value);
+    
+    item.classList.remove('correct', 'wrong');
+    feedback.classList.remove('correct', 'wrong');
+    
+    if (input.value === '' || isNaN(val)) {
+      feedback.textContent = 'Belum diisi';
+      feedback.classList.add('wrong');
+      item.classList.add('wrong');
+    } else if (val === p.a) {
+      item.classList.add('correct');
+      feedback.textContent = '✓ Benar';
+      feedback.classList.add('correct');
+      correct++;
+    } else {
+      item.classList.add('wrong');
+      feedback.textContent = `✗ Jawaban: ${p.a}`;
+      feedback.classList.add('wrong');
+    }
+  });
+  document.getElementById('sqrtScore').textContent = `Skor: ${correct} / 20`;
+  showResult(correct, 20);
+}
+
+function resetSqrtExercise() {
+  sqrtProblems.forEach((p, i) => {
+    document.getElementById('sqrt-input-' + i).value = '';
+    document.getElementById('sqrt-item-' + i).classList.remove('correct', 'wrong');
+    document.getElementById('sqrt-feedback-' + i).textContent = '';
+    document.getElementById('sqrt-feedback-' + i).className = 'exercise-feedback';
+  });
+  document.getElementById('sqrtScore').textContent = 'Skor: 0 / 20';
+}
+
+function showSqrtAnswers() {
+  sqrtProblems.forEach((p, i) => {
+    document.getElementById('sqrt-input-' + i).value = p.a;
+  });
+}
+
+// =============== CBRT EXERCISE ===============
+function createCbrtExercise() {
+  const container = document.getElementById('cbrtExercise');
+  container.innerHTML = '';
+  cbrtProblems.forEach((p, i) => {
+    const div = document.createElement('div');
+    div.className = 'exercise-item';
+    div.id = 'cbrt-item-' + i;
+    div.innerHTML = `
+      <div class="exercise-question"><span class="num">${i+1}.</span> ${p.q} =</div>
+      <input type="number" class="exercise-input" id="cbrt-input-${i}" placeholder="...">
+      <div class="exercise-feedback" id="cbrt-feedback-${i}"></div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function checkCbrtExercise() {
+  let correct = 0;
+  cbrtProblems.forEach((p, i) => {
+    const input = document.getElementById('cbrt-input-' + i);
+    const item = document.getElementById('cbrt-item-' + i);
+    const feedback = document.getElementById('cbrt-feedback-' + i);
+    const val = parseInt(input.value);
+    
+    item.classList.remove('correct', 'wrong');
+    feedback.classList.remove('correct', 'wrong');
+    
+    if (input.value === '' || isNaN(val)) {
+      feedback.textContent = 'Belum diisi';
+      feedback.classList.add('wrong');
+      item.classList.add('wrong');
+    } else if (val === p.a) {
+      item.classList.add('correct');
+      feedback.textContent = '✓ Benar';
+      feedback.classList.add('correct');
+      correct++;
+    } else {
+      item.classList.add('wrong');
+      feedback.textContent = `✗ Jawaban: ${p.a}`;
+      feedback.classList.add('wrong');
+    }
+  });
+  document.getElementById('cbrtScore').textContent = `Skor: ${correct} / 20`;
+  showResult(correct, 20);
+}
+
+function resetCbrtExercise() {
+  cbrtProblems.forEach((p, i) => {
+    document.getElementById('cbrt-input-' + i).value = '';
+    document.getElementById('cbrt-item-' + i).classList.remove('correct', 'wrong');
+    document.getElementById('cbrt-feedback-' + i).textContent = '';
+    document.getElementById('cbrt-feedback-' + i).className = 'exercise-feedback';
+  });
+  document.getElementById('cbrtScore').textContent = 'Skor: 0 / 20';
+}
+
+function showCbrtAnswers() {
+  cbrtProblems.forEach((p, i) => {
+    document.getElementById('cbrt-input-' + i).value = p.a;
+  });
+}
+
+// =============== STORY EXERCISE ===============
+function createStoryExercise() {
+  const list = document.getElementById('storyList');
+  list.innerHTML = '';
+  storyProblems.forEach((p, i) => {
+    const item = document.createElement('div');
+    item.className = 'story-item';
+    item.id = 'story-item-' + i;
+    
+    const optionsHtml = p.options.map((opt, j) => `
+      <div class="story-option" id="story-opt-${i}-${j}" onclick="selectStoryAnswer(${i}, ${j})">
+        <div class="option-letter">${String.fromCharCode(65 + j)}</div>
+        <span>${opt}</span>
+      </div>
+    `).join('');
+    
+    item.innerHTML = `
+      <div class="story-question">
+        <span class="story-number">${i+1}</span>
+        <span>${p.q}</span>
+      </div>
+      <div class="story-options">${optionsHtml}</div>
+      <div class="story-controls">
+        <button class="btn" onclick="checkSingleStory(${i})"><i class="fas fa-check"></i> Cek Jawaban</button>
+        <button class="btn secondary" onclick="toggleExplanation(${i})"><i class="fas fa-book-open"></i> Pembahasan</button>
+      </div>
+      <div class="story-explanation" id="story-exp-${i}">
+        <strong>Pembahasan:</strong> ${p.explanation}
+      </div>
+    `;
+    list.appendChild(item);
+  });
+}
+
+function selectStoryAnswer(qIdx, optIdx) {
+  if (storyAnswered[qIdx]) return;
+  storyAnswers[qIdx] = optIdx;
+  
+  for (let j = 0; j < 4; j++) {
+    const opt = document.getElementById(`story-opt-${qIdx}-${j}`);
+    if (opt) opt.classList.remove('selected');
+  }
+  document.getElementById(`story-opt-${qIdx}-${optIdx}`).classList.add('selected');
+  document.getElementById('story-item-' + qIdx).classList.add('answered');
+}
+
+function checkSingleStory(qIdx) {
+  if (storyAnswers[qIdx] === null) {
+    showResult(0, 1, 'Silakan pilih jawaban terlebih dahulu.');
+    return;
+  }
+  
+  storyAnswered[qIdx] = true;
+  const correct = storyProblems[qIdx].correct;
+  const item = document.getElementById('story-item-' + qIdx);
+  
+  item.classList.remove('answered', 'correct', 'wrong');
+  
+  for (let j = 0; j < 4; j++) {
+    const opt = document.getElementById(`story-opt-${qIdx}-${j}`);
+    opt.classList.remove('selected', 'correct', 'wrong');
+    opt.classList.add('locked');
+    
+    if (j === correct) opt.classList.add('correct');
+    else if (j === storyAnswers[qIdx]) opt.classList.add('wrong');
+  }
+  
+  if (storyAnswers[qIdx] === correct) {
+    item.classList.add('correct');
+  } else {
+    item.classList.add('wrong');
+  }
+  
+  updateStoryScore();
+}
+
+function toggleExplanation(qIdx) {
+  const exp = document.getElementById('story-exp-' + qIdx);
+  exp.classList.toggle('show');
+}
+
+function checkStoryAnswers() {
+  let correct = 0;
+  let answeredCount = 0;
+  storyProblems.forEach((p, i) => {
+    if (storyAnswers[i] === null) return;
+    answeredCount++;
+    storyAnswered[i] = true;
+    
+    const item = document.getElementById('story-item-' + i);
+    item.classList.remove('answered', 'correct', 'wrong');
+    
+    for (let j = 0; j < 4; j++) {
+      const opt = document.getElementById(`story-opt-${i}-${j}`);
+      opt.classList.remove('selected', 'correct', 'wrong');
+      opt.classList.add('locked');
+      
+      if (j === p.correct) opt.classList.add('correct');
+      else if (j === storyAnswers[i]) opt.classList.add('wrong');
+    }
+    
+    if (storyAnswers[i] === p.correct) {
+      item.classList.add('correct');
+      correct++;
+    } else {
+      item.classList.add('wrong');
+    }
+  });
+  
+  if (answeredCount === 0) {
+    showResult(0, 1, 'Silakan pilih jawaban terlebih dahulu.');
+    return;
+  }
+  
+  updateStoryScore();
+  showResult(correct, storyProblems.length);
+}
+
+function showAllExplanations() {
+  storyProblems.forEach((p, i) => {
+    document.getElementById('story-exp-' + i).classList.add('show');
+  });
+}
+
+function resetStoryAnswers() {
+  for (let i = 0; i < storyProblems.length; i++) {
+    storyAnswers[i] = null;
+    storyAnswered[i] = false;
+    const item = document.getElementById('story-item-' + i);
+    item.classList.remove('answered', 'correct', 'wrong');
+    
+    for (let j = 0; j < 4; j++) {
+      const opt = document.getElementById(`story-opt-${i}-${j}`);
+      opt.classList.remove('selected', 'correct', 'wrong', 'locked');
+    }
+    
+    document.getElementById('story-exp-' + i).classList.remove('show');
+  }
+  document.getElementById('storyScore').textContent = 'Skor: 0 / 10';
+}
+
+function updateStoryScore() {
+  let correct = 0;
+  for (let i = 0; i < storyProblems.length; i++) {
+    if (storyAnswered[i] && storyAnswers[i] === storyProblems[i].correct) correct++;
+  }
+  document.getElementById('storyScore').textContent = `Skor: ${correct} / 10`;
+}
+
+// =============== RESULT BANNER ===============
+function showResult(correct, total, customMsg) {
+  const banner = document.getElementById('resultBanner');
+  const title = document.getElementById('bannerTitle');
+  const desc = document.getElementById('bannerDesc');
+  
+  banner.classList.remove('success', 'fail');
+  
+  if (customMsg) {
+    title.innerHTML = '<i class="fas fa-info-circle"></i> <span>Informasi</span>';
+    desc.textContent = customMsg;
+    banner.classList.add('fail');
+  } else {
+    const percentage = (correct / total) * 100;
+    if (percentage >= 80) {
+      title.innerHTML = '<i class="fas fa-trophy"></i> <span>Luar Biasa!</span>';
+      desc.textContent = `Skor Anda: ${correct}/${total}. Pemahaman sangat baik!`;
+      banner.classList.add('success');
+    } else if (percentage >= 60) {
+      title.innerHTML = '<i class="fas fa-thumbs-up"></i> <span>Bagus!</span>';
+      desc.textContent = `Skor Anda: ${correct}/${total}. Terus berlatih!`;
+      banner.classList.add('success');
+    } else {
+      title.innerHTML = '<i class="fas fa-book"></i> <span>Perlu Berlatih</span>';
+      desc.textContent = `Skor Anda: ${correct}/${total}. Pelajari lagi materinya.`;
+      banner.classList.add('fail');
+    }
+  }
+  
+  banner.classList.add('show');
+  clearTimeout(window._bannerTimeout);
+  window._bannerTimeout = setTimeout(() => banner.classList.remove('show'), 4000);
+}
+
+// =============== INIT ===============
+createFloatingSymbols();
+createDots();
+updateSquareViz();
+updateCubeViz();
+createPowerTable();
+createBasicExercise();
+createSqrtExercise();
+createCbrtExercise();
+createStoryExercise();
+updateNav();
+</script>
+
+</body>
+</html>
