@@ -1,0 +1,2325 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Presentasi Interaktif — Eksponen | Matematika SMA Kelas X</title>
+<meta name="description" content="Slide interaktif materi Eksponen: definisi, 8 sifat, persamaan eksponen, 110 soal latihan pilihan ganda dengan cek jawaban dan pembahasan lengkap.">
+<style>
+/* ===== PRESENTASI INTERAKTIF EKSPONEN — Gaya "Kelas Ceria" ===== */
+:root{
+  --bg:#F2F7FF; --ink:#1E293B; --muted:#5B6B85;
+  --primary:#2563EB; --primary-dark:#1D4ED8; --primary-soft:#DBEAFE;
+  --accent:#F59E0B; --accent-dark:#B45309; --accent-soft:#FEF3C7;
+  --green:#16A34A; --green-soft:#DCFCE7; --red:#DC2626; --red-soft:#FEE2E2;
+  --purple:#7C3AED; --purple-soft:#EDE9FE;
+  --card:#FFFFFF; --line:#DCE7F7; --shadow:0 10px 30px rgba(37,99,235,.10);
+  --radius:18px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,Roboto,'Helvetica Neue',Arial,sans-serif;
+  background:
+    radial-gradient(1200px 500px at 110% -10%, rgba(245,158,11,.10), transparent 60%),
+    radial-gradient(1000px 600px at -10% 110%, rgba(37,99,235,.10), transparent 60%),
+    var(--bg);
+  color:var(--ink); overflow:hidden;
+}
+sup{font-size:.66em;line-height:0;vertical-align:super}
+sub{font-size:.66em;line-height:0}
+i{font-family:Georgia,'Times New Roman',serif}
+.math{font-family:Georgia,'Times New Roman',serif}
+.math i{font-style:italic}
+
+/* ---------- Kerangka panggung ---------- */
+.stage{height:100vh;display:flex;flex-direction:column}
+.topbar{
+  height:56px;flex:0 0 56px;display:flex;align-items:center;gap:14px;
+  padding:0 18px;background:rgba(255,255,255,.85);backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);z-index:30;position:relative;
+}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.5px;color:var(--primary-dark);white-space:nowrap}
+.brand .logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--primary),#7C3AED);color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;font-family:Georgia,serif}
+.brand small{display:block;font-size:10px;font-weight:600;color:var(--muted);letter-spacing:1.5px}
+.progress{flex:1;height:10px;background:var(--primary-soft);border-radius:99px;overflow:hidden}
+.progress b{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:99px;transition:width .4s ease}
+.counter{font-size:13px;font-weight:700;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.topbtn{border:1.5px solid var(--line);background:#fff;border-radius:12px;width:38px;height:34px;font-size:16px;cursor:pointer;color:var(--primary-dark);transition:.2s}
+.topbtn:hover{background:var(--primary-soft);border-color:var(--primary)}
+.viewport{flex:1;position:relative;overflow:hidden}
+
+/* ---------- Slide ---------- */
+.slide{
+  position:absolute;inset:0;overflow-y:auto;padding:0;
+  opacity:0;visibility:hidden;transform:translateX(46px);
+  transition:opacity .45s ease,transform .45s ease,visibility .45s;
+}
+.slide.active{opacity:1;visibility:visible;transform:none}
+.wrap{max-width:1080px;margin:0 auto;padding:34px 26px 110px}
+.wrap.narrow{max-width:900px}
+
+/* animasi masuk berjenjang */
+.rev{opacity:0;transform:translateY(18px);transition:opacity .5s ease,transform .5s ease}
+.slide.active .rev{opacity:1;transform:none}
+.slide.active .rev:nth-child(1){transition-delay:.05s}.slide.active .rev:nth-child(2){transition-delay:.12s}
+.slide.active .rev:nth-child(3){transition-delay:.19s}.slide.active .rev:nth-child(4){transition-delay:.26s}
+.slide.active .rev:nth-child(5){transition-delay:.33s}.slide.active .rev:nth-child(6){transition-delay:.40s}
+.slide.active .rev:nth-child(7){transition-delay:.47s}.slide.active .rev:nth-child(8){transition-delay:.54s}
+
+/* ---------- Tipografi & komponen umum ---------- */
+.kicker{display:inline-block;font-size:11.5px;font-weight:800;letter-spacing:2.2px;color:var(--primary-dark);background:var(--primary-soft);padding:6px 14px;border-radius:99px;margin-bottom:14px}
+.kicker.orange{background:var(--accent-soft);color:var(--accent-dark)}
+.kicker.green{background:var(--green-soft);color:#166534}
+.kicker.purple{background:var(--purple-soft);color:#5B21B6}
+h1{font-size:56px;line-height:1.08;font-weight:800}
+h2{font-size:33px;font-weight:800;margin-bottom:8px;line-height:1.15}
+h3{font-size:17.5px;font-weight:800;margin-bottom:10px}
+.lead{font-size:16.5px;color:var(--muted);line-height:1.65;margin-bottom:20px}
+.accent{color:var(--accent-dark)}
+.blue{color:var(--primary)}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.center{text-align:center}
+hr.soft{border:none;border-top:1.5px dashed var(--line);margin:20px 0}
+
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:var(--radius);padding:20px 22px;box-shadow:var(--shadow)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:14px 0}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:14px 0}
+.grid8{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:14px 0}
+
+/* kotak rumus besar */
+.formula-box{
+  background:linear-gradient(135deg,#EFF6FF,#FDFBF4);border:2px solid var(--primary-soft);
+  border-radius:var(--radius);padding:22px 24px;margin:16px 0;text-align:center;box-shadow:var(--shadow)
+}
+.formula-box .big{font-size:30px;font-weight:700;color:var(--primary-dark);margin-bottom:6px}
+.formula-box .note{font-size:13.5px;color:var(--muted)}
+.formula-box.orange{background:linear-gradient(135deg,#FFF8EB,#EFF6FF);border-color:#FDE68A}
+.formula-box.orange .big{color:var(--accent-dark)}
+
+/* kartu mengapa / contoh / jebakan / tips */
+.why{background:linear-gradient(160deg,#F0F7FF,#FFFFFF);border-color:#BFDBFE}
+.ex{background:linear-gradient(160deg,#FFFBEB,#FFFFFF);border-color:#FDE68A}
+.trap-box{background:var(--red-soft);border:1.5px solid #FECACA;border-left:6px solid var(--red);border-radius:14px;padding:14px 18px;margin:14px 0;font-size:14.5px;line-height:1.6}
+.trap-box b{color:#991B1B}
+.tip-box{background:var(--green-soft);border:1.5px solid #BBF7D0;border-left:6px solid var(--green);border-radius:14px;padding:14px 18px;margin:14px 0;font-size:14.5px;line-height:1.6}
+.tip-box b{color:#166534}
+.info-box{background:var(--purple-soft);border:1.5px solid #DDD6FE;border-left:6px solid var(--purple);border-radius:14px;padding:14px 18px;margin:14px 0;font-size:14.5px;line-height:1.6}
+.info-box b{color:#5B21B6}
+
+/* langkah-langkah & reveal */
+.steps{margin:10px 0 4px 20px;line-height:1.75;font-size:15px}
+.steps li{margin-bottom:6px;padding-left:4px}
+.steps.final li:last-child{background:var(--green-soft);border-radius:8px;padding:6px 10px;font-weight:700;color:#166534;list-style:none;margin-left:-20px}
+.reveal-btn{margin-top:8px}
+.rvl{display:none}
+.rvl.open{display:block;animation:fadeUp .35s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* pecahan & akar */
+.frac{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;line-height:1.15;margin:0 3px;font-size:.92em}
+.frac .num{border-bottom:1.6px solid currentColor;padding:0 5px 2px}
+.frac .den{padding-top:2px}
+.rad{border-top:1.6px solid currentColor;padding:1px 3px 0 2px}
+
+/* tombol */
+.btn{
+  display:inline-flex;align-items:center;gap:8px;border:none;cursor:pointer;
+  font-family:inherit;font-weight:700;font-size:14.5px;border-radius:13px;padding:11px 20px;
+  transition:.2s;line-height:1;
+}
+.btn-primary{background:var(--primary);color:#fff;box-shadow:0 6px 16px rgba(37,99,235,.30)}
+.btn-primary:hover{background:var(--primary-dark);transform:translateY(-1px)}
+.btn-accent{background:var(--accent);color:#fff;box-shadow:0 6px 16px rgba(245,158,11,.30)}
+.btn-accent:hover{background:var(--accent-dark);transform:translateY(-1px)}
+.btn-ghost{background:#fff;color:var(--primary-dark);border:1.5px solid var(--primary-soft)}
+.btn-ghost:hover{background:var(--primary-soft)}
+.btn-green{background:var(--green);color:#fff}
+.btn-green:hover{background:#15803D}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none!important}
+.btn-sm{padding:8px 14px;font-size:13px;border-radius:11px}
+
+/* ---------- COVER ---------- */
+.cover{min-height:100%;display:flex;align-items:center;justify-content:center;position:relative;text-align:center}
+.cover .wrap{width:100%;padding-top:10px}
+.float-sym{position:absolute;font-family:Georgia,serif;font-weight:700;color:var(--primary);opacity:.10;user-select:none;pointer-events:none;animation:floaty 7s ease-in-out infinite}
+.float-sym.o{color:var(--accent)} .float-sym.p{color:var(--purple)}
+@keyframes floaty{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-16px) rotate(5deg)}}
+.cover-badge{display:inline-flex;gap:8px;align-items:center;background:#fff;border:1.5px solid var(--line);border-radius:99px;padding:8px 18px;font-weight:800;font-size:13px;letter-spacing:1.6px;color:var(--primary-dark);box-shadow:var(--shadow);margin-bottom:22px}
+.cover h1.grad{
+  font-size:84px;letter-spacing:2px;
+  background:linear-gradient(92deg,#2563EB 10%,#7C3AED 45%,#F59E0B 90%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  margin-bottom:10px;
+}
+.cover .sub{font-size:19px;color:var(--ink);font-weight:600;margin-bottom:6px}
+.cover .sub2{font-size:15px;color:var(--muted);max-width:640px;margin:0 auto 24px;line-height:1.7}
+.chips{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:30px}
+.chip{background:#fff;border:1.5px solid var(--line);border-radius:99px;padding:8px 16px;font-size:13px;font-weight:700;color:var(--ink);box-shadow:var(--shadow)}
+.chip b{color:var(--primary)}
+.chip.o b{color:var(--accent-dark)}
+.hint{margin-top:26px;font-size:12.5px;color:var(--muted)}
+
+/* ---------- Apersepsi ---------- */
+.hook{border-radius:var(--radius);padding:18px 20px;line-height:1.7;font-size:14.8px}
+.hook .emo{font-size:30px;float:right;margin-left:10px}
+.hook h4{font-size:15.5px;margin-bottom:6px}
+.hook.blue{background:linear-gradient(160deg,#EFF6FF,#fff);border:1.5px solid #BFDBFE}
+.hook.orange{background:linear-gradient(160deg,#FFF7E6,#fff);border:1.5px solid #FDE68A}
+.hook.purple{background:linear-gradient(160deg,#F5F3FF,#fff);border:1.5px solid #DDD6FE}
+.bridge{background:linear-gradient(92deg,var(--primary),#7C3AED);color:#fff;border-radius:var(--radius);padding:20px 26px;font-size:16.5px;line-height:1.7;box-shadow:0 10px 26px rgba(37,99,235,.25)}
+.bridge b{color:#FDE68A}
+
+/* ---------- Tujuan ---------- */
+.tujuan{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}
+.tj{display:flex;gap:14px;align-items:flex-start;background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:16px 18px;box-shadow:var(--shadow)}
+.tj .no{flex:0 0 40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;color:#fff}
+.tj:nth-child(1) .no{background:var(--primary)} .tj:nth-child(2) .no{background:var(--accent)}
+.tj:nth-child(3) .no{background:var(--purple)} .tj:nth-child(4) .no{background:var(--green)}
+.tj p{font-size:14px;line-height:1.6}
+.tj .lvl{display:inline-block;margin-top:6px;font-size:11px;font-weight:800;letter-spacing:1px;background:var(--primary-soft);color:var(--primary-dark);border-radius:99px;padding:3px 10px}
+.flow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center;margin-top:8px}
+.flow .fstep{background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:9px 14px;font-size:13px;font-weight:700;box-shadow:var(--shadow)}
+.flow .arrow{color:var(--accent-dark);font-weight:800}
+
+/* ---------- Definisi ---------- */
+.def-diagram{display:flex;align-items:flex-end;justify-content:center;gap:26px;margin:8px 0 4px}
+.def-diagram .part{text-align:center}
+.def-diagram .part .sym{font-size:64px;font-family:Georgia,serif;color:var(--primary-dark);line-height:1}
+.def-diagram .part .lab{font-size:12px;font-weight:800;letter-spacing:1.2px;color:var(--accent-dark);margin-top:6px}
+.ladder{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:14px 0}
+.ladder .step{background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:8px 12px;font-size:14px;box-shadow:var(--shadow)}
+.ladder .step small{display:block;font-size:10.5px;color:var(--muted)}
+.ladder .step.hl{background:var(--accent-soft);border-color:#FDE68A}
+.expand-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:14px 0}
+.eg{background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:14px;font-size:13.5px;box-shadow:var(--shadow);line-height:1.55}
+.eg h5{font-size:13px;letter-spacing:.6px;margin-bottom:6px;color:var(--primary-dark)}
+.eg .f{font-family:Georgia,serif;font-size:17px;color:var(--ink);margin:4px 0}
+
+/* ---------- Sifat: header warna ---------- */
+.sifat-hero{display:flex;gap:16px;align-items:center;margin-bottom:6px}
+.sifat-num{flex:0 0 62px;height:62px;border-radius:18px;background:linear-gradient(135deg,var(--primary),#7C3AED);color:#fff;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;font-family:Georgia,serif;box-shadow:0 8px 20px rgba(37,99,235,.30)}
+.sifat-num.o{background:linear-gradient(135deg,var(--accent),#EF4444)}
+.sifat-num.g{background:linear-gradient(135deg,#059669,#2563EB)}
+.sifat-num.v{background:linear-gradient(135deg,#7C3AED,#EC4899)}
+
+/* ---------- QUIZ ---------- */
+.quiz{max-width:860px;margin:0 auto}
+.quiz-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.quiz-title{font-size:20px;font-weight:800;color:var(--primary-dark)}
+.quiz-title small{display:block;font-size:12.5px;color:var(--muted);font-weight:600}
+.quiz-meta{display:flex;gap:10px;align-items:center}
+.q-count{font-size:13px;font-weight:800;color:var(--muted);background:#fff;border:1.5px solid var(--line);padding:7px 14px;border-radius:99px;font-variant-numeric:tabular-nums}
+.pills{display:flex;gap:7px;flex-wrap:wrap;margin:6px 0 16px}
+.pill{width:38px;height:34px;border-radius:10px;border:1.5px solid var(--line);background:#fff;font-weight:800;font-size:13.5px;cursor:pointer;color:var(--muted);transition:.15s;font-family:inherit}
+.pill:hover{border-color:var(--primary)}
+.pill.cur{background:var(--primary);color:#fff;border-color:var(--primary)}
+.pill.ok{background:var(--green-soft);color:#166534;border-color:#86EFAC}
+.pill.bad{background:var(--red-soft);color:#991B1B;border-color:#FCA5A5}
+.qcard{background:#fff;border:1.5px solid var(--line);border-radius:var(--radius);padding:24px 26px;box-shadow:var(--shadow)}
+.qnum{display:inline-flex;align-items:center;gap:8px;background:var(--primary-soft);color:var(--primary-dark);font-weight:800;font-size:12px;letter-spacing:1.5px;padding:6px 14px;border-radius:99px;margin-bottom:14px}
+.qtext{font-size:17px;line-height:1.75;margin-bottom:18px}
+.opts{display:grid;gap:10px}
+.opt{
+  display:flex;align-items:center;gap:12px;width:100%;text-align:left;cursor:pointer;
+  background:#fff;border:1.8px solid var(--line);border-radius:13px;padding:12px 16px;
+  font-family:inherit;font-size:15px;color:var(--ink);transition:.15s;line-height:1.5;
+}
+.opt .letter{flex:0 0 30px;height:30px;border-radius:9px;background:var(--primary-soft);color:var(--primary-dark);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13.5px;transition:.15s}
+.opt:hover{border-color:var(--primary);background:#F8FAFF}
+.opt.sel{border-color:var(--primary);background:#EFF6FF;box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+.opt.correct{border-color:var(--green);background:var(--green-soft)}
+.opt.correct .letter{background:var(--green);color:#fff}
+.opt.wrong{border-color:var(--red);background:var(--red-soft)}
+.opt.wrong .letter{background:var(--red);color:#fff}
+.opt.dim{opacity:.55}
+.opt.locked{cursor:default}
+.opt.locked:hover{background:#fff}
+.opt.correct.locked:hover{background:var(--green-soft)}
+.opt.wrong.locked:hover{background:var(--red-soft)}
+.opt .mark{margin-left:auto;font-weight:800;font-size:16px}
+.fb{display:none;margin-top:16px;border-radius:13px;padding:13px 16px;font-size:14.5px;font-weight:700;line-height:1.55}
+.fb.show{display:flex;gap:10px;align-items:flex-start;animation:fadeUp .3s ease}
+.fb.ok{background:var(--green-soft);color:#166534;border:1.5px solid #86EFAC}
+.fb.bad{background:var(--red-soft);color:#991B1B;border:1.5px solid #FCA5A5}
+.fb.warn{background:var(--accent-soft);color:var(--accent-dark);border:1.5px solid #FDE68A}
+.bahas{display:none;margin-top:14px;background:linear-gradient(160deg,#FFFBEB,#fff);border:1.5px solid #FDE68A;border-left:6px solid var(--accent);border-radius:14px;padding:16px 20px;line-height:1.7}
+.bahas.open{display:block;animation:fadeUp .35s ease}
+.bahas h5{color:var(--accent-dark);font-size:13px;letter-spacing:1.5px;margin-bottom:8px}
+.q-actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;align-items:center}
+.q-nav{display:flex;gap:10px;margin-top:20px;justify-content:space-between;align-items:center}
+.q-done{display:none;margin-top:14px;background:var(--green-soft);border:1.5px solid #86EFAC;color:#166534;border-radius:13px;padding:12px 16px;font-weight:700;font-size:14px}
+.q-done.show{display:block;animation:fadeUp .3s ease}
+.shake{animation:shake .4s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+/* ---------- Tabel ringkasan ---------- */
+.sum-table{width:100%;border-collapse:separate;border-spacing:0;background:#fff;border:1.5px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);font-size:14px}
+.sum-table th{background:var(--primary);color:#fff;text-align:left;padding:11px 14px;font-size:12.5px;letter-spacing:1px}
+.sum-table td{padding:10px 14px;border-top:1px solid var(--line);line-height:1.5}
+.sum-table tr:nth-child(even) td{background:#F8FAFF}
+.sum-table td.f{font-family:Georgia,serif;font-size:15px;color:var(--primary-dark);font-weight:700;white-space:nowrap}
+
+/* ---------- Refleksi ---------- */
+.ref-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:16px;margin:14px 0}
+.ref-q{margin-bottom:14px}
+.ref-q label{display:block;font-weight:800;font-size:14px;margin-bottom:8px}
+.ref-q textarea{
+  width:100%;min-height:74px;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;
+  font-family:inherit;font-size:14px;line-height:1.6;resize:vertical;background:#fff;color:var(--ink);
+}
+.ref-q textarea:focus{outline:2px solid var(--primary-soft);border-color:var(--primary)}
+.rate-row{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.rate-row .t{flex:0 0 46%;font-size:13.5px;font-weight:600}
+.rate{display:flex;gap:6px}
+.rate button{border:1.5px solid var(--line);background:#fff;border-radius:99px;padding:6px 13px;font-size:12px;font-weight:800;cursor:pointer;color:var(--muted);font-family:inherit;transition:.15s}
+.rate button.sel-0{background:var(--red-soft);border-color:var(--red);color:#991B1B}
+.rate button.sel-1{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-dark)}
+.rate button.sel-2{background:var(--green-soft);border-color:var(--green);color:#166534}
+.toast{position:fixed;bottom:78px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:11px 20px;border-radius:99px;font-size:13.5px;font-weight:700;opacity:0;pointer-events:none;transition:.3s;z-index:60;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ---------- Menu daftar isi ---------- */
+.menu-ov{position:fixed;inset:0;background:rgba(15,23,42,.45);backdrop-filter:blur(6px);z-index:50;display:none;align-items:center;justify-content:center;padding:20px}
+.menu-ov.open{display:flex;animation:fadeUp .25s ease}
+.menu-panel{background:#fff;border-radius:22px;max-width:720px;width:100%;max-height:82vh;overflow-y:auto;padding:26px 28px;box-shadow:0 30px 80px rgba(0,0,0,.35)}
+.menu-panel h3{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.menu-close{border:none;background:var(--red-soft);color:#991B1B;width:34px;height:34px;border-radius:10px;font-size:16px;cursor:pointer;font-weight:800}
+.menu-group{font-size:11px;font-weight:800;letter-spacing:2px;color:var(--muted);margin:14px 0 8px;text-transform:uppercase}
+.menu-list{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.menu-item{display:flex;gap:10px;align-items:center;border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;cursor:pointer;font-family:inherit;font-size:13.5px;font-weight:600;text-align:left;transition:.15s;color:var(--ink);width:100%}
+.menu-item:hover{border-color:var(--primary);background:#F5F9FF}
+.menu-item .n{flex:0 0 26px;height:26px;border-radius:8px;background:var(--primary-soft);color:var(--primary-dark);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800}
+
+/* ---------- Footer nav ---------- */
+.navbar{
+  position:absolute;left:0;right:0;bottom:0;height:64px;z-index:25;
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding:0 20px;background:rgba(255,255,255,.9);backdrop-filter:blur(8px);border-top:1px solid var(--line);
+}
+.navbar .where{font-size:13px;font-weight:700;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nav-btns{display:flex;gap:10px}
+.navbtn{border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:10px 18px;font-weight:800;font-size:14px;cursor:pointer;color:var(--ink);transition:.2s;font-family:inherit}
+.navbtn:hover:not(:disabled){border-color:var(--primary);color:var(--primary-dark);background:#F5F9FF}
+.navbtn:disabled{opacity:.4;cursor:not-allowed}
+.navbtn.next{background:var(--primary);border-color:var(--primary);color:#fff}
+.navbtn.next:hover:not(:disabled){background:var(--primary-dark)}
+
+/* ---------- Responsif ---------- */
+@media (max-width:860px){
+  .wrap{padding:26px 16px 110px}
+  h1{font-size:42px}.cover h1.grad{font-size:54px}
+  h2{font-size:25px}
+  .grid2,.grid3,.grid4,.grid8,.expand-grid,.tujuan,.ref-grid,.menu-list{grid-template-columns:1fr}
+  .def-diagram .part .sym{font-size:46px}
+  .counter{display:none}
+  .brand small{display:none}
+  .navbar .where{display:none}
+  .qcard{padding:18px 16px}
+  .opt{font-size:14px}
+  .formula-box .big{font-size:22px}
+  .sum-table{font-size:12.5px}
+  .sum-table td{padding:8px 9px}
+  .rate-row .t{flex:0 0 100%}
+}
+@media (max-width:520px){
+  .topbar{gap:8px;padding:0 10px}
+  .progress{height:8px}
+  .grid8{grid-template-columns:1fr 1fr}
+}
+
+</style>
+</head>
+<body>
+<div class="stage">
+  <header class="topbar">
+    <div class="brand"><div class="logo">a<sup>n</sup></div><div>EKSPONEN<small>PRESENTASI INTERAKTIF • KELAS X</small></div></div>
+    <div class="progress"><b id="pbar"></b></div>
+    <span class="counter" id="counter">1 / 28</span>
+    <button class="topbtn" id="btn-fs" title="Layar penuh (F)">⛶</button>
+    <button class="topbtn" id="btn-menu" title="Daftar isi (M)">☰</button>
+  </header>
+  <main class="viewport">
+
+<!-- ============ SLIDE 1 : COVER ============ -->
+<section class="slide" data-title="Cover" data-group="Pembuka">
+  <div class="cover">
+    <span class="float-sym" style="top:8%;left:7%;font-size:56px">2<sup>8</sup></span>
+    <span class="float-sym o" style="top:18%;right:9%;font-size:48px;animation-delay:.8s"><i>a</i><sup><i>n</i></sup></span>
+    <span class="float-sym p" style="bottom:14%;left:12%;font-size:52px;animation-delay:1.6s">√</span>
+    <span class="float-sym o" style="bottom:20%;right:14%;font-size:44px;animation-delay:.4s"><i>x</i><sup>−2</sup></span>
+    <span class="float-sym" style="top:44%;left:3%;font-size:38px;animation-delay:2s"><i>a</i><sup>0</sup></span>
+    <span class="float-sym p" style="top:50%;right:4%;font-size:40px;animation-delay:1.2s">3<sup>4</sup></span>
+    <div class="wrap">
+      <div class="cover-badge rev">📘 MATEMATIKA &nbsp;•&nbsp; SMA KELAS X &nbsp;•&nbsp; FASE E</div>
+      <h1 class="grad rev">EKSPONEN</h1>
+      <div class="sub rev">Menjelajah Kekuatan Pangkat: dari Definisi hingga Persamaan</div>
+      <div class="sub2 rev">Belajar mandiri yang interaktif — pahami konsepnya, kuasai kedelapan sifatnya, dan uji kemampuan berpikir kritis-mu lewat 110 soal berpembahasan lengkap.</div>
+      <div class="chips rev">
+        <span class="chip"><b>8</b> Sifat Eksponen</span>
+        <span class="chip o"><b>110</b> Soal Latihan</span>
+        <span class="chip"><b>4</b> Strategi Persamaan</span>
+        <span class="chip o"><b>✔</b> Pembahasan Lengkap</span>
+      </div>
+      <div class="rev"><button class="btn btn-primary" id="btn-start" style="font-size:16px;padding:14px 30px">🚀 Mulai Belajar &nbsp;→</button></div>
+      <div class="hint rev">Navigasi: tombol ← → pada keyboard • ikon ☰ untuk daftar isi • ikon ⛶ untuk layar penuh</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 2 : APERSEPSI ============ -->
+<section class="slide" data-title="Apersepsi" data-group="Pembuka">
+  <div class="wrap">
+    <div class="kicker orange rev">LANGKAH 1 • APERSEPSI</div>
+    <h2 class="rev">Keajaiban yang Tersembunyi di Balik <span class="accent">Pangkat</span></h2>
+    <p class="lead rev">Sebelum masuk ke materi, cermati tiga kejadian menakjubkan ini. Semuanya punya satu benang merah yang sama — dan itulah yang akan kita pelajari hari ini.</p>
+    <div class="grid3">
+      <div class="hook blue rev">
+        <span class="emo">🦠</span>
+        <h4>Triliunan dari Satu Bakteri</h4>
+        Satu bakteri membelah diri menjadi <b>2 bakteri</b> setiap 20 menit. Setelah <b>10 jam</b> (30 kali pembelahan), jumlahnya menjadi
+        <div class="math" style="font-size:18px;margin-top:6px;color:var(--primary-dark)"><b>2<sup>30</sup> ≈ 1.073.741.824</b></div>
+        Lebih dari <b>1 miliar</b> bakteri — hanya dari satu sel!
+      </div>
+      <div class="hook orange rev">
+        <span class="emo">📄</span>
+        <h4>Melipat Kertas Menembus Bulan</h4>
+        Kertas setebal <b>0,1 mm</b> jika bisa dilipat <b>42 kali</b>, ketebalannya menjadi
+        <div class="math" style="font-size:18px;margin-top:6px;color:var(--accent-dark)"><b>0,1 mm × 2<sup>42</sup> ≈ 439.800 km</b></div>
+        — melampaui jarak Bumi ke Bulan (<b>384.400 km</b>). Tak percaya? Kita buktikan dengan matematika!
+      </div>
+      <div class="hook purple rev">
+        <span class="emo">📣</span>
+        <h4>Rumor yang Menyebar Cepat</h4>
+        Satu orang membagikan kabar ke <b>3 orang</b>, lalu masing-masing membagikan lagi ke 3 orang, dan seterusnya setiap 10 menit. Setelah <b>1 jam</b>:
+        <div class="math" style="font-size:18px;margin-top:6px;color:var(--purple)"><b>3<sup>6</sup> = 729 orang</b></div>
+        Dari satu orang menjadi ratusan — inilah cara berita viral menyebar.
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="card rev">
+        <h3>🤔 Pertanyaan Pemantik</h3>
+        <div class="steps" style="margin-left:4px">
+          <li>Mengapa <b>penyebaran berita</b> di media sosial bisa sangat cepat? Apa pola pertumbuhannya?</li>
+          <li>Jika kamu <b>menabung</b> dengan bunga yang selalu digandakan, mengapa saldonya tumbuh begitu pesat?</li>
+          <li>Mengapa jumlah <b>virus di komputer</b> atau <b>penularan flu</b> di kelas berlipat-lipat dalam waktu singkat?</li>
+        </div>
+        <button class="reveal-btn btn btn-ghost btn-sm" data-target="pemantik-ans" data-alt="🙈 Sembunyikan diskusi">💬 Lihat diskusi singkat</button>
+        <div class="rvl" id="pemantik-ans">
+          <p class="small" style="line-height:1.7;margin-top:8px">Pola ketiganya sama: <b>pertumbuhan berlipat dalam interval waktu yang tetap</b>. Menulis berulang-ulang "2 × 2 × 2 × …" sangat merepotkan, apalagi jika pengaliannya ratusan kali. Oleh karena itu matematika menyediakan notasi yang ringkas dan aturan main yang elegan untuk menghitungnya.</p>
+        </div>
+      </div>
+      <div class="bridge rev">
+        🎯 <b>Jembatan menuju materi:</b> Semua fenomena di atas dihitung menggunakan <b>eksponen</b> — notasi pangkat yang membuat bilangan raksasa mudah ditulis, dihitung, dan diprediksi. Hari ini kita akan membongkar definisinya, menguasai <b>8 sifat</b>-nya, menyelesaikan <b>persamaan eksponen</b>, lalu menguji diri dengan <b>110 soal interaktif</b>. Siap?
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 3 : TUJUAN PEMBELAJARAN ============ -->
+<section class="slide" data-title="Tujuan Pembelajaran" data-group="Pembuka">
+  <div class="wrap">
+    <div class="kicker rev">LANGKAH 2 • TUJUAN PEMBELAJARAN</div>
+    <h2 class="rev">Setelah Pembelajaran Ini, Kamu Mampu…</h2>
+    <p class="lead rev">Empat kemampuan ini adalah targetmu hari ini. Gunakan sebagai peta: setiap bagian materi dan latihan berkontribusi pada satu tujuan.</p>
+    <div class="tujuan">
+      <div class="tj rev"><div class="no">1</div><div><p>Menjelaskan <b>pengertian dan notasi eksponen</b> untuk pangkat bulat positif, nol, negatif, dan pecahan dengan bahasamu sendiri.</p><span class="lvl">Pemahaman Konsep</span></div></div>
+      <div class="tj rev"><div class="no">2</div><div><p>Menerapkan <b>delapan sifat eksponen</b> untuk menyederhanakan bentuk aljabar secara tepat dan efisien.</p><span class="lvl">Penerapan Prosedur</span></div></div>
+      <div class="tj rev"><div class="no">3</div><div><p>Menyelesaikan <b>persamaan eksponen</b> melalui strategi menyamakan basis, sifat pangkat nol, dan substitusi.</p><span class="lvl">Penalaran Prosedural</span></div></div>
+      <div class="tj rev"><div class="no">4</div><div><p>Menganalisis masalah kontekstual (pertumbuhan, peluruhan, perbandingan) yang memerlukan <b>berpikir kritis</b> tentang eksponen.</p><span class="lvl">Berpikir Kritis</span></div></div>
+    </div>
+    <div class="card rev">
+      <h3 style="text-align:center">🗺️ Alur Perjalanan Kita Hari Ini</h3>
+      <div class="flow">
+        <span class="fstep">1️⃣ Definisi</span><span class="arrow">→</span>
+        <span class="fstep">2️⃣ 8 Sifat + Latihan (80 soal)</span><span class="arrow">→</span>
+        <span class="fstep">3️⃣ Persamaan + Latihan (10 soal)</span><span class="arrow">→</span>
+        <span class="fstep">4️⃣ Tantangan Kritis (20 soal)</span><span class="arrow">→</span>
+        <span class="fstep">5️⃣ Kesimpulan & Refleksi</span>
+      </div>
+      <p class="small muted center" style="margin-top:12px">Setiap sifat langsung ditutup dengan <b>10 soal latihan interaktif</b> ber-tombol <i>Cek Jawaban</i> dan <i>Pembahasan</i>, agar pahammu langsung teruji.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 4 : DEFINISI EKSPONEN ============ -->
+<section class="slide" data-title="Definisi Eksponen" data-group="Konsep Dasar">
+  <div class="wrap">
+    <div class="kicker rev">MATERI • KONSEP DASAR</div>
+    <h2 class="rev">Apa Itu <span class="blue">Eksponen</span>?</h2>
+    <p class="lead rev">Perkalian berulang dari bilangan yang sama bisa ditulis dengan sangat ringkas. Inilah ide dasar eksponen.</p>
+    <div class="formula-box rev">
+      <div class="def-diagram">
+        <div class="part"><div class="sym"><i>a</i></div><div class="lab">BASIS</div></div>
+        <div class="part"><div class="sym"><sup><i>n</i></sup></div><div class="lab">EKSPONEN (PANGKAT)</div></div>
+      </div>
+      <div class="math big"><i>a</i><sup><i>n</i></sup> = <i>a</i> × <i>a</i> × <i>a</i> × … × <i>a</i> &nbsp;<span style="font-size:16px;color:var(--muted)">(sebanyak <i>n</i> faktor)</span></div>
+      <div class="note">dengan <span class="math"><i>a</i></span> bilangan real dan <span class="math"><i>n</i></span> bilangan bulat positif. Contoh: <span class="math">2<sup>5</sup> = 2×2×2×2×2 = 32</span> &nbsp;•&nbsp; <span class="math">5<sup>3</sup> = 125</span> &nbsp;•&nbsp; <span class="math">10<sup>4</sup> = 10.000</span></div>
+    </div>
+    <div class="card rev">
+      <h3>🪜 Tangga Pangkat: pola menurun yang menakjubkan</h3>
+      <p class="small muted" style="margin-bottom:10px">Perhatikan <span class="math">2<sup>n</sup></span> — setiap kali pangkat turun 1, nilainya <b>dibagi 2</b>. Lanjutkan polanya dan kamu akan menemukan pangkat nol, negatif, bahkan pecahan!</p>
+      <div class="ladder">
+        <div class="step"><span class="math">2<sup>4</sup> = 16</span><small>2×2×2×2</small></div>
+        <div class="step"><span class="math">2<sup>3</sup> = 8</span><small>÷ 2</small></div>
+        <div class="step"><span class="math">2<sup>2</sup> = 4</span><small>÷ 2</small></div>
+        <div class="step"><span class="math">2<sup>1</sup> = 2</span><small>÷ 2</small></div>
+        <div class="step hl"><span class="math">2<sup>0</sup> = 1</span><small>÷ 2 → pangkat nol!</small></div>
+        <div class="step hl"><span class="math">2<sup>−1</sup> = ½</span><small>pangkat negatif</small></div>
+        <div class="step hl"><span class="math">2<sup>−2</sup> = ¼</span><small>terus terbagi 2</small></div>
+      </div>
+    </div>
+    <div class="expand-grid">
+      <div class="eg rev"><h5>① N BULAT POSITIF</h5><div class="f"><i>a</i><sup><i>n</i></sup></div>Perkalian <span class="math"><i>a</i></span> sebanyak <span class="math"><i>n</i></span> faktor.<br><b>Contoh:</b> <span class="math">3<sup>4</sup> = 81</span></div>
+      <div class="eg rev"><h5>② N = 0</h5><div class="f"><i>a</i><sup>0</sup> = 1</div>Untuk setiap <span class="math"><i>a</i> ≠ 0</span>.<br><b>Contoh:</b> <span class="math">7<sup>0</sup> = 1</span></div>
+      <div class="eg rev"><h5>③ N NEGATIF</h5><div class="f"><i>a</i><sup>−<i>n</i></sup> = <span class="frac"><span class="num">1</span><span class="den"><i>a</i><sup><i>n</i></sup></span></span></div>Kebalikan dari pangkat positif.<br><b>Contoh:</b> <span class="math">3<sup>−2</sup> = <span class="frac"><span class="num">1</span><span class="den">9</span></span></span></div>
+      <div class="eg rev"><h5>④ N PECAHAN</h5><div class="f"><i>a</i><sup><i>m/n</i></sup> = <sup><i>n</i></sup>√<span class="rad"><i>a</i><sup><i>m</i></sup></span></div>Terhubung dengan bentuk akar.<br><b>Contoh:</b> <span class="math">8<sup>1/3</sup> = ∛8 = 2</span></div>
+    </div>
+    <div class="trap-box rev">⚠️ <b>Awas jebakan penulisan!</b> <span class="math">(−2)<sup>4</sup> = 16</span> karena basisnya <b>−2</b> (bulat negatif di dalam kurung), tetapi <span class="math">−2<sup>4</sup> = −16</span> karena pangkat hanya menempel pada angka 2. Tanda kurung <b>sangat menentukan</b>! Jangan tertukar juga: <span class="math">2<sup>3</sup> = 2×2×2 = 8</span>, <b>bukan</b> <span class="math">2×3 = 6</span>.</div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 5 : SIFAT 1 ============ -->
+<section class="slide" data-title="Sifat 1 · Perkalian" data-group="Sifat-Sifat Eksponen">
+  <div class="wrap">
+    <div class="sifat-hero rev"><div class="sifat-num">1</div><div><div class="kicker" style="margin-bottom:4px">SIFAT EKSPONEN • 1 DARI 8</div><h2>Sifat Perkalian — <span class="accent">Pangkat Dijumlahkan</span></h2></div></div>
+    <div class="formula-box rev">
+      <div class="math big"><i>a</i><sup><i>m</i></sup> · <i>a</i><sup><i>n</i></sup> = <i>a</i><sup><i>m</i>+<i>n</i></sup></div>
+      <div class="note">Mengalikan dua pangkat <b>berbasis sama</b> → basis tetap, pangkatnya <b>ditambahkan</b>.</div>
+    </div>
+    <div class="grid2">
+      <div class="card why rev">
+        <h3>🔍 Mengapa sifat ini benar?</h3>
+        <p style="line-height:1.75;font-size:14.5px">Lihat langsung dengan <span class="math">2<sup>3</sup> · 2<sup>2</sup></span>:</p>
+        <div class="math" style="font-size:17px;line-height:2;margin-top:8px">
+          2<sup>3</sup> · 2<sup>2</sup> = <span style="color:var(--primary)">(2×2×2)</span> × <span style="color:var(--accent-dark)">(2×2)</span><br>
+          = 2<sup>5</sup> = 2<sup>3+2</sup>
+        </div>
+        <p style="line-height:1.75;font-size:14.5px;margin-top:8px">Faktor 2 ada <b style="color:var(--primary)">3 buah</b> dan <b style="color:var(--accent-dark)">2 buah</b>, totalnya <b>3 + 2 = 5 buah</b>. Jadi pangkatnya berjumlah!</p>
+      </div>
+      <div class="card ex rev">
+        <h3>✏️ Contoh Penerapan</h3>
+        <div class="example" style="margin-bottom:12px">
+          <p class="small" style="font-weight:700">Contoh 1 — hitung <span class="math">2<sup>5</sup> · 2<sup>3</sup></span></p>
+          <button class="reveal-btn btn btn-ghost btn-sm" data-target="s1ex1" data-alt="🙈 Sembunyikan langkah">👁 Tampilkan langkah</button>
+          <div class="rvl" id="s1ex1"><ol class="steps final"><li>Basis sama (2) → gunakan <span class="math"><i>a</i><sup><i>m</i></sup>·<i>a</i><sup><i>n</i></sup> = <i>a</i><sup><i>m</i>+<i>n</i></sup></span></li><li><span class="math">2<sup>5</sup> · 2<sup>3</sup> = 2<sup>5+3</sup> = 2<sup>8</sup></span></li><li>2<sup>8</sup> = 256 ✔</li></ol></div>
+        </div>
+        <div class="example">
+          <p class="small" style="font-weight:700">Contoh 2 — sederhanakan <span class="math"><i>x</i><sup>3</sup> · <i>x</i><sup>4</sup> · <i>x</i></span></p>
+          <button class="reveal-btn btn btn-ghost btn-sm" data-target="s1ex2" data-alt="🙈 Sembunyikan langkah">👁 Tampilkan langkah</button>
+          <div class="rvl" id="s1ex2"><ol class="steps final"><li>Ingat: <span class="math"><i>x</i></span> tanpa pangkat sama dengan <span class="math"><i>x</i><sup>1</sup></span></li><li>Jumlahkan semua pangkat: <span class="math">3 + 4 + 1 = 8</span></li><li>Hasil: <span class="math"><i>x</i><sup>8</sup></span> ✔</li></ol></div>
+        </div>
+      </div>
+    </div>
+    <div class="trap-box rev">⚠️ <b>Awas jebakan!</b> Sifat ini <b>hanya untuk perkalian</b> — <span class="math"><i>a</i><sup>3</sup> + <i>a</i><sup>4</sup> ≠ <i>a</i><sup>7</sup></span> (penjumlahan tidak bisa digabung begitu saja). Selain itu basisnya <b>harus sama</b>: <span class="math">2<sup>3</sup> · 3<sup>2</sup></span> <b>tidak bisa</b> langsung dijadikan <span class="math">6<sup>5</sup></span>.</div>
+    <div class="tip-box rev">✏️ <b>Saatnya uji diri!</b> Slide berikutnya berisi 10 soal pilihan ganda khusus sifat ini. <button class="btn btn-accent btn-sm" data-goto="next" style="margin-left:8px">➡️ Latihan 10 Soal</button></div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 6 : QUIZ SIFAT 1 ============ -->
+<section class="slide" data-title="Latihan Sifat 1" data-group="Sifat-Sifat Eksponen">
+  <div class="wrap narrow">
+    <div class="kicker green rev" style="text-align:center">LATIHAN 1 • PILIHAN GANDA A–D</div>
+    <div class="quiz rev" data-quiz="s1"></div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 7 : SIFAT 2 ============ -->
+<section class="slide" data-title="Sifat 2 · Pembagian" data-group="Sifat-Sifat Eksponen">
+  <div class="wrap">
+    <div class="sifat-hero rev"><div class="sifat-num o">2</div><div><div class="kicker orange" style="margin-bottom:4px">SIFAT EKSPONEN • 2 DARI 8</div><h2>Sifat Pembagian — <span class="accent">Pangkat Dikurangkan</span></h2></div></div>
+    <div class="formula-box orange rev">
+      <div class="math big"><span class="frac"><span class="num"><i>a</i><sup><i>m</i></sup></span><span class="den"><i>a</i><sup><i>n</i></sup></span></span> = <i>a</i><sup><i>m</i>−<i>n</i></sup></div>
+      <div class="note">Membagi dua pangkat <b>berbasis sama</b> → basis tetap, pangkatnya <b>dikurangkan</b>. Syarat: <span class="math"><i>a</i> ≠ 0</span>.</div>
+    </div>
+    <div class="grid2">
+      <div class="card why rev">
+        <h3>🔍 Mengapa sifat ini benar?</h3>
+        <p style="line-height:1.75;font-size:14.5px">Perhatikan <span class="math"><span class="frac"><span class="num">2<sup>5</sup></span><span class="den">2<sup>2</sup></span></span></span>:</p>
+        <div class="math" style="font-size:17px;line-height:2;margin-top:8px">
+          <span class="frac"><span class="num">2×2×2×<s style="color:var(--red)">2×2</s></span><span class="den"><s style="color:var(--red)">2×2</s></span></span> = 2×2×2 = 2<sup>5−2</sup> = 2<sup>3</sup>
+        </div>
+        <p style="line-height:1.75;font-size:14.5px;margin-top:8px">Dua faktor 2 di atas <b>tercoret</b> oleh 2 di bawah. Tersisa <b>5 − 2 = 3</b> faktor. Itulah sebabnya pangkat dikurangkan!</p>
+      </div>
+      <div class="card ex rev">
+        <h3>✏️ Contoh Penerapan</h3>
+        <div class="example" style="margin-bottom:12px">
+          <p class="small" style="font-weight:700">Contoh 1 — hitung <span class="math"><span class="frac"><span class="num">5<sup>6</sup></span><span class="den">5<sup>4</sup></span></span></span></p>
+          <button class="reveal-btn btn btn-ghost btn-sm" data-target="s2ex1" data-alt="🙈 Sembunyikan langkah">👁 Tampilkan langkah</button>
+          <div class="rvl" id="s2ex1"><ol class="steps final"><li>Basis sama → kurangkan pangkat: <span class="math">6 − 4 = 2</span></li><li><span class="math"><span class="frac"><span class="num">5<sup>6</sup></span><span class="den">5<sup>4</sup></span></span> = 5<sup>2</sup></span></li><li>5<sup>2</sup> = 25 ✔</li></ol></div>
+        </div>
+        <div class="example">
+          <p class="small" style="font-weight:700">Contoh 2 — hitung <span class="math"><span class="frac"><span class="num">7<sup>3</sup></span><span class="den">7<sup>5</sup></span></span></span></p>
+          <button class="reveal-btn btn btn-ghost btn-sm" data-target="s2ex2" data-alt="🙈 Sembunyikan langkah">👁 Tampilkan langkah</button>
+          <div class="rvl" id="s2ex2"><ol class="steps final"><li>Pangkat bawah lebih besar → hasil pangkatnya negatif: <span class="math">3 − 5 = −2</span></li><li><span class="math">7<sup>−2</sup> = <span class="frac"><span class="num">1</span><span class="den">7<sup>2</sup></span></span></span></li><li>Hasil: <span class="math"><span class="frac"><span class="num">1</span><span class="den">49</span></span></span> ✔</li></ol></div>
+        </div>
+      </div>
+    </div>
+    <div class="trap-box rev">⚠️ <b>Awas jebakan!</b> Basis harus sama dan pangkat bawah "dicoret" dengan pangkat atas: <span class="math"><span class="frac"><span class="num"><i>a</i><sup>6</sup></span><span class="den"><i>b</i><sup>6</sup></span></span> ≠ <i>a</i><sup>6−6</sup></span>. Hati-hati juga urutan: <span class="math"><span class="frac"><span class="num"><i>a</i><sup><i>m</i></sup></span><span class="den"><i>a</i><sup><i>n</i></sup></span></span> = <i>a</i><sup><i>m</i>−<i>n</i></sup></span>, bukan <span class="math"><i>a</i><sup><i>n</i>−<i>m</i></sup></span>!</div>
+    <div class="tip-box rev">✏️ <b>Saatnya uji diri!</b> Slide berikutnya berisi 10 soal khusus sifat pembagian. <button class="btn btn-accent btn-sm" data-goto="next" style="margin-left:8px">➡️ Latihan 10 Soal</button></div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 8 : QUIZ SIFAT 2 ============ -->
+<section class="slide" data-title="Latihan Sifat 2" data-group="Sifat-Sifat Eksponen">
+  <div class="wrap narrow">
+    <div class="kicker green rev" style="text-align:center">LATIHAN 2 • PILIHAN GANDA A–D</div>
+    <div class="quiz rev" data-quiz="s2"></div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 9 : SIFAT 3 ============ -->
+<section class="slide" data-title="Sifat 3 · Pangkat dari Pangkat" data-group="Sifat-Sifat Eksponen">
+  <div class="wrap">
+    <div class="sifat-hero rev"><div class="sifat-num">3</div><div><div class="kicker" style="margin-bottom:4px">SIFAT EKSPONEN • 3 DARI 8</div><h2>Pangkat dari Pangkat — <span class="accent">Pangkat Dikalikan</span></h2></div></div>
+    <div class="formula-box rev">
+      <div class="math big">(<i>a</i><sup><i>m</i></sup>)<sup><i>n</i></sup> = <i>a</i><sup><i>m</i>×<i>n</i></sup></div>
+      <div class="note">Sebuah pangkat dipangkatkan lagi → pangkatnya <b>dikalikan</b>. Berlaku juga sebaliknya: <span class="math">(<i>a</i><sup><i>n</i></sup>)<sup><i>m</i></sup> = <i>a</i><sup><i>m</i>×<i>n</i></sup></span>.</div>
+    </div>
+    <div class="grid2">
+      <div class="card why rev">
+        <h3>🔍 Mengapa sifat ini benar?</h3>
+        <p style="line-height:1.75;font-size:14.5px">Buktikan dengan <span class="math">(2<sup>2</sup>)<sup>3</sup></span> — artinya <span class="math">2<sup>2</sup></span> diulang 3 kali:</p>
+        <div class="math" style="font-size:16.5px;line-height:2;margin-top:8px">
+          (2<sup>2</sup>)<sup>3</sup> = 2<sup>2</sup> · 2<sup>2</sup> · 2<sup>2</sup> = 2<sup>2+2+2</sup> = 2<sup>2×3</sup> = 2<sup>6</sup>
+        </div>
+        <p style="line-height:1.75;font-size:14.5px;margin-top:8px">Sifat 1 (perkalian) menambahkan pangkat: <b>2 + 2 + 2 = 2 × 3</b>. Perkalian berulang = perkalian pangkat!</p>
+      </div>
+      <div class="card ex rev">
+        <h3>✏️ Contoh Penerapan</h3>
+        <div class="example" style="margin-bottom:12px">
+          <p class="small" style="font-weight:700">Contoh 1 — hitung <span class="math">(3<sup>2</sup>)<sup>4</sup></span></p>
+          <button class="reveal-btn btn btn-ghost btn-sm" data-target="s3ex1" data-alt="🙈 Sembunyikan langkah">👁 Tampilkan langkah</button>
+          <div class="rvl" id="s3ex1"><ol class="steps final"><li>Pangkat dikalikan: <span class="math">2 × 4 = 8</span></li><li><span class="math">(3<sup>2</sup>)<sup>4</sup> = 3<sup>8</sup></span></li><li>3<sup>8</sup> = 6.561 ✔</li></ol></div>
+        </div>
+        <div class="example">
+          <p class="small" style="font-weight:700">Contoh 2 — sederhanakan <span class="math">(10<sup>−2</sup>)<sup>3</sup></span></p>
+          <button class="reveal-btn btn btn-ghost btn-sm" data-target="s3ex2" data-alt="🙈 Sembunyikan langkah">👁 Tampilkan langkah</button>
+          <div class="rvl" id="s3ex2"><ol class="steps final"><li>Kalikan pangkatnya: <span class="math">(−2) × 3 = −6</span></li><li><span class="math">(10<sup>−2</sup>)<sup>3</sup> = 10<sup>−6</sup></span></li><li>Hasil: <span class="math"><span class="frac"><span class="num">1</span><span class="den">1.000.000</span></span></span> ✔</li></ol></div>
+        </div>
+      </div>
+    </div>
+    <div class="trap-box rev">⚠️ <b>Awas jebakan!</b> Pangkat <b>dikalikan</b>, bukan dijumlah: <span class="math">(2<sup>3</sup>)<sup>2</sup> = 2<sup>6</sup> = 64</span>, <b>bukan</b> <span class="math">2<sup>3+2</sup> = 2<sup>5</sup> = 32</span>. Dan perhatikan: <span class="math">(2<sup>3</sup>)<sup>2</sup> ≠ 2<sup>9</sup></span> — jangan sampai pangkat dipangkatkan!</div>
+    <div class="tip-box rev">✏️ <b>Saatnya uji diri!</b> 10 soal menantimu untuk menguasai sifat pangkat dari pangkat. <button class="btn btn-accent btn-sm" data-goto="next" style="margin-left:8px">➡️ Latihan 10 Soal</button></div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 10 : QUIZ SIFAT 3 ============ -->
+<section class="slide" data-title="Latihan Sifat 3" data-group="Sifat-Sifat Eksponen">
+  <div class="wrap narrow">
+    <div class="kicker green rev" style="text-align:center">LATIHAN 3 • PILIHAN GANDA A–D</div>
+    <div class="quiz rev" data-quiz="s3"></div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 11 : SIFAT 4 ============ -->
+<section class="slide" data-title="Sifat 4 · Pangkat dari Perkalian" data-group="Sifat-Sifat Eksponen">
+  <div class="wrap">
+    <div class="sifat-hero rev"><div class="sifat-num o">4</div><div><div class="kicker orange" style="margin-bottom:4px">SIFAT EKSPONEN • 4 DARI 8</div><h2>Pangkat dari Perkalian — <span class="accent">Pangkatnya Menyebar</span></h2></div></div>
+    <div class="formula-box orange rev">
+      <div class="math big">(<i>ab</i>)<sup><i>n</i></sup> = <i>a</i><sup><i>n</i></sup> · <i>b</i><sup><i>n</i></sup></div>
+      <div class="note">Pangkat yang menghunbi perkalian <b>disebar</b> ke setiap faktor.</div>
+    </div>
+    <div class="grid2">
+      <div class="card why rev">
+        <h3>🔍 Mengapa sifat ini benar?</h3>
+        <p style="line-height:1.75;font-size:14.5px">Buktikan dengan <span class="math">(2·3)<sup>3</sup></span>:</p>
+        <div class="math" style="font-size:16.5px;line-height:2;margin-top:8px">
+          (2·3)<sup>3</sup> = (2·3)(2·3)(2·3)<br>
+          = (2·2·2)·(3·3·3) = 2<sup>3</sup> · 3<sup>3</sup> = 8 × 27 = 216
+        </div>
+        <p style="line-height:1.75;font-size:14.5px;margin-top:8px">Urutan perkalian boleh diatur ulang, jadi faktor 2 dan faktor 3 berkumpul sendiri-sendiri. <span class="math">6<sup>3</sup> = 216</span> ✔</p>
+      </div>
+      <div class="card ex rev">
+        <h3>✏️ Contoh Penerapan</h3>
+        <div class="example" style="margin-bottom:12px">
+          <p class="small" style="font-weight:700">Contoh 1 — sederhanakan <span class="math">(2<i>x</i>)<sup>4</sup></span></p>
+          <button class="reveal-btn btn btn-ghost btn-sm" data-target="s4ex1" data-alt="🙈 Sembunyikan langkah">👁 Tampilkan langkah</button>
+          <div class="rvl" id="s4ex1"><ol class="steps final"><li>Sebarkan pangkat ke kedua faktor: <span class="math">2<sup>4</sup> · <i>x</i><sup>4</sup></span></li><li>Hitung <span class="math">2<sup>4</sup> = 16</span></li><li>Hasil: <span class="math">16<i>x</i><sup>4</sup></span> ✔</li></ol></div>
+        </div>
+        <div class="example">
+          <p class="small" style="font-weight:700">Contoh 2 — sederhanakan <span class="math">(3<i>a</i><sup>2</sup><i>b</i>)<sup>3</sup></span></p>
+          <button class="reveal-btn btn btn-ghost btn-sm" data-target="s4ex2" data-alt="🙈 Sembunyikan langkah">👁 Tampilkan langkah</button>
+          <div class="rvl" id="s4ex2"><ol class="steps final"><li>Sebarkan pangkat 3 ke semua faktor: <span class="math">3<sup>3</sup> · (<i>a</i><sup>2</sup>)<sup>3</sup> · <i>b</i><sup>3</sup></span></li><li>Gunakan sifat 3: <span class="math">(<i>a</i><sup>2</sup>)<sup>3</sup> = <i>a</i><sup>6</sup></span> dan <span class="math">3<sup>3</sup> = 27</span></li><li>Hasil: <span class="math">27<i>a</i><sup>6</sup><i>b</i><sup>3</sup></span> ✔</li></ol></div>
+        </div>
+      </div>
+    </div>
+    <div class="trap-box rev">⚠️ <b>Awas jebakan!</b> Sifat ini hanya berlaku untuk <b>perkalian</b>, bukan penjumlahan: <span class="math">(<i>a</i>+<i>b</i>)<sup>2</sup> ≠ <i>a</i><sup>2</sup> + <i>b</i><sup>2</sup></span>. Contoh konkret: <span class="math">(3+4)<sup>2</sup> = 49</span>, tetapi <span class="math">3<sup>2</sup> + 4<sup>2</sup> = 25</span>. Jangan lupa angka pun ikut dipangkatkan: <span class="math">(2<i>x</i>)<sup>3</sup> = 8<i>x</i><sup>3</sup></span>, <b>bukan</b> <span class="math">2<i>x</i><sup>3</sup></span>!</div>
+    <div class="tip-box rev">✏️ <b>Saatnya uji diri!</b> Latihan 10 soal tentang penyebaran pangkat menantimu. <button class="btn btn-accent btn-sm" data-goto="next" style="margin-left:8px">➡️ Latihan 10 Soal</button></div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 12 : QUIZ SIFAT 4 ============ -->
+<section class="slide" data-title="Latihan Sifat 4" data-group="Sifat-Sifat Eksponen">
+  <div class="wrap narrow">
+    <div class="kicker green rev" style="text-align:center">LATIHAN 4 • PILIHAN GANDA A–D</div>
+    <div class="quiz rev" data-quiz="s4"></div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 13 : SIFAT 5 ============ -->
+<section class="slide" data-title="Sifat 5 · Pangkat dari Pembagian" data-group="Sifat-Sifat Eksponen">
+  <div class="wrap">
+    <div class="sifat-hero rev"><div class="sifat-num">5</div><div><div class="kicker" style="margin-bottom:4px">SIFAT EKSPONEN • 5 DARI 8</div><h2>Pangkat dari Pembagian — <span class="accent">Menyebar ke Pembilang & Penyebut</span></h2></div></div>
+    <div class="formula-box rev">
+      <div class="math big"><span style="font-size:1.15em">(</span><span class="frac"><span class="num"><i>a</i></span><span class="den"><i>b</i></span></span><span style="font-size:1.15em">)</span><sup><i>n</i></sup> = <span class="frac"><span class="num"><i>a</i><sup><i>n</i></sup></span><span class="den"><i>b</i><sup><i>n</i></sup></span></span></div>
+      <div class="note">Pangkat menyebar ke pembilang <b>dan</b> penyebut. Syarat: <span class="math"><i>b</i> ≠ 0</span>.</div>
+    </div>
+    <div class="grid2">
+      <div class="card why rev">
+        <h3>🔍 Mengapa sifat ini benar?</h3>
+        <p style="line-height:1.75;font-size:14.5px">Buktikan dengan <span class="math">(2/3)<sup>3</sup></span>:</p>
+        <div class="math" style="font-size:17px;line-height:2;margin-top:8px">
+          <span style="font-size:1.1em">(</span><span class="frac"><span class="num">2</span><span class="den">3</span></span><span style="font-size:1.1em">)</span><sup>3</sup> = <span class="frac"><span class="num">2</span><span class="den">3</span></span> · <span class="frac"><span class="num">2</span><span class="den">3</span></span> · <span class="frac"><span class="num">2</span><span class="den">3</span></span> = <span class="frac"><span class="num">2·2·2</span><span class="den">3·3·3</span></span> = <span class="frac"><span class="num">2<sup>3</sup></span><span class="den">3<sup>3</sup></span></span> = <span class="frac"><span class="num">8</span><span class="den">27</span></span>
+        </div>
+        <p style="line-height:1.75;font-size:14.5px;margin-top:8px">Perkalian pecahan mengalikan pembilang dengan pembilang, penyebut dengan penyebut — persis seperti sifat 4 pada setiap bagian.</p>
+      </div>
+      <div class="card ex rev">
+        <h3>✏️ Contoh Penerapan</h3>
+        <div class="example" style="margin-bottom:12px">
+          <p class="small" style="font-weight:700">Contoh 1 — sederhanakan <span class="math">(<i>x</i>/4)<sup>3</sup></span></p>
+          <button class="reveal-btn btn btn-ghost btn-sm" data-target="s5ex1" data-alt="🙈 Sembunyikan langkah">👁 Tampilkan langkah</button>
+          <div class="rvl" id="s5ex1"><ol class="steps final"><li>Sebarkan pangkat: <span class="math"><span class="frac"><span class="num"><i>x</i><sup>3</sup></span><span class="den">4<sup>3</sup></span></span></span></li><li>Hitung <span class="math">4<sup>3</sup> = 64</span></li><li>Hasil: <span class="math"><span class="frac"><span class="num"><i>x</i><sup>3</sup></span><span class="den">64</span></span></span> ✔</li></ol></div>
+        </div>
+        <div class="example">
+          <p class="small" style="font-weight:700">Contoh 2 — sederhanakan <span class="math"><span style="font-size:1.1em">(</span><span class="frac"><span class="num">3<i>a</i></span><span class="den">2<i>b</i></span></span><span style="font-size:1.1em">)</span><sup>2</sup></span></p>
+          <button class="reveal-btn btn btn-ghost btn-sm" data-target="s5ex2" data-alt="🙈 Sembunyikan langkah">👁 Tampilkan langkah</button>
+          <div class="rvl" id="s5ex2"><ol class="steps final"><li>Sebarkan pangkat 2: <span class="math"><span class="frac"><span class="num">(3<i>a</i>)<sup>2</sup></span><span class="den">(2<i>b</i>)<sup>2</sup></span></span></span></li><li>Gunakan sifat 4: <span class="math">(3<i>a</i>)<sup>2</sup> = 9<i>a</i><sup>2</sup></span> dan <span class="math">(2<i>b</i>)<sup>2</sup> = 4<i>b</i><sup>2</sup></span></li><li>Hasil: <span class="math"><span class="frac"><span class="num">9<i>a</i><sup>2</sup></span><span class="den">4<i>b</i><sup>2</sup></span></span></span> ✔</li></ol></div>
+        </div>
+      </div>
+    </div>
+    <div class="trap-box rev">⚠️ <b>Awas jebakan!</b> Pangkat <b>harus menyebar ke penyebut juga</b>: <span class="math"><span style="font-size:1.1em">(</span><span class="frac"><span class="num">3</span><span class="den">5</span></span><span style="font-size:1.1em">)</span><sup>2</sup> = <span class="frac"><span class="num">9</span><span class="den">25</span></span></span>, bukan <span class="math"><span class="frac"><span class="num">9</span><span class="den">5</span></span></span>. Bonus penting: dengan pangkat negatif, pecahan otomatis terbalik — <span class="math"><span style="font-size:1.1em">(</span><span class="frac"><span class="num"><i>a</i></span><span class="den"><i>b</i></span></span><span style="font-size:1.1em">)</span><sup>−<i>n</i></sup> = <span style="font-size:1.1em">(</span><span class="frac"><span class="num"><i>b</i></span><span class="den"><i>a</i></span></span><span style="font-size:1.1em">)</span><sup><i>n</i></sup></span> (kita pakai di Sifat 7!).</div>
+    <div class="tip-box rev">✏️ <b>Saatnya uji diri!</b> 10 soal pecahan berpangkat menantimu. <button class="btn btn-accent btn-sm" data-goto="next" style="margin-left:8px">➡️ Latihan 10 Soal</button></div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 14 : QUIZ SIFAT 5 ============ -->
+<section class="slide" data-title="Latihan Sifat 5" data-group="Sifat-Sifat Eksponen">
+  <div class="wrap narrow">
+    <div class="kicker green rev" style="text-align:center">LATIHAN 5 • PILIHAN GANDA A–D</div>
+    <div class="quiz rev" data-quiz="s5"></div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 15 : SIFAT 6 ============ -->
+<section class="slide" data-title="Sifat 6 · Pangkat Nol" data-group="Sifat-Sifat Eksponen">
+  <div class="wrap">
+    <div class="sifat-hero rev"><div class="sifat-num g">6</div><div><div class="kicker green" style="margin-bottom:4px">SIFAT EKSPONEN • 6 DARI 8</div><h2>Pangkat Nol — <span class="accent">Selalu Bernilai 1</span></h2></div></div>
+    <div class="formula-box rev">
+      <div class="math big"><i>a</i><sup>0</sup> = 1 &nbsp;<span style="font-size:16px;color:var(--muted)">untuk setiap <i>a</i> ≠ 0</span></div>
+      <div class="note">Bilangan apa pun (selain nol) berpangkat nol hasilnya <b>satu</b>.</div>
+    </div>
+    <div class="grid2">
+      <div class="card why rev">
+        <h3>🔍 Mengapa <span class="math"><i>a</i><sup>0</sup> = 1</span>?</h3>
+        <p style="line-height:1.75;font-size:14.5px">Gunakan sifat pembagian dengan membagi sebuah pangkat oleh dirinya sendiri:</p>
+        <div class="math" style="font-size:17px;line-height:2;margin-top:8px">
+          <span class="frac"><span class="num"><i>a</i><sup><i>m</i></sup></span><span class="den"><i>a</i><sup><i>m</i></sup></span></span> = 1 &nbsp; &nbsp;dan juga &nbsp; <span class="frac"><span class="num"><i>a</i><sup><i>m</i></sup></span><span class="den"><i>a</i><sup><i>m</i></sup></span></span> = <i>a</i><sup><i>m</i>−<i>m</i></sup> = <i>a</i><sup>0</sup>
+        </div>
+        <p style="line-height:1.75;font-size:14.5px;margin-top:8px">Dua hasil itu harus sama, jadi wajarlah <span class="math"><i>a</i><sup>0</sup> = 1</span>. Ingat juga tangga pangkat di slide definisi: pola ÷<i>a</i> berlanjut hingga <span class="math">2<sup>0</sup> = 1</span>.</p>
+      </div>
+      <div class="card ex rev">
+        <h3>✏️ Contoh Penerapan</h3>
+        <div class="example" style="margin-bottom:12px">
+          <p class="small" style="font-weight:700">Contoh 1 — hitung <span class="math">9<sup>0</sup> + 2025<sup>0</sup></span></p>
+          <button class="reveal-btn btn btn-ghost btn-sm" data-target="s6ex1" data-alt="🙈 Sembunyikan langkah">👁 Tampilkan langkah</button>
+          <div class="rvl" id="s6ex1"><ol class="steps final"><li>Setiap bilangan nonzero berpangkat nol bernilai 1</li><li><span class="math">9<sup>0</sup> = 1</span> dan <span class="math">2025<sup>0</sup> = 1</span></li><li><span class="math">1 + 1 = 2</span> ✔</li></ol></div>
+        </div>
+        <div class="example">
+          <p class="small" style="font-weight:700">Contoh 2 — sederhanakan <span class="math">(2<i>x</i>)<sup>0</sup></span> untuk <span class="math"><i>x</i> ≠ 0</span></p>
+          <button class="reveal-btn btn btn-ghost btn-sm" data-target="s6ex2" data-alt="🙈 Sembunyikan langkah">👁 Tampilkan langkah</button>
+          <div class="rvl" id="s6ex2"><ol class="steps final"><li>Seluruh kurung <span class="math">(2<i>x</i>)</span> berpangkat nol</li><li>Selama <span class="math">2<i>x</i> ≠ 0</span>, maka <span class="math">(2<i>x</i>)<sup>0</sup> = 1</span></li><li>Hasil: <b>1</b> ✔</li></ol></div>
+        </div>
+      </div>
+    </div>
+    <div class="trap-box rev">⚠️ <b>Awas jebakan!</b> <span class="math">0<sup>0</sup></span> <b>tidak terdefinisi</b>. Perhatikan pula posisi tanda: <span class="math">(−2)<sup>0</sup> = 1</span> (kurung ikut dipangkatkan), tetapi <span class="math">−2<sup>0</sup> = −(2<sup>0</sup>) = −1</span> (pangkat menempel hanya pada angka 2, tanda minus tetap di depan).</div>
+    <div class="tip-box rev">✏️ <b>Saatnya uji diri!</b> 10 soal pangkat nol — ada jebakan tanda di dalamnya, waspada! <button class="btn btn-accent btn-sm" data-goto="next" style="margin-left:8px">➡️ Latihan 10 Soal</button></div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 16 : QUIZ SIFAT 6 ============ -->
+<section class="slide" data-title="Latihan Sifat 6" data-group="Sifat-Sifat Eksponen">
+  <div class="wrap narrow">
+    <div class="kicker green rev" style="text-align:center">LATIHAN 6 • PILIHAN GANDA A–D</div>
+    <div class="quiz rev" data-quiz="s6"></div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 17 : SIFAT 7 ============ -->
+<section class="slide" data-title="Sifat 7 · Pangkat Negatif" data-group="Sifat-Sifat Eksponen">
+  <div class="wrap">
+    <div class="sifat-hero rev"><div class="sifat-num v">7</div><div><div class="kicker purple" style="margin-bottom:4px">SIFAT EKSPONEN • 7 DARI 8</div><h2>Pangkat Negatif — <span class="accent">Menjadi Kebalikan</span></h2></div></div>
+    <div class="formula-box rev">
+      <div class="math big"><i>a</i><sup>−<i>n</i></sup> = <span class="frac"><span class="num">1</span><span class="den"><i>a</i><sup><i>n</i></sup></span></span> &nbsp;<span style="font-size:16px;color:var(--muted)">untuk <i>a</i> ≠ 0</span></div>
+      <div class="note">Pangkat negatif <b>memindahkan</b> bilangan ke posisi kebalikan (pembilang ↔ penyebut).</div>
+    </div>
+    <div class="grid2">
+      <div class="card why rev">
+        <h3>🔍 Mengapa sifat ini benar?</h3>
+        <p style="line-height:1.75;font-size:14.5px">Dari tangga pangkat: <span class="math">2<sup>3</sup>=8, 2<sup>2</sup>=4, 2<sup>1</sup>=2, 2<sup>0</sup>=1</span> — setiap pangkat turun 1, nilai <b>dibagi 2</b>. Lanjutkan:</p>
+        <div class="math" style="font-size:16.5px;line-height:2;margin-top:8px">
+          2<sup>−1</sup> = <span class="frac"><span class="num">1</span><span class="den">2</span></span>, &nbsp; 2<sup>−2</sup> = <span class="frac"><span class="num">1</span><span class="den">4</span></span>, &nbsp; 2<sup>−3</sup> = <span class="frac"><span class="num">1</span><span class="den">8</span></span>
+        </div>
+        <p style="line-height:1.75;font-size:14.5px;margin-top:8px">Cara aljabar: <span class="math"><span class="frac"><span class="num"><i>a</i><sup>0</sup></span><span class="den"><i>a</i><sup><i>n</i></sup></span></span> = <i>a</i><sup>0−<i>n</i></sup> = <i>a</i><sup>−<i>n</i></sup></span>, dan pembilangnya <span class="math"><i>a</i><sup>0</sup> = 1</span>. Keduanya cocok!</p>
+      </div>
+      <div class="card ex rev">
+        <h3>✏️ Contoh Penerapan</h3>
+        <div class="example" style="margin-bottom:12px">
+          <p class="small" style="font-weight:700">Contoh 1 — hitung <span class="math"><span style="font-size:1.1em">(</span><span class="frac"><span class="num">2</span><span class="den">5</span></span><span style="font-size:1.1em">)</span><sup>−3</sup></span></p>
+          <button class="reveal-btn btn btn-ghost btn-sm" data-target="s7ex1" data-alt="🙈 Sembunyikan langkah">👁 Tampilkan langkah</button>
+          <div class="rvl" id="s7ex1"><ol class="steps final"><li>Pangkat negatif membalik pecahan: <span class="math"><span style="font-size:1.1em">(</span><span class="frac"><span class="num">2</span><span class="den">5</span></span><span style="font-size:1.1em">)</span><sup>−3</sup> = <span style="font-size:1.1em">(</span><span class="frac"><span class="num">5</span><span class="den">2</span></span><span style="font-size:1.1em">)</span><sup>3</sup></span></li><li>Hitung: <span class="math"><span class="frac"><span class="num">5<sup>3</sup></span><span class="den">2<sup>3</sup></span></span> = <span class="frac"><span class="num">125</span><span class="den">8</span></span></span></li><li>Hasil: <span class="math"><span class="frac"><span class="num">125</span><span class="den">8</span></span></span> ✔</li></ol></div>
+        </div>
+        <div class="example">
+          <p class="small" style="font-weight:700">Contoh 2 — sederhanakan <span class="math">4<i>x</i><sup>−2</sup></span></p>
+          <button class="reveal-btn btn btn-ghost btn-sm" data-target="s7ex2" data-alt="🙈 Sembunyikan langkah">👁 Tampilkan langkah</button>
+          <div class="rvl" id="s7ex2"><ol class="steps final"><li>Pangkat −2 hanya menempel pada <span class="math"><i>x</i></span>, bukan pada angka 4</li><li><span class="math"><i>x</i><sup>−2</sup> = <span class="frac"><span class="num">1</span><span class="den"><i>x</i><sup>2</sup></span></span></span></li><li>Hasil: <span class="math">4<i>x</i><sup>−2</sup> = <span class="frac"><span class="num">4</span><span class="den"><i>x</i><sup>2</sup></span></span></span> ✔</li></ol></div>
+        </div>
+      </div>
+    </div>
+    <div class="trap-box rev">⚠️ <b>Awas jebakan!</b> Pangkat <b>negatif ≠ hasil negatif</b>! <span class="math">(−2)<sup>−2</sup> = <span class="frac"><span class="num">1</span><span class="den">(−2)<sup>2</sup></span></span> = <span class="frac"><span class="num">1</span><span class="den">4</span></span></span> — hasilnya <b>positif</b>. Hati-hati juga: <span class="math">2<sup>−3</sup> = <span class="frac"><span class="num">1</span><span class="den">8</span></span></span> (bukan −8) dan <span class="math"><i>a</i><sup>−<i>n</i></sup> ≠ −<i>a</i><sup><i>n</i></sup></span>.</div>
+    <div class="tip-box rev">✏️ <b>Saatnya uji diri!</b> 10 soal pangkat negatif menantimu — pastikan tanda dan kebalikanmu tepat. <button class="btn btn-accent btn-sm" data-goto="next" style="margin-left:8px">➡️ Latihan 10 Soal</button></div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 18 : QUIZ SIFAT 7 ============ -->
+<section class="slide" data-title="Latihan Sifat 7" data-group="Sifat-Sifat Eksponen">
+  <div class="wrap narrow">
+    <div class="kicker green rev" style="text-align:center">LATIHAN 7 • PILIHAN GANDA A–D</div>
+    <div class="quiz rev" data-quiz="s7"></div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 19 : SIFAT 8 ============ -->
+<section class="slide" data-title="Sifat 8 · Pangkat Pecahan & Bentuk Akar" data-group="Sifat-Sifat Eksponen">
+  <div class="wrap">
+    <div class="sifat-hero rev"><div class="sifat-num o">8</div><div><div class="kicker orange" style="margin-bottom:4px">SIFAT EKSPONEN • 8 DARI 8</div><h2>Pangkat Pecahan & <span class="accent">Bentuk Akar</span></h2></div></div>
+    <div class="formula-box orange rev">
+      <div class="math big"><i>a</i><sup><i>m/n</i></sup> = <sup><i>n</i></sup>√<span class="rad"><i>a</i><sup><i>m</i></sup></span> = ( <sup><i>n</i></sup>√<span class="rad"><i>a</i></span> )<sup><i>m</i></sup></div>
+      <div class="note">Penyebut pecahan menjadi <b>indeks akar</b>, pembilang menjadi <b>pangkat di dalam (atau di luar) akar</b>.</div>
+    </div>
+    <div class="grid2">
+      <div class="card why rev">
+        <h3>🔍 Mengapa <span class="math"><i>a</i><sup>1/2</sup> = √<span class="rad"><i>a</i></span></span>?</h3>
+        <p style="line-height:1.75;font-size:14.5px">Misalkan ada bilangan misterius <span class="math"><i>b</i> = <i>a</i><sup>1/2</sup></span>. Kuadratkan kedua ruas:</p>
+        <div class="math" style="font-size:17px;line-height:2;margin-top:8px">
+          (<i>a</i><sup>1/2</sup>)<sup>2</sup> = <i>a</i><sup>1/2 × 2</sup> = <i>a</i><sup>1</sup> = <i>a</i>
+        </div>
+        <p style="line-height:1.75;font-size:14.5px;margin-top:8px">Jadi <span class="math"><i>b</i><sup>2</sup> = <i>a</i></span>, artinya <span class="math"><i>b</i></span> adalah bilangan yang jika dikuadratkan menghasilkan <span class="math"><i>a</i></span> — persis definisi <b>akar kuadrat</b>! Maka <span class="math"><i>a</i><sup>1/2</sup> = √<span class="rad"><i>a</i></span></span>. Pola sama berlaku untuk <span class="math"><i>a</i><sup>1/<i>n</i></sup> = <sup><i>n</i></sup>√<span class="rad"><i>a</i></span></span>.</p>
+      </div>
+      <div class="card ex rev">
+        <h3>✏️ Contoh Penerapan</h3>
+        <div class="example" style="margin-bottom:12px">
+          <p class="small" style="font-weight:700">Contoh 1 — hitung <span class="math">27<sup>2/3</sup></span></p>
+          <button class="reveal-btn btn btn-ghost btn-sm" data-target="s8ex1" data-alt="🙈 Sembunyikan langkah">👁 Tampilkan langkah</button>
+          <div class="rvl" id="s8ex1"><ol class="steps final"><li>Ubah ke bentuk akar: <span class="math">27<sup>2/3</sup> = ( ∛27 )<sup>2</sup></span></li><li>Hitung akarnya dulu: <span class="math">∛27 = 3</span></li><li>Kuadratkan: <span class="math">3<sup>2</sup> = 9</span> ✔</li></ol></div>
+        </div>
+        <div class="example">
+          <p class="small" style="font-weight:700">Contoh 2 — hitung <span class="math">25<sup>−1/2</sup></span></p>
+          <button class="reveal-btn btn btn-ghost btn-sm" data-target="s8ex2" data-alt="🙈 Sembunyikan langkah">👁 Tampilkan langkah</button>
+          <div class="rvl" id="s8ex2"><ol class="steps final"><li>Pangkat negatif → kebalikan: <span class="math">25<sup>−1/2</sup> = <span class="frac"><span class="num">1</span><span class="den">25<sup>1/2</sup></span></span></span></li><li><span class="math">25<sup>1/2</sup> = √25 = 5</span></li><li>Hasil: <span class="math"><span class="frac"><span class="num">1</span><span class="den">5</span></span></span> ✔</li></ol></div>
+        </div>
+      </div>
+    </div>
+    <div class="info-box rev">💡 <b>Tip praktis:</b> hitung <b>akarnya dulu</b>, lalu pangkatkan — <span class="math">16<sup>3/4</sup> = ( ⁴√16 )<sup>3</sup> = 2<sup>3</sup> = 8</span> jauh lebih mudah daripada menghitung <span class="math">16<sup>3</sup> = 4.096</span> lalu mencari akar pangkat empatnya!</div>
+    <div class="trap-box rev">⚠️ <b>Awas jebakan!</b> <span class="math">9<sup>1/2</sup> = 3</span> (bukan 4,5!) dan <span class="math">4<sup>1/2</sup> · 4<sup>1/2</sup> = 4</span>. Untuk bilangan negatif di bilangan real: <span class="math">(−9)<sup>1/2</sup></span> <b>tidak terdefinisi</b> karena tidak ada bilangan real yang dikuadratkan menghasilkan −9.</div>
+    <div class="tip-box rev">✏️ <b>Saatnya uji diri!</b> Latihan terakhir materi sifat: 10 soal pangkat pecahan & bentuk akar. <button class="btn btn-accent btn-sm" data-goto="next" style="margin-left:8px">➡️ Latihan 10 Soal</button></div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 20 : QUIZ SIFAT 8 ============ -->
+<section class="slide" data-title="Latihan Sifat 8" data-group="Sifat-Sifat Eksponen">
+  <div class="wrap narrow">
+    <div class="kicker green rev" style="text-align:center">LATIHAN 8 • PILIHAN GANDA A–D</div>
+    <div class="quiz rev" data-quiz="s8"></div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 21 : PERSAMAAN EKSPONEN (1) ============ -->
+<section class="slide" data-title="Persamaan Eksponen · Bagian 1" data-group="Persamaan Eksponen">
+  <div class="wrap">
+    <div class="kicker rev" style="background:var(--purple-soft);color:#5B21B6">MATERI • PERSAMAAN EKSPONEN (1/2)</div>
+    <h2 class="rev">Persamaan Eksponen — <span class="blue">Ketika Variabel Bersembunyi di Pangkat</span></h2>
+    <p class="lead rev"><b>Persamaan eksponen</b> adalah persamaan yang variabelnya berada di pangkat, misalnya <span class="math">2<sup><i>x</i></sup> = 16</span>. Kuncinya satu: <b>jadikan kedua ruas berpangkat dengan basis yang sama</b>, lalu pangkatnya boleh dibandingkan langsung.</p>
+    <div class="formula-box rev">
+      <div class="math big" style="color:var(--purple)">JENIS 1 : <i>a</i><sup><i>f</i>(<i>x</i>)</sup> = <i>a</i><sup><i>g</i>(<i>x</i>)</sup> &nbsp;⟹&nbsp; <i>f</i>(<i>x</i>) = <i>g</i>(<i>x</i>)</div>
+      <div class="note">Jika basisnya sudah sama, maka pangkatnya pasti sama — persamaan eksponen berubah menjadi persamaan biasa!</div>
+    </div>
+    <div class="grid2">
+      <div class="card ex rev">
+        <h3>✏️ Contoh 1 — basis sudah sama</h3>
+        <p class="small" style="font-weight:700">Selesaikan <span class="math">2<sup>2<i>x</i>−1</sup> = 2<sup><i>x</i>+3</sup></span></p>
+        <button class="reveal-btn btn btn-ghost btn-sm" data-target="peq1" data-alt="🙈 Sembunyikan langkah">👁 Tampilkan langkah</button>
+        <div class="rvl" id="peq1"><ol class="steps final"><li>Basis sama (2) → samakan pangkatnya: <span class="math">2<i>x</i> − 1 = <i>x</i> + 3</span></li><li>Pindahkan variabel: <span class="math">2<i>x</i> − <i>x</i> = 3 + 1</span></li><li><span class="math"><i>x</i> = 4</span> ✔</li></ol></div>
+      </div>
+      <div class="card ex rev">
+        <h3>✏️ Contoh 2 — dengan bilangan konstanta</h3>
+        <p class="small" style="font-weight:700">Selesaikan <span class="math">3<sup><i>x</i></sup> = 27</span></p>
+        <button class="reveal-btn btn btn-ghost btn-sm" data-target="peq2" data-alt="🙈 Sembunyikan langkah">👁 Tampilkan langkah</button>
+        <div class="rvl" id="peq2"><ol class="steps final"><li>Ubah 27 menjadi pangkat berbasis 3: <span class="math">27 = 3<sup>3</sup></span></li><li>Persamaan menjadi <span class="math">3<sup><i>x</i></sup> = 3<sup>3</sup></span></li><li>Pangkat sama: <span class="math"><i>x</i> = 3</span> ✔</li></ol></div>
+      </div>
+    </div>
+    <div class="formula-box orange rev">
+      <div class="math big" style="color:var(--accent-dark)">JENIS 2 : SAMAKAN BASIS DULU</div>
+      <div class="math" style="font-size:18px;margin-top:6px"><i>k</i><sup><i>f</i>(<i>x</i>)</sup> = <i>l</i><sup><i>g</i>(<i>x</i>)</sup> → tulis <i>k</i> dan <i>l</i> sebagai pangkat basis yang sama, misal keduanya pangkat dari 2, 3, 5, atau 10</div>
+    </div>
+    <div class="card rev">
+      <h3>✏️ Contoh 3 — basis berbeda yang bisa disamakan</h3>
+      <p class="small" style="font-weight:700">Selesaikan <span class="math">4<sup><i>x</i>+1</sup> = 8<sup><i>x</i>−2</sup></span></p>
+      <button class="reveal-btn btn btn-ghost btn-sm" data-target="peq3" data-alt="🙈 Sembunyikan langkah">👁 Tampilkan langkah</button>
+      <div class="rvl" id="peq3"><ol class="steps final"><li>Ingat <span class="math">4 = 2<sup>2</sup></span> dan <span class="math">8 = 2<sup>3</sup></span> → keduanya pangkat dari 2</li><li>Sifat 3: <span class="math">4<sup><i>x</i>+1</sup> = (2<sup>2</sup>)<sup><i>x</i>+1</sup> = 2<sup>2<i>x</i>+2</sup></span> &nbsp;dan&nbsp; <span class="math">8<sup><i>x</i>−2</sup> = (2<sup>3</sup>)<sup><i>x</i>−2</sup> = 2<sup>3<i>x</i>−6</sup></span></li><li>Basis sama → <span class="math">2<i>x</i> + 2 = 3<i>x</i> − 6</span></li><li><span class="math">2 + 6 = 3<i>x</i> − 2<i>x</i></span> sehingga <span class="math"><i>x</i> = 8</span> ✔</li></ol></div>
+      <div class="tip-box" style="margin-top:14px">💡 <b>Angka yang wajib hafal:</b> <span class="math">4 = 2<sup>2</sup></span>, <span class="math">8 = 2<sup>3</sup></span>, <span class="math">9 = 3<sup>2</sup></span>, <span class="math">27 = 3<sup>3</sup></span>, <span class="math">16 = 2<sup>4</sup></span>, <span class="math">25 = 5<sup>2</sup></span>, <span class="math">32 = 2<sup>5</sup></span>, <span class="math">81 = 3<sup>4</sup></span>, <span class="math">125 = 5<sup>3</sup></span>, <span class="math">64 = 2<sup>6</sup> = 4<sup>3</sup> = 8<sup>2</sup></span>, <span class="math">1000 = 10<sup>3</sup></span>.</div>
+    </div>
+    <div class="tip-box rev">✏️ <b>Belum selesai!</b> Ada dua jenis persamaan lagi (jenis 3 & 4) di slide berikutnya. <button class="btn btn-accent btn-sm" data-goto="next" style="margin-left:8px">➡️ Lanjutkan Materi</button></div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 22 : PERSAMAAN EKSPONEN (2) ============ -->
+<section class="slide" data-title="Persamaan Eksponen · Bagian 2" data-group="Persamaan Eksponen">
+  <div class="wrap">
+    <div class="kicker rev" style="background:var(--purple-soft);color:#5B21B6">MATERI • PERSAMAAN EKSPONEN (2/2)</div>
+    <h2 class="rev">Dua Jenis Lanjutan + <span class="blue">Peta Strategi Lengkap</span></h2>
+    <div class="formula-box rev">
+      <div class="math big" style="color:var(--purple)">JENIS 3 : <i>a</i><sup><i>f</i>(<i>x</i>)</sup> = <i>b</i><sup><i>f</i>(<i>x</i>)</sup> &nbsp;⟹&nbsp; <i>f</i>(<i>x</i>) = 0</div>
+      <div class="note">Basis berbeda tetapi pangkatnya sama → bagi kedua ruas: <span class="math"><span style="font-size:1.1em">(</span><span class="frac"><span class="num"><i>a</i></span><span class="den"><i>b</i></span></span><span style="font-size:1.1em">)</span><sup><i>f</i>(<i>x</i>)</sup> = 1 = <span style="font-size:1.1em">(</span><span class="frac"><span class="num"><i>a</i></span><span class="den"><i>b</i></span></span><span style="font-size:1.1em">)</span><sup>0</sup></span>, maka pangkatnya harus <b>nol</b>.</div>
+    </div>
+    <div class="grid2">
+      <div class="card ex rev">
+        <h3>✏️ Contoh 1 — jenis 3</h3>
+        <p class="small" style="font-weight:700">Selesaikan <span class="math">5<sup>2<i>x</i></sup> = 7<sup>2<i>x</i></sup></span></p>
+        <button class="reveal-btn btn btn-ghost btn-sm" data-target="peq4" data-alt="🙈 Sembunyikan langkah">👁 Tampilkan langkah</button>
+        <div class="rvl" id="peq4"><ol class="steps final"><li>Basis 5 dan 7 <b>tidak mungkin</b> disamakan</li><li>Bagi kedua ruas dengan <span class="math">7<sup>2<i>x</i></sup></span>: <span class="math"><span style="font-size:1.1em">(</span><span class="frac"><span class="num">5</span><span class="den">7</span></span><span style="font-size:1.1em">)</span><sup>2<i>x</i></sup> = 1</span></li><li>Hanya pangkat 0 yang memberi nilai 1 → <span class="math">2<i>x</i> = 0</span></li><li><span class="math"><i>x</i> = 0</span> ✔</li></ol></div>
+      </div>
+      <div class="card ex rev">
+        <h3>✏️ Contoh 2 — jenis 4: substitusi <span class="math"><i>t</i> = <i>a</i><sup><i>x</i></sup></span></h3>
+        <p class="small" style="font-weight:700">Selesaikan <span class="math">4<sup><i>x</i></sup> − 5·2<sup><i>x</i></sup> + 4 = 0</span></p>
+        <button class="reveal-btn btn btn-ghost btn-sm" data-target="peq5" data-alt="🙈 Sembunyikan langkah">👁 Tampilkan langkah</button>
+        <div class="rvl" id="peq5"><ol class="steps final"><li>Ingat <span class="math">4<sup><i>x</i></sup> = (2<sup>2</sup>)<sup><i>x</i></sup> = (2<sup><i>x</i></sup>)<sup>2</sup></span>. Misalkan <span class="math"><i>t</i> = 2<sup><i>x</i></sup></span></li><li>Persamaan menjadi kuadrat: <span class="math"><i>t</i><sup>2</sup> − 5<i>t</i> + 4 = 0</span> → <span class="math">(<i>t</i>−1)(<i>t</i>−4) = 0</span> → <span class="math"><i>t</i> = 1</span> atau <span class="math"><i>t</i> = 4</span></li><li>Kembalikan: <span class="math">2<sup><i>x</i></sup> = 1 = 2<sup>0</sup> → <i>x</i> = 0</span> &nbsp;dan&nbsp; <span class="math">2<sup><i>x</i></sup> = 4 = 2<sup>2</sup> → <i>x</i> = 2</span></li><li>Himpunan penyelesaian: <span class="math">{0, 2}</span> ✔</li></ol></div>
+      </div>
+    </div>
+    <div class="card rev">
+      <h3 style="text-align:center">🗺️ Peta Strategi Menyelesaikan Persamaan Eksponen</h3>
+      <div class="flow">
+        <span class="fstep">1️⃣ Apakah basisnya sama? → langsung samakan pangkat</span><span class="arrow">→</span>
+        <span class="fstep">2️⃣ Bisa disamakan basisnya? → tulis sebagai pangkat sama</span><span class="arrow">→</span>
+        <span class="fstep">3️⃣ Basis beda, pangkat sama? → pangkatnya = 0</span><span class="arrow">→</span>
+        <span class="fstep">4️⃣ Ada <span class="math"><i>a</i><sup>2<i>x</i></sup></span> & <span class="math"><i>a</i><sup><i>x</i></sup></span>? → substitusi <span class="math"><i>t</i> = <i>a</i><sup><i>x</i></sup></span></span>
+      </div>
+      <div class="trap-box" style="margin-top:14px">⚠️ Saat substitusi, ingat syarat: <span class="math"><i>t</i> = <i>a</i><sup><i>x</i></sup> &gt; 0</span>. Jika hasil substitusi <span class="math"><i>t</i> &lt; 0</span> (misal <span class="math"><i>t</i> = −2</span>), nilai itu <b>ditolak</b> karena pangkat dari bilangan positif tidak mungkin negatif!</div>
+      <div class="tip-box" style="margin-top:10px">✏️ <b>Saatnya uji diri!</b> 10 soal persamaan eksponen menantimu. <button class="btn btn-accent btn-sm" data-goto="next" style="margin-left:8px">➡️ Latihan 10 Soal</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 23 : QUIZ PERSAMAAN ============ -->
+<section class="slide" data-title="Latihan Persamaan Eksponen" data-group="Persamaan Eksponen">
+  <div class="wrap narrow">
+    <div class="kicker green rev" style="text-align:center">LATIHAN 9 • PERSAMAAN EKSPONEN • PILIHAN GANDA A–D</div>
+    <div class="quiz rev" data-quiz="peq"></div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 24 : TANTANGAN 1 ============ -->
+<section class="slide" data-title="Tantangan Kritis · Bagian 1" data-group="Tantangan Berpikir Kritis">
+  <div class="wrap narrow">
+    <div class="kicker orange rev" style="text-align:center">🔥 TANTANGAN BERPIKIR KRITIS • SOAL 1–10 DARI 20</div>
+    <div class="quiz rev" data-quiz="t1"></div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 25 : TANTANGAN 2 ============ -->
+<section class="slide" data-title="Tantangan Kritis · Bagian 2" data-group="Tantangan Berpikir Kritis">
+  <div class="wrap narrow">
+    <div class="kicker orange rev" style="text-align:center">🔥 TANTANGAN BERPIKIR KRITIS • SOAL 11–20 DARI 20</div>
+    <div class="quiz rev" data-quiz="t2"></div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 26 : KESIMPULAN ============ -->
+<section class="slide" data-title="Kesimpulan" data-group="Penutup">
+  <div class="wrap">
+    <div class="kicker rev">PENUTUP • KESIMPULAN</div>
+    <h2 class="rev">Peta Lengkap <span class="blue">Sifat Eksponen</span> — Simpan Baik-Baik!</h2>
+    <table class="sum-table rev">
+      <tr><th style="width:52px">NO</th><th>SIFAT</th><th>RUMUS</th><th>CONTOH CEPAT</th></tr>
+      <tr><td>1</td><td>Perkalian</td><td class="f"><i>a</i><sup><i>m</i></sup>·<i>a</i><sup><i>n</i></sup> = <i>a</i><sup><i>m</i>+<i>n</i></sup></td><td class="math">2<sup>5</sup>·2<sup>3</sup> = 2<sup>8</sup> = 256</td></tr>
+      <tr><td>2</td><td>Pembagian</td><td class="f"><i>a</i><sup><i>m</i></sup>/<i>a</i><sup><i>n</i></sup> = <i>a</i><sup><i>m</i>−<i>n</i></sup></td><td class="math">5<sup>6</sup>/5<sup>4</sup> = 25</td></tr>
+      <tr><td>3</td><td>Pangkat dari pangkat</td><td class="f">(<i>a</i><sup><i>m</i></sup>)<sup><i>n</i></sup> = <i>a</i><sup><i>m</i>·<i>n</i></sup></td><td class="math">(3<sup>2</sup>)<sup>4</sup> = 3<sup>8</sup> = 6.561</td></tr>
+      <tr><td>4</td><td>Pangkat dari perkalian</td><td class="f">(<i>ab</i>)<sup><i>n</i></sup> = <i>a</i><sup><i>n</i></sup><i>b</i><sup><i>n</i></sup></td><td class="math">(2<i>x</i>)<sup>4</sup> = 16<i>x</i><sup>4</sup></td></tr>
+      <tr><td>5</td><td>Pangkat dari pembagian</td><td class="f">(<i>a</i>/<i>b</i>)<sup><i>n</i></sup> = <i>a</i><sup><i>n</i></sup>/<i>b</i><sup><i>n</i></sup></td><td class="math">(2/3)<sup>3</sup> = 8/27</td></tr>
+      <tr><td>6</td><td>Pangkat nol</td><td class="f"><i>a</i><sup>0</sup> = 1 &nbsp;(<i>a</i>≠0)</td><td class="math">9<sup>0</sup> = 1</td></tr>
+      <tr><td>7</td><td>Pangkat negatif</td><td class="f"><i>a</i><sup>−<i>n</i></sup> = 1/<i>a</i><sup><i>n</i></sup></td><td class="math">3<sup>−2</sup> = 1/9</td></tr>
+      <tr><td>8</td><td>Pangkat pecahan</td><td class="f"><i>a</i><sup><i>m/n</i></sup> = ⁿ√<span class="rad"><i>a</i><sup><i>m</i></sup></span></td><td class="math">27<sup>2/3</sup> = 9</td></tr>
+    </table>
+    <div class="grid2">
+      <div class="card rev" style="border-color:#DDD6FE;background:linear-gradient(160deg,#F5F3FF,#fff)">
+        <h3 style="color:#5B21B6">🧩 Strategi Persamaan Eksponen</h3>
+        <ol class="steps" style="font-size:14px">
+          <li><b>Basis sama</b> → pangkat sama: <span class="math"><i>a</i><sup><i>f</i></sup> = <i>a</i><sup><i>g</i></sup> ⟹ <i>f</i> = <i>g</i></span></li>
+          <li><b>Bisa disamakan</b> → tulis <span class="math">4=2<sup>2</sup>, 9=3<sup>2</sup>, 27=3<sup>3</sup>…</span></li>
+          <li><b>Basis beda, pangkat sama</b> → <span class="math"><i>a</i><sup><i>f</i></sup> = <i>b</i><sup><i>f</i></sup> ⟹ <i>f</i> = 0</span></li>
+          <li><b>Bentuk kuadrat</b> → substitusi <span class="math"><i>t</i> = <i>a</i><sup><i>x</i></sup></span>, tolak <span class="math"><i>t</i> &lt; 0</span></li>
+        </ol>
+      </div>
+      <div class="card rev" style="border-color:#FDE68A;background:linear-gradient(160deg,#FFFBEB,#fff)">
+        <h3 style="color:var(--accent-dark)">🔑 Tiga Kunci Sukses</h3>
+        <ol class="steps" style="font-size:14px">
+          <li><b>Perhatikan basisnya</b> — sifat hanya berlaku untuk basis yang sama.</li>
+          <li><b>Hormati tanda kurung</b> — <span class="math">(−2)<sup>4</sup> = 16</span> tapi <span class="math">−2<sup>4</sup> = −16</span>.</li>
+          <li><b>Cek syaratnya</b> — <span class="math"><i>a</i> ≠ 0</span> untuk pangkat nol/negatif, dan <span class="math"><i>t</i> &gt; 0</span> saat substitusi.</li>
+        </ol>
+        <p class="small muted" style="margin-top:8px">Eksponen bukan sekadar aturan hafalan — ia adalah pola pertumbuhan alam semesta: dari bakteri, bunga bank, hingga jarak antargalaksi.</p>
+      </div>
+    </div>
+    <div class="bridge rev" style="text-align:center">💪 <b>Seberapa mantap kamu?</b> Lanjut ke slide refleksi untuk menilai pemahamanmu — lalu kembali ulangi latihan yang masih terasa sulit!</div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 27 : REFLEKSI ============ -->
+<section class="slide" data-title="Refleksi" data-group="Penutup">
+  <div class="wrap">
+    <div class="kicker rev">PENUTUP • REFLEKSI DIRI</div>
+    <h2 class="rev">Ayo Refleksi — <span class="accent">Seberapa Jauh Kamu Berkembang?</span></h2>
+    <p class="lead rev">Refleksi membuat pembelajaranmu bermakna. Isi dengan jujur — jawabanmu tersimpan di perangkatmu sendiri dan bisa diunduh untuk ditunjukkan ke guru.</p>
+    <div class="ref-grid">
+      <div class="card rev">
+        <h3>📝 Tulis Refleksimu</h3>
+        <div class="ref-q">
+          <label>1. Sifat eksponen mana yang paling menantang untukmu? Mengapa?</label>
+          <textarea id="ref1" placeholder="Contoh: Sifat 7 (pangkat negatif) karena saya sering tertukar antara membalik pecahan dan mengubah tanda…"></textarea>
+        </div>
+        <div class="ref-q">
+          <label>2. Tuliskan satu contoh nyata eksponen yang kamu temui di kehidupan sehari-hari.</label>
+          <textarea id="ref2" placeholder="Contoh: pertumbuhan pengikut akun media sosial, bunga tabungan, penyebaran berita…"></textarea>
+        </div>
+        <div class="ref-q" style="margin-bottom:4px">
+          <label>3. Setelah mengerjakan 110 soal, kebiasaan berpikir apa yang berubah darimu?</label>
+          <textarea id="ref3" placeholder="Contoh: sekarang saya selalu memeriksa basis dan tanda kurung sebelum menjawab…"></textarea>
+        </div>
+        <div class="q-actions">
+          <button class="btn btn-primary btn-sm" id="btn-save-ref">💾 Simpan Refleksi</button>
+          <button class="btn btn-ghost btn-sm" id="btn-dl-ref">⬇️ Unduh (.txt)</button>
+        </div>
+      </div>
+      <div class="card rev">
+        <h3>🎯 Nilai Penguasaan Tujuanmu</h3>
+        <p class="small muted" style="margin-bottom:10px">Klik tingkat penguasaanmu untuk setiap tujuan pembelajaran.</p>
+        <div class="rate-row" data-goal="1"><span class="t">1. Memahami definisi eksponen</span><div class="rate"><button data-v="0">Belum</button><button data-v="1">Proses</button><button data-v="2">Mahir</button></div></div>
+        <div class="rate-row" data-goal="2"><span class="t">2. Menerapkan 8 sifat eksponen</span><div class="rate"><button data-v="0">Belum</button><button data-v="1">Proses</button><button data-v="2">Mahir</button></div></div>
+        <div class="rate-row" data-goal="3"><span class="t">3. Menyelesaikan persamaan eksponen</span><div class="rate"><button data-v="0">Belum</button><button data-v="1">Proses</button><button data-v="2">Mahir</button></div></div>
+        <div class="rate-row" data-goal="4"><span class="t">4. Berpikir kritis pada masalah kontekstual</span><div class="rate"><button data-v="0">Belum</button><button data-v="1">Proses</button><button data-v="2">Mahir</button></div></div>
+        <div class="info-box" style="margin-top:14px">🌟 <b>Catatan:</b> jawaban "Belum" bukan kegagalan — itu peta latihanmu! Klik menu ☰ dan kembali ke latihan bagian yang masih terasa sulit.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 28 : THANK YOU ============ -->
+<section class="slide" data-title="Thank You" data-group="Penutup">
+  <div class="cover">
+    <span class="float-sym" style="top:12%;left:9%;font-size:50px">2<sup>10</sup></span>
+    <span class="float-sym o" style="top:20%;right:10%;font-size:46px;animation-delay:.9s">√<span class="rad" style="font-size:.8em">2</span></span>
+    <span class="float-sym p" style="bottom:16%;left:13%;font-size:46px;animation-delay:1.5s"><i>a</i><sup>0</sup></span>
+    <span class="float-sym o" style="bottom:24%;right:12%;font-size:42px;animation-delay:.5s">(½)<sup>−2</sup></span>
+    <div class="wrap" style="text-align:center">
+      <div class="cover-badge rev">🎓 SESSI BELAJAR SELESAI</div>
+      <h1 class="grad rev" style="font-size:64px">Thank You<br>for Today!</h1>
+      <div class="sub rev">Terima kasih atas semangat, fokus, dan kerja kerasmu hari ini. 💙</div>
+      <div class="sub2 rev">Kamu telah melewati definisi, 8 sifat eksponen, 4 strategi persamaan, dan 110 soal — sebuah pencapaian yang luar biasa. Teruslah berlatih: <b>matematika adalah otot, semakin dilatih semakin kuat.</b></div>
+      <div class="card rev" style="max-width:560px;margin:0 auto 26px;border-color:#FDE68A;background:linear-gradient(160deg,#FFFBEB,#fff)">
+        <p class="math" style="font-size:17px;line-height:1.8;color:var(--accent-dark)">"Materi berikutnya menanti: <b>Logaritma</b> — kebalikan dari eksponen. Jika hari ini kamu mencari <span class="math">2<sup><i>x</i></sup> = 32</span>, nanti kamu belajar cara menjawabnya dalam satu langkah elegan."</p>
+      </div>
+      <div class="chips rev">
+        <span class="chip">📖 Ulangi latihan lewat menu ☰</span>
+        <span class="chip o">🔥 Tantangan bisa dikerjakan ulang kapan saja</span>
+      </div>
+      <div class="hint rev">Sampai jumpa di pertemuan berikutnya! 👋</div>
+    </div>
+  </div>
+</section>
+
+  </main>
+  <footer class="navbar">
+    <span class="where" id="where">Cover</span>
+    <div class="nav-btns">
+      <button class="navbtn" id="btn-prev">← Sebelumnya</button>
+      <button class="navbtn next" id="btn-next">Berikutnya →</button>
+    </div>
+  </footer>
+</div>
+
+<script>
+(function(){
+/* DATA QUIZ — Sifat 1 s.d. 4 (40 soal) */
+const W = (typeof window !== 'undefined') ? window : globalThis;
+
+W.DATA_SIFAT_A = {
+
+/* ================= SIFAT 1 : PERKALIAN ================= */
+s1: {
+  title: 'Latihan Sifat 1 · Perkalian Eksponen',
+  sub: 'Aturan: <i>a</i><sup><i>m</i></sup> · <i>a</i><sup><i>n</i></sup> = <i>a</i><sup><i>m</i>+<i>n</i></sup> — 10 soal pilihan ganda',
+  items: [
+    { q: `Hasil dari 2<sup>4</sup> · 2<sup>3</sup> adalah …`,
+      opts: [`128`, `4.096`, `24`, `256`], ans: 0, v: () => 128,
+      bahas: [
+        `Kedua bilangan berbasis sama, yaitu 2, sehingga sifat <i>a</i><sup><i>m</i></sup>·<i>a</i><sup><i>n</i></sup> = <i>a</i><sup><i>m</i>+<i>n</i></sup> berlaku.`,
+        `Jumlahkan pangkatnya: 2<sup>4</sup> · 2<sup>3</sup> = 2<sup>4+3</sup> = 2<sup>7</sup>.`,
+        `2<sup>7</sup> = 128. Jadi hasilnya <b>128</b>.` ] },
+
+    { q: `Hasil dari 3<sup>2</sup> · 3<sup>5</sup> adalah …`,
+      opts: [`243`, `2.187`, `6.561`, `729`], ans: 1, v: () => 2187,
+      bahas: [
+        `Basis sama (3) → jumlahkan pangkat: 3<sup>2</sup> · 3<sup>5</sup> = 3<sup>2+5</sup> = 3<sup>7</sup>.`,
+        `3<sup>7</sup> = 2.187.`,
+        `Perhatikan: <b>bukan</b> mengalikan pangkat (2×5) — itu jebakan sifat 3!` ] },
+
+    { q: `Bentuk paling sederhana dari 5<sup>3</sup> · 5<sup>4</sup> adalah …`,
+      opts: [`5<sup>12</sup>`, `25<sup>7</sup>`, `5<sup>7</sup>`, `10<sup>7</sup>`], ans: 2,
+      bahas: [
+        `Basisnya sama (5), jadi pangkat dijumlahkan: 5<sup>3</sup> · 5<sup>4</sup> = 5<sup>3+4</sup>.`,
+        `Hasilnya <b>5<sup>7</sup></b>.`,
+        `5<sup>12</sup> salah karena pangkat di<i>kali</i> (itu sifat pangkat dari pangkat); basis juga tidak boleh diubah menjadi 25.` ] },
+
+    { q: `Sederhanakan <i>x</i><sup>3</sup> · <i>x</i><sup>6</sup>!`,
+      opts: [`<i>x</i><sup>18</sup>`, `<i>x</i><sup>2</sup>`, `<i>x</i><sup>9</sup>`, `<i>x</i><sup>6</sup>`], ans: 2,
+      bahas: [
+        `Basis sama (<i>x</i>) → jumlahkan pangkat: 3 + 6 = 9.`,
+        `Jadi <i>x</i><sup>3</sup> · <i>x</i><sup>6</sup> = <b><i>x</i><sup>9</sup></b>.`,
+        `<i>x</i><sup>18</sup> muncul jika pangkat dikalikan — ingat, pangkat dari pangkat (sifat 3) baru muncul jika ada tanda kurung.` ] },
+
+    { q: `Hasil dari 2<sup>2</sup> · 2<sup>2</sup> · 2<sup>2</sup> adalah …`,
+      opts: [`16`, `8`, `64`, `32`], ans: 2, v: () => 64,
+      bahas: [
+        `Perkalian berulang basis sama → jumlahkan semua pangkat: 2 + 2 + 2 = 6.`,
+        `2<sup>2</sup> · 2<sup>2</sup> · 2<sup>2</sup> = 2<sup>6</sup> = 64.`,
+        `Cara lain: ini sama dengan (2<sup>2</sup>)<sup>3</sup> = 2<sup>6</sup> — dua sifat saling terhubung!` ] },
+
+    { q: `Bentuk sederhana dari <i>a</i><sup>5</sup> · <i>a</i> adalah …`,
+      opts: [`<i>a</i><sup>4</sup>`, `<i>a</i><sup>5</sup>`, `2<i>a</i><sup>5</sup>`, `<i>a</i><sup>6</sup>`], ans: 3,
+      bahas: [
+        `Pangkat yang tidak ditulis bernilai 1, jadi <i>a</i> = <i>a</i><sup>1</sup>.`,
+        `Jumlahkan: <i>a</i><sup>5</sup> · <i>a</i><sup>1</sup> = <i>a</i><sup>5+1</sup> = <i>a</i><sup>6</sup>.`,
+        `Jebakan umum: menganggap <i>a</i> tidak ikut dihitung, sehingga menjawab <i>a</i><sup>5</sup>.` ] },
+
+    { q: `Hasil dari 10<sup>7</sup> · 10<sup>4</sup> adalah …`,
+      opts: [`10<sup>11</sup>`, `10<sup>28</sup>`, `70`, `10<sup>3</sup>`], ans: 0, v: () => 1e11,
+      bahas: [
+        `Basis sama (10) → 10<sup>7</sup> · 10<sup>4</sup> = 10<sup>7+4</sup> = 10<sup>11</sup>.`,
+        `Nilainya = 100.000.000.000 (1 disusul sebelas nol) — di sinilah letak kekuatan notasi eksponen!`,
+        `Pangkat <b>tidak</b> dikalikan: 7 × 4 = 28 adalah jebakan.` ] },
+
+    { q: `Hasil dari (−2)<sup>3</sup> · (−2)<sup>2</sup> adalah …`,
+      opts: [`32`, `−32`, `−64`, `10`], ans: 1, v: () => -32,
+      bahas: [
+        `Basis sama (−2) → jumlahkan pangkat: (−2)<sup>3</sup> · (−2)<sup>2</sup> = (−2)<sup>5</sup>.`,
+        `(−2)<sup>5</sup> = −32 (pangkat ganjil pada bilangan negatif menghasilkan bilangan negatif).`,
+        `Cek dengan perkalian langsung: (−8) · 4 = −32 ✔` ] },
+
+    { q: `Hasil dari 7 · 7<sup>2</sup> · 7<sup>3</sup> adalah …`,
+      opts: [`7<sup>7</sup>`, `7<sup>6</sup>`, `7<sup>5</sup>`, `343`], ans: 1, v: () => 117649,
+      bahas: [
+        `Tulis 7 = 7<sup>1</sup>, lalu jumlahkan semua pangkat: 1 + 2 + 3 = 6.`,
+        `7 · 7<sup>2</sup> · 7<sup>3</sup> = 7<sup>6</sup> = 117.649.`,
+        `343 = 7<sup>3</sup> hanya menghitung satu faktor — semua faktor harus ikut!` ] },
+
+    { q: `Sebuah kolam awalnya berisi 2<sup>8</sup> ikan. Setelah sebulan populasinya berkembang sehingga banyak ikan menjadi 2<sup>8</sup> · 2<sup>4</sup>. Bentuk paling sederhana dari banyak ikan sekarang adalah …`,
+      opts: [`2<sup>12</sup> = 4.096`, `2<sup>32</sup>`, `4<sup>12</sup>`, `2<sup>4</sup>`], ans: 0, v: () => 4096,
+      bahas: [
+        `Basis sama → 2<sup>8</sup> · 2<sup>4</sup> = 2<sup>8+4</sup> = 2<sup>12</sup>.`,
+        `2<sup>12</sup> = 4.096, jadi populasinya empat ribu sembilan puluh enam ekor.`,
+        `Konteks nyata seperti ini muncul di pertumbuhan bakteri, bunga majemuk, dan penyebaran informasi.` ] }
+  ]
+},
+
+/* ================= SIFAT 2 : PEMBAGIAN ================= */
+s2: {
+  title: 'Latihan Sifat 2 · Pembagian Eksponen',
+  sub: 'Aturan: <i>a</i><sup><i>m</i></sup>/<i>a</i><sup><i>n</i></sup> = <i>a</i><sup><i>m</i>−<i>n</i></sup> — 10 soal pilihan ganda',
+  items: [
+    { q: `Hasil dari 2<sup>5</sup> ÷ 2<sup>2</sup> adalah …`,
+      opts: [`8`, `4`, `16`, `2`], ans: 0, v: () => 8,
+      bahas: [
+        `Basis sama → kurangkan pangkat: 2<sup>5</sup> ÷ 2<sup>2</sup> = 2<sup>5−2</sup> = 2<sup>3</sup>.`,
+        `2<sup>3</sup> = 8.`,
+        `Makna langsung: <span class="frac"><span class="num">2·2·2·2·2</span><span class="den">2·2</span></span> — dua faktor 2 tercoret, tersisa 2<sup>3</sup>.` ] },
+
+    { q: `Hasil dari 3<sup>6</sup> ÷ 3<sup>4</sup> adalah …`,
+      opts: [`81`, `3`, `27`, `9`], ans: 3, v: () => 9,
+      bahas: [
+        `Kurangkan pangkat: 3<sup>6</sup> ÷ 3<sup>4</sup> = 3<sup>6−4</sup> = 3<sup>2</sup>.`,
+        `3<sup>2</sup> = 9.`,
+        `Hati-hati: 81 = 3<sup>4</sup> adalah jawaban jika pangkat tidak dikurangkan.` ] },
+
+    { q: `Hasil dari 10<sup>5</sup> ÷ 10<sup>7</sup> adalah …`,
+      opts: [`100`, `1/100`, `1/1.000`, `10<sup>2</sup>`], ans: 1, v: () => 0.01,
+      bahas: [
+        `Kurangkan: 10<sup>5</sup> ÷ 10<sup>7</sup> = 10<sup>5−7</sup> = 10<sup>−2</sup>.`,
+        `Pangkat negatif berarti kebalikan: 10<sup>−2</sup> = 1/10<sup>2</sup> = 1/100.`,
+        `Jika pangkat bawah lebih besar, hasilnya pecahan — bukan 100!` ] },
+
+    { q: `Hasil dari 5<sup>4</sup> ÷ 5<sup>4</sup> adalah …`,
+      opts: [`1`, `5`, `25`, `0`], ans: 0, v: () => 1,
+      bahas: [
+        `Kurangkan pangkat: 5<sup>4−4</sup> = 5<sup>0</sup>.`,
+        `Dengan sifat pangkat nol: 5<sup>0</sup> = 1.`,
+        `Masuk akal juga: membagi bilangan dengan dirinya sendiri selalu menghasilkan 1.` ] },
+
+    { q: `Sederhanakan <i>x</i><sup>8</sup> ÷ <i>x</i><sup>3</sup>!`,
+      opts: [`<i>x</i><sup>11</sup>`, `<i>x</i><sup>24</sup>`, `<i>x</i><sup>4</sup>`, `<i>x</i><sup>5</sup>`], ans: 3,
+      bahas: [
+        `Basis sama → kurangkan pangkat: 8 − 3 = 5.`,
+        `Jadi <i>x</i><sup>8</sup> ÷ <i>x</i><sup>3</sup> = <b><i>x</i><sup>5</sup></b>.`,
+        `<i>x</i><sup>24</sup> adalah jebakan perkalian pangkat (sifat 3).` ] },
+
+    { q: `Hasil dari 7<sup>2</sup> ÷ 7<sup>5</sup> adalah …`,
+      opts: [`49`, `1/14`, `1/343`, `−35`], ans: 2, v: () => 1/343,
+      bahas: [
+        `Kurangkan pangkat: 7<sup>2</sup> ÷ 7<sup>5</sup> = 7<sup>2−5</sup> = 7<sup>−3</sup>.`,
+        `Pangkat negatif berarti kebalikan: 7<sup>−3</sup> = <span class="frac"><span class="num">1</span><span class="den">7<sup>3</sup></span></span> = 1/343.`,
+        `Jebakan umum: 1/49 (itu 7<sup>−2</sup>) muncul jika pengurangan pangkatnya keliru. Selalu hitung pangkat hasil dulu: 2 − 5 = −3.` ] },
+
+    { q: `Hasil dari 4<sup>9</sup> ÷ 4<sup>6</sup> adalah …`,
+      opts: [`64`, `16`, `256`, `12`], ans: 0, v: () => 64,
+      bahas: [
+        `Kurangkan pangkat: 4<sup>9</sup> ÷ 4<sup>6</sup> = 4<sup>9−6</sup> = 4<sup>3</sup>.`,
+        `4<sup>3</sup> = 64.`,
+        `12 adalah jebakan mengurangkan bilangan pokoknya — yang dikurangkan adalah pangkat, bukan basis.` ] },
+
+    { q: `Hasil dari 9<sup>3</sup> ÷ 3<sup>4</sup> adalah …`,
+      opts: [`3`, `27`, `9`, `1`], ans: 2, v: () => 9,
+      bahas: [
+        `Basisnya berbeda → samakan dulu: 9 = 3<sup>2</sup>, sehingga 9<sup>3</sup> = (3<sup>2</sup>)<sup>3</sup> = 3<sup>6</sup>.`,
+        `Sekarang basis sama: 3<sup>6</sup> ÷ 3<sup>4</sup> = 3<sup>6−4</sup> = 3<sup>2</sup> = 9.`,
+        `Soal seperti ini menggabungkan sifat 3 (pangkat dari pangkat) dan sifat 2 (pembagian).` ] },
+
+    { q: `Hasil dari 2<sup>3</sup> ÷ 2 adalah …`,
+      opts: [`2`, `1`, `4`, `8`], ans: 2, v: () => 4,
+      bahas: [
+        `Tulis 2 = 2<sup>1</sup> → 2<sup>3</sup> ÷ 2<sup>1</sup> = 2<sup>3−1</sup> = 2<sup>2</sup>.`,
+        `2<sup>2</sup> = 4.`,
+        `Jebakan: 8 ÷ 2 bukan 2<sup>3</sup> — pangkatnya yang dikurangkan, hasilnya 4.` ] },
+
+    { q: `Sederhanakan <i>x</i><sup>6</sup><i>y</i><sup>4</sup> ÷ <i>x</i><sup>4</sup><i>y</i><sup>2</sup>!`,
+      opts: [`<i>x</i><sup>10</sup><i>y</i><sup>8</sup>`, `<i>x</i><sup>2</sup><i>y</i><sup>6</sup>`, `<i>x</i><sup>2</sup><i>y</i><sup>2</sup>`, `<i>xy</i><sup>2</sup>`], ans: 2,
+      bahas: [
+        `Setiap variabel diproses terpisah (basis sama dikelompokkan): <i>x</i><sup>6</sup> ÷ <i>x</i><sup>4</sup> = <i>x</i><sup>2</sup> dan <i>y</i><sup>4</sup> ÷ <i>y</i><sup>2</sup> = <i>y</i><sup>2</sup>.`,
+        `Gabungkan: <i>x</i><sup>6</sup><i>y</i><sup>4</sup> ÷ <i>x</i><sup>4</sup><i>y</i><sup>2</sup> = <i>x</i><sup>2</sup><i>y</i><sup>2</sup>.`,
+        `Sifat pembagian berlaku per basis — jangan mencampur pangkat <i>x</i> dan <i>y</i>.` ] }
+  ]
+},
+
+/* ================= SIFAT 3 : PANGKAT DARI PANGKAT ================= */
+s3: {
+  title: 'Latihan Sifat 3 · Pangkat dari Pangkat',
+  sub: 'Aturan: (<i>a</i><sup><i>m</i></sup>)<sup><i>n</i></sup> = <i>a</i><sup><i>m</i>·<i>n</i></sup> — 10 soal pilihan ganda',
+  items: [
+    { q: `Hasil dari (2<sup>3</sup>)<sup>2</sup> adalah …`,
+      opts: [`32`, `64`, `128`, `16`], ans: 1, v: () => 64,
+      bahas: [
+        `Pangkat dikalikan: (2<sup>3</sup>)<sup>2</sup> = 2<sup>3×2</sup> = 2<sup>6</sup>.`,
+        `2<sup>6</sup> = 64.`,
+        `Jebakan: 2<sup>3+2</sup> = 2<sup>5</sup> = 32 — itu untuk perkalian, bukan untuk pangkat dari pangkat.` ] },
+
+    { q: `Hasil dari (5<sup>2</sup>)<sup>3</sup> adalah …`,
+      opts: [`125`, `625`, `3.125`, `15.625`], ans: 3, v: () => 15625,
+      bahas: [
+        `Kalikan pangkat: (5<sup>2</sup>)<sup>3</sup> = 5<sup>2×3</sup> = 5<sup>6</sup>.`,
+        `5<sup>6</sup> = 15.625.`,
+        `125 = 5<sup>3</sup> adalah hasil jika pangkat dijumlahkan (2+3... padahal 2×3 = 6).` ] },
+
+    { q: `Hasil dari (10<sup>2</sup>)<sup>4</sup> adalah …`,
+      opts: [`10<sup>6</sup>`, `10<sup>8</sup>`, `10<sup>16</sup>`, `10<sup>2</sup>`], ans: 1, v: () => 1e8,
+      bahas: [
+        `Pangkat dikalikan: (10<sup>2</sup>)<sup>4</sup> = 10<sup>2×4</sup> = 10<sup>8</sup>.`,
+        `10<sup>8</sup> = 100.000.000.`,
+        `10<sup>16</sup> muncul jika pangkat dipangkatkan (2<sup>4</sup>) — jangan lakukan itu!` ] },
+
+    { q: `Sederhanakan (<i>x</i><sup>4</sup>)<sup>3</sup>!`,
+      opts: [`<i>x</i><sup>7</sup>`, `<i>x</i><sup>64</sup>`, `<i>x</i><sup>12</sup>`, `<i>x</i><sup>3</sup>`], ans: 2,
+      bahas: [
+        `Sifat 3: (<i>x</i><sup>4</sup>)<sup>3</sup> = <i>x</i><sup>4×3</sup> = <i>x</i><sup>12</sup>.`,
+        `<i>x</i><sup>64</sup> adalah jebakan menghitung 4<sup>3</sup> — pangkatnya <b>dikalikan</b>, bukan dipangkatkan.` ] },
+
+    { q: `Hasil dari (3<sup>2</sup>)<sup>3</sup> · (3<sup>3</sup>)<sup>2</sup> adalah …`,
+      opts: [`3<sup>36</sup>`, `3<sup>12</sup>`, `3<sup>1</sup>`, `9<sup>12</sup>`], ans: 1, v: () => 531441,
+      bahas: [
+        `Proses tiap kurung dengan sifat 3: (3<sup>2</sup>)<sup>3</sup> = 3<sup>6</sup> dan (3<sup>3</sup>)<sup>2</sup> = 3<sup>6</sup>.`,
+        `Lalu sifat 1: 3<sup>6</sup> · 3<sup>6</sup> = 3<sup>12</sup> = 531.441.`,
+        `Dua sifat bekerja berurutan: <b>dalam kurung dikalikan</b>, <b>antar kurung dijumlahkan</b>.` ] },
+
+    { q: `Sederhanakan (<i>x</i><sup>2</sup>)<sup>5</sup>!`,
+      opts: [`<i>x</i><sup>7</sup>`, `<i>x</i><sup>32</sup>`, `<i>x</i><sup>5</sup>`, `<i>x</i><sup>10</sup>`], ans: 3,
+      bahas: [
+        `Pangkat dikalikan: 2 × 5 = 10.`,
+        `Jadi (<i>x</i><sup>2</sup>)<sup>5</sup> = <b><i>x</i><sup>10</sup></b>.`,
+        `Ingat polanya: tanda kurung → kali; tanpa kurung (perkalian) → tambah.` ] },
+
+    { q: `Hasil dari ((2<sup>2</sup>)<sup>3</sup>)<sup>2</sup> adalah …`,
+      opts: [`2<sup>6</sup>`, `2<sup>12</sup>`, `2<sup>10</sup>`, `2<sup>8</sup>`], ans: 1, v: () => 4096,
+      bahas: [
+        `Kerjakan dari dalam ke luar: (2<sup>2</sup>)<sup>3</sup> = 2<sup>6</sup>.`,
+        `Lalu (2<sup>6</sup>)<sup>2</sup> = 2<sup>12</sup> = 4.096.`,
+        `Cara cepat: semua pangkat dikalikan sekaligus, 2 × 3 × 2 = 12 → 2<sup>12</sup>.` ] },
+
+    { q: `Hasil dari (3<sup>5</sup>)<sup>2</sup> ÷ (3<sup>2</sup>)<sup>4</sup> adalah …`,
+      opts: [`81`, `3`, `27`, `9`], ans: 3, v: () => 9,
+      bahas: [
+        `Sifat 3: (3<sup>5</sup>)<sup>2</sup> = 3<sup>10</sup> dan (3<sup>2</sup>)<sup>4</sup> = 3<sup>8</sup>.`,
+        `Sifat 2: 3<sup>10</sup> ÷ 3<sup>8</sup> = 3<sup>10−8</sup> = 3<sup>2</sup>.`,
+        `3<sup>2</sup> = 9. Tiga sifat bisa beruntun dalam satu soal!` ] },
+
+    { q: `Hasil dari (7<sup>0</sup>)<sup>3</sup> adalah …`,
+      opts: [`7`, `0`, `1`, `343`], ans: 2, v: () => 1,
+      bahas: [
+        `Pangkat nol: 7<sup>0</sup> = 1, sehingga persamaannya menjadi (1)<sup>3</sup>.`,
+        `1<sup>3</sup> = 1.`,
+        `Atau langsung: (7<sup>0</sup>)<sup>3</sup> = 7<sup>0×3</sup> = 7<sup>0</sup> = 1 — kedua cara sama.` ] },
+
+    { q: `Hasil dari (2<sup>3</sup>)<sup>2</sup> · 2<sup>4</sup> adalah …`,
+      opts: [`512`, `2.048`, `1.024`, `4.096`], ans: 2, v: () => 1024,
+      bahas: [
+        `Sifat 3 dulu: (2<sup>3</sup>)<sup>2</sup> = 2<sup>6</sup>.`,
+        `Sifat 1: 2<sup>6</sup> · 2<sup>4</sup> = 2<sup>6+4</sup> = 2<sup>10</sup>.`,
+        `2<sup>10</sup> = 1.024 (ingat: 1 KB = 2<sup>10</sup> byte!).` ] }
+  ]
+},
+
+/* ================= SIFAT 4 : PANGKAT DARI PERKALIAN ================= */
+s4: {
+  title: 'Latihan Sifat 4 · Pangkat dari Perkalian',
+  sub: 'Aturan: (<i>ab</i>)<sup><i>n</i></sup> = <i>a</i><sup><i>n</i></sup><i>b</i><sup><i>n</i></sup> — 10 soal pilihan ganda',
+  items: [
+    { q: `Hasil dari (2 · 5)<sup>3</sup> adalah …`,
+      opts: [`30`, `125`, `1.000`, `225`], ans: 2, v: () => 1000,
+      bahas: [
+        `Sifat 4: (2·5)<sup>3</sup> = 2<sup>3</sup> · 5<sup>3</sup> = 8 · 125.`,
+        `8 × 125 = 1.000 — sama dengan 10<sup>3</sup>.`,
+        `Pintasan: kalikan dulu di dalam kurung (2·5 = 10), lalu pangkatkan: 10<sup>3</sup> = 1.000.` ] },
+
+    { q: `Sederhanakan (3<i>x</i>)<sup>2</sup>!`,
+      opts: [`3<i>x</i><sup>2</sup>`, `6<i>x</i><sup>2</sup>`, `9<i>x</i><sup>2</sup>`, `9<i>x</i>`], ans: 2,
+      bahas: [
+        `Sebarkan pangkat ke kedua faktor: (3<i>x</i>)<sup>2</sup> = 3<sup>2</sup> · <i>x</i><sup>2</sup>.`,
+        `3<sup>2</sup> = 9 → hasilnya 9<i>x</i><sup>2</sup>.`,
+        `Jebakan paling umum: hanya <i>x</i> yang dipangkatkan (3<i>x</i><sup>2</sup>) — angka di depan juga wajib dipangkatkan!` ] },
+
+    { q: `Hasil dari (2 · 3)<sup>4</sup> adalah …`,
+      opts: [`216`, `81`, `48`, `1.296`], ans: 3, v: () => 1296,
+      bahas: [
+        `2·3 = 6, jadi (2·3)<sup>4</sup> = 6<sup>4</sup>.`,
+        `6<sup>4</sup> = 1.296. Atau via sifat 4: 2<sup>4</sup> · 3<sup>4</sup> = 16 · 81 = 1.296.`,
+        `48 adalah jebakan mengalikan 2·3 lalu ×4 tanpa memangkatkan.` ] },
+
+    { q: `Sederhanakan (5<i>m</i><sup>3</sup>)<sup>2</sup>!`,
+      opts: [`10<i>m</i><sup>6</sup>`, `25<i>m</i><sup>9</sup>`, `25<i>m</i><sup>6</sup>`, `5<i>m</i><sup>9</sup>`], ans: 2,
+      bahas: [
+        `Sebarkan pangkat 2: 5<sup>2</sup> · (<i>m</i><sup>3</sup>)<sup>2</sup>.`,
+        `5<sup>2</sup> = 25 dan (<i>m</i><sup>3</sup>)<sup>2</sup> = <i>m</i><sup>6</sup> (sifat 3).`,
+        `Hasil: 25<i>m</i><sup>6</sup> — sifat 3 dan 4 bekerja bersama.` ] },
+
+    { q: `Hasil dari 4<sup>3</sup> · 5<sup>3</sup> adalah … (gunakan sifat 4 secara terbalik!)`,
+      opts: [`4.000`, `512`, `8.000`, `64.000`], ans: 2, v: () => 8000,
+      bahas: [
+        `Sifat 4 dibaca dari belakang: <i>a</i><sup><i>n</i></sup> · <i>b</i><sup><i>n</i></sup> = (<i>ab</i>)<sup><i>n</i></sup>.`,
+        `4<sup>3</sup> · 5<sup>3</sup> = (4·5)<sup>3</sup> = 20<sup>3</sup> = 8.000.`,
+        `Lebih hemat tenaga daripada menghitung 64 × 125 — satu kegunaan sifat: <b>menyederhanakan perhitungan</b>.` ] },
+
+    { q: `Sederhanakan (2<i>xy</i>)<sup>3</sup>!`,
+      opts: [`6<i>x</i><sup>3</sup><i>y</i><sup>3</sup>`, `2<i>x</i><sup>3</sup><i>y</i><sup>3</sup>`, `8<i>x</i><sup>3</sup><i>y</i>`, `8<i>x</i><sup>3</sup><i>y</i><sup>3</sup>`], ans: 3,
+      bahas: [
+        `Sebarkan pangkat 3 ke semua faktor: 2<sup>3</sup> · <i>x</i><sup>3</sup> · <i>y</i><sup>3</sup>.`,
+        `2<sup>3</sup> = 8 → hasilnya 8<i>x</i><sup>3</sup><i>y</i><sup>3</sup>.`,
+        `Perhatikan: setiap faktor (2, <i>x</i>, dan <i>y</i>) menerima pangkat — tidak ada yang boleh terlewat.` ] },
+
+    { q: `Sederhanakan (−3<i>a</i>)<sup>2</sup>!`,
+      opts: [`−9<i>a</i><sup>2</sup>`, `9<i>a</i><sup>2</sup>`, `6<i>a</i><sup>2</sup>`, `−6<i>a</i><sup>2</sup>`], ans: 1,
+      bahas: [
+        `Sebarkan: (−3)<sup>2</sup> · <i>a</i><sup>2</sup>.`,
+        `(−3)<sup>2</sup> = (−3)·(−3) = 9 — kuadrat bilangan negatif selalu positif.`,
+        `Hasil: 9<i>a</i><sup>2</sup>. Bandingkan dengan (−3<i>a</i>)<sup>3</sup> = −27<i>a</i><sup>3</sup> (pangkat ganjil → negatif).` ] },
+
+    { q: `Hasil dari (2<sup>3</sup> · 5)<sup>2</sup> adalah …`,
+      opts: [`1.000`, `640`, `2.500`, `1.600`], ans: 3, v: () => 1600,
+      bahas: [
+        `Hitung dalam kurung: 2<sup>3</sup> · 5 = 8 · 5 = 40.`,
+        `(40)<sup>2</sup> = 1.600.`,
+        `Cara sifat: (2<sup>3</sup>·5)<sup>2</sup> = 2<sup>6</sup> · 5<sup>2</sup> = 64 · 25 = 1.600 ✔ (dua cara, satu jawaban).` ] },
+
+    { q: `Sederhanakan (<i>x</i><sup>2</sup><i>y</i>)<sup>2</sup> · (<i>xy</i>)<sup>3</sup>!`,
+      opts: [`<i>x</i><sup>9</sup><i>y</i><sup>5</sup>`, `<i>x</i><sup>7</sup><i>y</i><sup>6</sup>`, `<i>x</i><sup>12</sup><i>y</i><sup>6</sup>`, `<i>x</i><sup>7</sup><i>y</i><sup>5</sup>`], ans: 3,
+      bahas: [
+        `Sebarkan kedua pangkat: (<i>x</i><sup>2</sup><i>y</i>)<sup>2</sup> = <i>x</i><sup>4</sup><i>y</i><sup>2</sup> dan (<i>xy</i>)<sup>3</sup> = <i>x</i><sup>3</sup><i>y</i><sup>3</sup>.`,
+        `Kalikan (sifat 1 per basis): <i>x</i><sup>4</sup> · <i>x</i><sup>3</sup> = <i>x</i><sup>7</sup> dan <i>y</i><sup>2</sup> · <i>y</i><sup>3</sup> = <i>y</i><sup>5</sup>.`,
+        `Hasil: <i>x</i><sup>7</sup><i>y</i><sup>5</sup> — kombinasi sifat 1, 3, dan 4.` ] },
+
+    { q: `Sederhanakan (<i>ab</i><sup>2</sup>)<sup>3</sup>!`,
+      opts: [`<i>a</i><sup>3</sup><i>b</i><sup>5</sup>`, `<i>ab</i><sup>6</sup>`, `<i>a</i><sup>3</sup><i>b</i><sup>6</sup>`, `<i>a</i><sup>2</sup><i>b</i><sup>6</sup>`], ans: 2,
+      bahas: [
+        `Sebarkan pangkat 3: <i>a</i><sup>3</sup> · (<i>b</i><sup>2</sup>)<sup>3</sup>.`,
+        `(<i>b</i><sup>2</sup>)<sup>3</sup> = <i>b</i><sup>2×3</sup> = <i>b</i><sup>6</sup>.`,
+        `Hasil: <i>a</i><sup>3</sup><i>b</i><sup>6</sup>. Pangkat yang sudah ada di dalam kurung ikut <b>dikalikan</b>, bukan ditulis ulang.` ] }
+  ]
+}
+};
+
+if (typeof module !== 'undefined' && module.exports) module.exports = W.DATA_SIFAT_A;
+
+})();
+
+(function(){
+/* DATA QUIZ — Sifat 5 s.d. 8 (40 soal) */
+const W = (typeof window !== 'undefined') ? window : globalThis;
+
+W.DATA_SIFAT_B = {
+
+/* ================= SIFAT 5 : PANGKAT DARI PEMBAGIAN ================= */
+s5: {
+  title: 'Latihan Sifat 5 · Pangkat dari Pembagian',
+  sub: 'Aturan: (<i>a</i>/<i>b</i>)<sup><i>n</i></sup> = <i>a</i><sup><i>n</i></sup>/<i>b</i><sup><i>n</i></sup> — 10 soal pilihan ganda',
+  items: [
+    { q: `Hasil dari (2/3)<sup>2</sup> adalah …`,
+      opts: [`4/6`, `2/9`, `2/3`, `4/9`], ans: 3, v: () => 4/9,
+      bahas: [
+        `Sebarkan pangkat ke pembilang dan penyebut: (2/3)<sup>2</sup> = 2<sup>2</sup>/3<sup>2</sup>.`,
+        `2<sup>2</sup> = 4 dan 3<sup>2</sup> = 9 → hasilnya 4/9.`,
+        `4/6 salah karena hanya pembilangnya yang dipangkatkan (2×2/3).` ] },
+
+    { q: `Hasil dari (5/2)<sup>3</sup> adalah …`,
+      opts: [`15/6`, `25/8`, `125/8`, `10/6`], ans: 2, v: () => 15.625,
+      bahas: [
+        `Sebarkan pangkat 3: (5/2)<sup>3</sup> = 5<sup>3</sup>/2<sup>3</sup>.`,
+        `5<sup>3</sup> = 125 dan 2<sup>3</sup> = 8 → hasilnya 125/8 (= 15,625).`,
+        `Jebakan: 15/6 muncul jika pangkat hanya dikalikan dengan pembilang, bukan memangkatkan keduanya.` ] },
+
+    { q: `Sederhanakan (<i>x</i>/2)<sup>3</sup>!`,
+      opts: [`<i>x</i><sup>3</sup>/8`, `<i>x</i><sup>3</sup>/2`, `<i>x</i>/8`, `<i>x</i><sup>3</sup>/6`], ans: 0,
+      bahas: [
+        `Sebarkan pangkat 3 ke pembilang dan penyebut: <i>x</i><sup>3</sup>/2<sup>3</sup>.`,
+        `2<sup>3</sup> = 8 → hasilnya <i>x</i><sup>3</sup>/8.`,
+        `Variabel di pembilang juga dipangkatkan, dan angka di penyebut ikut memangkatkan — keduanya wajib.` ] },
+
+    { q: `Hasil dari (3/4)<sup>2</sup> · (4/3)<sup>2</sup> adalah …`,
+      opts: [`9/16`, `12/16`, `1`, `3/4`], ans: 2, v: () => 1,
+      bahas: [
+        `Hitung masing-masing: (3/4)<sup>2</sup> = 9/16 dan (4/3)<sup>2</sup> = 16/9.`,
+        `Kalikan: <span class="frac"><span class="num">9</span><span class="den">16</span></span> × <span class="frac"><span class="num">16</span><span class="den">9</span></span> = 1 (pembilang dan penyebut saling meneutral).`,
+        `Insight: <i>a</i><sup><i>n</i></sup> dan (1/<i>a</i>)<sup><i>n</i></sup> selalu saling menghabiskan — hasilnya tepat 1.` ] },
+
+    { q: `Sederhanakan (<i>a</i>/3)<sup>4</sup>!`,
+      opts: [`<i>a</i><sup>4</sup>/12`, `<i>a</i><sup>4</sup>/81`, `<i>a</i>/81`, `<i>a</i><sup>4</sup>/3`], ans: 1,
+      bahas: [
+        `Sebarkan pangkat 4: <i>a</i><sup>4</sup>/3<sup>4</sup>.`,
+        `3<sup>4</sup> = 81 → hasilnya <i>a</i><sup>4</sup>/81.`,
+        `12 (dari 3×4) adalah jebakan mengalikan alih-alih memangkatkan penyebut.` ] },
+
+    { q: `Hasil dari (7/5)<sup>2</sup> adalah …`,
+      opts: [`49/25`, `14/10`, `49/10`, `7/25`], ans: 0, v: () => 1.96,
+      bahas: [
+        `Sebarkan pangkat 2: 7<sup>2</sup>/5<sup>2</sup>.`,
+        `7<sup>2</sup> = 49 dan 5<sup>2</sup> = 25 → hasilnya 49/25 (= 1,96).`,
+        `14/10 (mengalikan pembilang & penyebut dengan 2) adalah jebakan klasik — pangkat berarti <i>dikalikan dengan dirinya sendiri</i>, bukan dikalikan angka pangkat.` ] },
+
+    { q: `Sederhanakan (2<i>b</i>/5)<sup>2</sup>!`,
+      opts: [`2<i>b</i><sup>2</sup>/25`, `4<i>b</i><sup>2</sup>/25`, `4<i>b</i>/25`, `4<i>b</i><sup>2</sup>/5`], ans: 1,
+      bahas: [
+        `Sebarkan pangkat 2: (2<i>b</i>)<sup>2</sup>/5<sup>2</sup>.`,
+        `Pembilang pakai sifat 4: (2<i>b</i>)<sup>2</sup> = 4<i>b</i><sup>2</sup>; penyebut: 5<sup>2</sup> = 25.`,
+        `Hasil: 4<i>b</i><sup>2</sup>/25 — sifat 4 dan 5 bekerja berdampingan.` ] },
+
+    { q: `Hasil dari (1/2)<sup>6</sup> adalah …`,
+      opts: [`1/32`, `1/12`, `1/26`, `1/64`], ans: 3, v: () => 0.015625,
+      bahas: [
+        `Sebarkan: 1<sup>6</sup>/2<sup>6</sup> = 1/2<sup>6</sup>.`,
+        `2<sup>6</sup> = 64 → hasilnya 1/64.`,
+        `1/26 adalah jebakan mengalikan 2 dengan 6 — pangkat enam berarti mengalikan ½ sebanyak enam kali.` ] },
+
+    { q: `Sederhanakan (<i>x</i><sup>2</sup>/3)<sup>2</sup>!`,
+      opts: [`<i>x</i><sup>4</sup>/3`, `<i>x</i><sup>2</sup>/9`, `<i>x</i><sup>4</sup>/9`, `<i>x</i><sup>4</sup>/6`], ans: 2,
+      bahas: [
+        `Sebarkan pangkat 2: (<i>x</i><sup>2</sup>)<sup>2</sup>/3<sup>2</sup>.`,
+        `(<i>x</i><sup>2</sup>)<sup>2</sup> = <i>x</i><sup>4</sup> (sifat 3) dan 3<sup>2</sup> = 9.`,
+        `Hasil: <i>x</i><sup>4</sup>/9. Tiga sifat (2, 3, 5) berkolaborasi dalam satu soal.` ] },
+
+    { q: `Peluang muncul mata dadu 6 dua kali berturut-turut adalah (1/6)<sup>2</sup>. Nilai peluang tersebut adalah …`,
+      opts: [`1/12`, `1/36`, `1/6`, `1/64`], ans: 1, v: () => 1/36,
+      bahas: [
+        `Sebarkan pangkat 2: (1/6)<sup>2</sup> = 1<sup>2</sup>/6<sup>2</sup> = 1/36.`,
+        `Makna konteksnya: dari 6 × 6 = 36 kemungkinan pasangan mata dadu, hanya 1 yang memenuhi (6 lalu 6 lagi).`,
+        `Eksponen sering muncul dalam peluang, statistik, dan komputasi.` ] }
+  ]
+},
+
+/* ================= SIFAT 6 : PANGKAT NOL ================= */
+s6: {
+  title: 'Latihan Sifat 6 · Pangkat Nol',
+  sub: 'Aturan: <i>a</i><sup>0</sup> = 1 untuk <i>a</i> ≠ 0 — 10 soal pilihan ganda',
+  items: [
+    { q: `Nilai dari 9<sup>0</sup> adalah …`,
+      opts: [`1`, `9`, `0`, `tidak terdefinisi`], ans: 0, v: () => 1,
+      bahas: [
+        `Sifat 6: setiap bilangan nonzero berpangkat nol bernilai 1.`,
+        `9 ≠ 0, jadi 9<sup>0</sup> = 1.`,
+        `Ingat <b>syaratnya</b>: a ≠ 0. Untuk 9, syarat ini terpenuhi.` ] },
+
+    { q: `Nilai dari 5<sup>0</sup> + 2<sup>0</sup> adalah …`,
+      opts: [`1`, `7`, `2`, `0`], ans: 2, v: () => 2,
+      bahas: [
+        `5<sup>0</sup> = 1 dan 2<sup>0</sup> = 1.`,
+        `Jadi 5<sup>0</sup> + 2<sup>0</sup> = 1 + 1 = 2.`,
+        `Jebakan: menjawab 1 (lupa menjumlah) atau 7 (menjumlahkan basisnya).` ] },
+
+    { q: `Nilai dari (−7)<sup>0</sup> adalah …`,
+      opts: [`−7`, `1`, `0`, `−1`], ans: 1, v: () => 1,
+      bahas: [
+        `Seluruh kurung (−7) menjadi basisnya, dan −7 ≠ 0.`,
+        `Maka (−7)<sup>0</sup> = 1.`,
+        `Tanda negatif di dalam kurung tidak mengubah aturan pangkat nol.` ] },
+
+    { q: `Jika <i>x</i> ≠ 0, nilai dari (3<i>x</i>)<sup>0</sup> adalah …`,
+      opts: [`3`, `3<i>x</i>`, `0`, `1`], ans: 3, v: () => 1,
+      bahas: [
+        `Basisnya adalah seluruh (3<i>x</i>), bernilai 3<i>x</i> ≠ 0 karena <i>x</i> ≠ 0.`,
+        `Sifat 6: (3<i>x</i>)<sup>0</sup> = 1.`,
+        `Pangkat nol menghapus <b>seluruh isi kurung</b>, bukan hanya variabelnya.` ] },
+
+    { q: `Hasil dari 10<sup>0</sup> · 10<sup>2</sup> adalah …`,
+      opts: [`10`, `1`, `100`, `1.000`], ans: 2, v: () => 100,
+      bahas: [
+        `Sifat 1: 10<sup>0</sup> · 10<sup>2</sup> = 10<sup>0+2</sup> = 10<sup>2</sup>.`,
+        `10<sup>2</sup> = 100.`,
+        `Alternatif: 10<sup>0</sup> = 1 dan 1 × 100 = 100 — hasil konsisten.` ] },
+
+    { q: `Hasil dari 4<sup>0</sup> − 4<sup>1</sup> adalah …`,
+      opts: [`3`, `−4`, `1`, `−3`], ans: 3, v: () => -3,
+      bahas: [
+        `4<sup>0</sup> = 1 dan 4<sup>1</sup> = 4.`,
+        `1 − 4 = −3.`,
+        `Urutan pengerjaan: hitung kedua pangkat dulu, baru kurangkan.` ] },
+
+    { q: `Hasil dari (2<sup>0</sup>)<sup>5</sup> adalah …`,
+      opts: [`32`, `1`, `0`, `2`], ans: 1, v: () => 1,
+      bahas: [
+        `Dari dalam ke luar: 2<sup>0</sup> = 1, lalu (1)<sup>5</sup> = 1.`,
+        `Cara sifat 3: (2<sup>0</sup>)<sup>5</sup> = 2<sup>0×5</sup> = 2<sup>0</sup> = 1.`,
+        `Pangkat nol "menang" di mana pun ia berada — hasilnya selalu 1.` ] },
+
+    { q: `Hasil dari 6<sup>3</sup> ÷ 6<sup>3</sup> adalah …`,
+      opts: [`0`, `6`, `36`, `1`], ans: 3, v: () => 1,
+      bahas: [
+        `Sifat 2: 6<sup>3</sup> ÷ 6<sup>3</sup> = 6<sup>3−3</sup> = 6<sup>0</sup>.`,
+        `Sifat 6: 6<sup>0</sup> = 1.`,
+        `Inilah <b>asal mula</b> sifat pangkat nol: membagi pangkat yang sama menghasilkan pangkat nol yang bernilai 1.` ] },
+
+    { q: `Hati-hati! Nilai dari −2<sup>0</sup> (TANPA tanda kurung) adalah …`,
+      opts: [`1`, `−2`, `−1`, `0`], ans: 2, v: () => -1,
+      bahas: [
+        `Tanpa kurung, pangkat hanya menempel pada angka 2: −2<sup>0</sup> = −(2<sup>0</sup>).`,
+        `2<sup>0</sup> = 1, sehingga −(2<sup>0</sup>) = −1.`,
+        `Bandingkan dengan (−2)<sup>0</sup> = 1. Posisi tanda minus dan tanda kurung sangat menentukan!` ] },
+
+    { q: `Jika <i>ab</i> ≠ 0, nilai dari (<i>a</i><sup>3</sup><i>b</i>)<sup>0</sup> adalah …`,
+      opts: [`<i>a</i><sup>3</sup><i>b</i>`, `1`, `0`, `3<i>ab</i>`], ans: 1, v: () => 1,
+      bahas: [
+        `Selama <i>ab</i> ≠ 0, basisnya <i>a</i><sup>3</sup><i>b</i> pasti tidak nol.`,
+        `Sifat 6 berlaku untuk bilangan dan bentuk aljabar apa pun yang tak nol: (<i>a</i><sup>3</sup><i>b</i>)<sup>0</sup> = 1.`,
+        `Sifat eksponen berlaku juga pada bentuk aljabar — bukan hanya bilangan.` ] }
+  ]
+},
+
+/* ================= SIFAT 7 : PANGKAT NEGATIF ================= */
+s7: {
+  title: 'Latihan Sifat 7 · Pangkat Negatif',
+  sub: 'Aturan: <i>a</i><sup>−<i>n</i></sup> = 1/<i>a</i><sup><i>n</i></sup> — 10 soal pilihan ganda',
+  items: [
+    { q: `Hasil dari 2<sup>−3</sup> adalah …`,
+      opts: [`−8`, `1/8`, `−6`, `1/6`], ans: 1, v: () => 0.125,
+      bahas: [
+        `Sifat 7: 2<sup>−3</sup> = 1/2<sup>3</sup>.`,
+        `2<sup>3</sup> = 8 → hasilnya 1/8.`,
+        `Pangkat negatif <b>bukan</b> hasil negatif! −8 adalah jebakan paling umum.` ] },
+
+    { q: `Hasil dari 3<sup>−2</sup> adalah …`,
+      opts: [`−9`, `−6`, `1/9`, `9`], ans: 2, v: () => 1/9,
+      bahas: [
+        `3<sup>−2</sup> = 1/3<sup>2</sup> = 1/9.`,
+        `9 (tanpa pecahan) adalah jawaban untuk 3<sup>2</sup> — tanda pangkatnya terlewat.`,
+        `Cek tangga pangkat: 3<sup>2</sup>=9 → 3<sup>1</sup>=3 → 3<sup>0</sup>=1 → 3<sup>−1</sup>=1/3 → 3<sup>−2</sup>=1/9.` ] },
+
+    { q: `Hasil dari 5<sup>−1</sup> adalah …`,
+      opts: [`−5`, `5`, `1/5`, `−1/5`], ans: 2, v: () => 0.2,
+      bahas: [
+        `5<sup>−1</sup> = 1/5<sup>1</sup> = 1/5.`,
+        `Makna praktis: 1/5 dari sesuatu — misalnya 5<sup>−1</sup> jam = 12 menit.`,
+        `−1/5 salah karena tanda pangkat tidak "merambat" menjadi tanda negatif hasil.` ] },
+
+    { q: `Hasil dari 10<sup>−3</sup> adalah …`,
+      opts: [`1/1.000`, `−1.000`, `1/100`, `−100`], ans: 0, v: () => 0.001,
+      bahas: [
+        `10<sup>−3</sup> = 1/10<sup>3</sup> = 1/1.000.`,
+        `Notasi ini sangat sering muncul: 1 milimeter = 10<sup>−3</sup> meter, 1 miligram = 10<sup>−3</sup> gram.`,
+        `Hitungan cepat: tiap pangkat negatif pada 10 berarti "geser koma ke kiri tiga kali".` ] },
+
+    { q: `Hasil dari (1/2)<sup>−3</sup> adalah …`,
+      opts: [`1/8`, `8`, `−8`, `1/6`], ans: 1, v: () => 8,
+      bahas: [
+        `Pangkat negatif membalik pecahan: (1/2)<sup>−3</sup> = (2/1)<sup>3</sup> = 2<sup>3</sup>.`,
+        `2<sup>3</sup> = 8.`,
+        `Jebakan: 1/8 adalah jawaban untuk (1/2)<sup>3</sup> tanpa tanda negatif.` ] },
+
+    { q: `Hasil dari (2/3)<sup>−2</sup> adalah …`,
+      opts: [`4/9`, `−9/4`, `9/4`, `2/3`], ans: 2, v: () => 2.25,
+      bahas: [
+        `Pangkat negatif membalik pecahan, lalu pangkat positif bekerja: (2/3)<sup>−2</sup> = (3/2)<sup>2</sup>.`,
+        `(3/2)<sup>2</sup> = 9/4.`,
+        `Dua langkah: <b>balik dulu</b>, <b>baru pangkatkan</b> — urutan ini mencegah tanda keliru.` ] },
+
+    { q: `Hasil dari (−2)<sup>−3</sup> adalah …`,
+      opts: [`−1/8`, `1/8`, `8`, `−8`], ans: 0, v: () => -0.125,
+      bahas: [
+        `(−2)<sup>−3</sup> = 1/(−2)<sup>3</sup> — tanda kurung memasukkan minus ke dalam basis.`,
+        `(−2)<sup>3</sup> = −8, sehingga hasilnya 1/(−8) = −1/8.`,
+        `Perbandingan penting: (−2)<sup>−3</sup> = −1/8, tetapi 2<sup>−3</sup> = 1/8. Posisi minus menentukan tanda hasil!` ] },
+
+    { q: `Hasil dari 4 · 2<sup>−2</sup> adalah …`,
+      opts: [`1`, `2`, `1/4`, `8`], ans: 0, v: () => 1,
+      bahas: [
+        `Kerjakan pangkatnya dulu: 2<sup>−2</sup> = 1/2<sup>2</sup> = 1/4.`,
+        `Lalu kalikan: 4 · 1/4 = 1.`,
+        `Pangkat −2 hanya menempel pada 2, bukan pada angka 4.` ] },
+
+    { q: `Hasil dari (5<sup>−2</sup>)<sup>−1</sup> adalah …`,
+      opts: [`1/25`, `5`, `−25`, `25`], ans: 3, v: () => 25,
+      bahas: [
+        `Sifat 3 untuk pangkat negatif: (5<sup>−2</sup>)<sup>−1</sup> = 5<sup>(−2)×(−1)</sup> = 5<sup>2</sup>.`,
+        `5<sup>2</sup> = 25.`,
+        `Cara lain: 5<sup>−2</sup> = 1/25, lalu (1/25)<sup>−1</sup> = 25 — kebalikan dari kebalikan kembali ke awal.` ] },
+
+    { q: `Hasil dari 2<sup>−5</sup> ÷ 2<sup>−3</sup> adalah …`,
+      opts: [`4`, `1/4`, `1/8`, `−4`], ans: 1, v: () => 0.25,
+      bahas: [
+        `Sifat 2: 2<sup>−5</sup> ÷ 2<sup>−3</sup> = 2<sup>−5−(−3)</sup> = 2<sup>−5+3</sup> = 2<sup>−2</sup>.`,
+        `2<sup>−2</sup> = 1/4.`,
+        `Kesalahan umum: −5 − (−3) dihitung sebagai −8. Ingat: mengurangi bilangan negatif = <b>menambah</b>.` ] }
+  ]
+},
+
+/* ================= SIFAT 8 : PANGKAT PECAHAN & BENTUK AKAR ================= */
+s8: {
+  title: 'Latihan Sifat 8 · Pangkat Pecahan & Bentuk Akar',
+  sub: 'Aturan: <i>a</i><sup><i>m/n</i></sup> = ⁿ√<span class="rad"><i>a</i><sup><i>m</i></sup></span> — 10 soal pilihan ganda',
+  items: [
+    { q: `Hasil dari 4<sup>1/2</sup> adalah …`,
+      opts: [`4`, `2`, `8`, `1/2`], ans: 1, v: () => 2,
+      bahas: [
+        `Pangkat 1/2 berarti akar kuadrat: 4<sup>1/2</sup> = √4.`,
+        `√4 = 2, karena 2 × 2 = 4.`,
+        `Jebakan: 4 (bobot basa-basi) atau 8 (4 × 2) — pembilang pecahan menunjukkan <b>akar</b>, bukan perkalian.` ] },
+
+    { q: `Hasil dari 8<sup>1/3</sup> adalah …`,
+      opts: [`3`, `8`, `2`, `1/3`], ans: 2, v: () => 2,
+      bahas: [
+        `Pangkat 1/3 berarti akar pangkat tiga: 8<sup>1/3</sup> = ∛8.`,
+        `∛8 = 2, karena 2 × 2 × 2 = 8.`,
+        `Penyebut pecahan pangkat = indeks akar. Ini jembatan antara eksponen dan bentuk akar.` ] },
+
+    { q: `Hasil dari 25<sup>1/2</sup> adalah …`,
+      opts: [`5`, `12,5`, `1/5`, `25`], ans: 0, v: () => 5,
+      bahas: [
+        `25<sup>1/2</sup> = √25 = 5.`,
+        `12,5 adalah jebakan membagi 25 dengan 2 — pangkat 1/2 berarti akar kuadrat, bukan setengah kali!`,
+        `Uji balik: 5 × 5 = 25 ✔` ] },
+
+    { q: `Hasil dari 27<sup>2/3</sup> adalah …`,
+      opts: [`6`, `18`, `3`, `9`], ans: 3, v: () => 9,
+      bahas: [
+        `Pisahkan perannya: penyebut 3 → akar pangkat tiga; pembilang 2 → pangkat dua. 27<sup>2/3</sup> = (∛27)<sup>2</sup>.`,
+        `∛27 = 3, lalu 3<sup>2</sup> = 9.`,
+        `Hitung akarnya dulu (angka kecil), baru pangkatkan — jauh lebih mudah daripada 27<sup>2</sup> = 729 lalu dicari akarnya.` ] },
+
+    { q: `Hasil dari 16<sup>3/4</sup> adalah …`,
+      opts: [`8`, `12`, `64`, `4`], ans: 0, v: () => 8,
+      bahas: [
+        `16<sup>3/4</sup> = ( ⁴√16 )<sup>3</sup>.`,
+        `⁴√16 = 2 (karena 2<sup>4</sup> = 16), lalu 2<sup>3</sup> = 8.`,
+        `64 adalah jebakan menghitung 4 × 16 — ingat, ⁴√16 hanya 2!` ] },
+
+    { q: `Hasil dari 9<sup>−1/2</sup> adalah …`,
+      opts: [`−3`, `3`, `1/3`, `−1/3`], ans: 2, v: () => 1/3,
+      bahas: [
+        `Pangkat negatif → kebalikan: 9<sup>−1/2</sup> = 1/9<sup>1/2</sup>.`,
+        `9<sup>1/2</sup> = √9 = 3, sehingga hasilnya 1/3.`,
+        `Tanda negatif pada pangkat memberi pecahan; pecahan 1/2 memberi akar. Dua peran berbeda — jangan tertukar.` ] },
+
+    { q: `Hasil dari 32<sup>2/5</sup> adalah …`,
+      opts: [`2`, `4`, `8`, `16`], ans: 1, v: () => 4,
+      bahas: [
+        `32<sup>2/5</sup> = ( ⁵√32 )<sup>2</sup>.`,
+        `⁵√32 = 2 (karena 2<sup>5</sup> = 32), lalu 2<sup>2</sup> = 4.`,
+        `Kunci: hafalkan pangkat 2 — 16=2⁴, 32=2⁵, 64=2⁶ — agar akarnya cepat terlihat.` ] },
+
+    { q: `Hasil dari (1/8)<sup>1/3</sup> adalah …`,
+      opts: [`1/4`, `−1/2`, `2`, `1/2`], ans: 3, v: () => 0.5,
+      bahas: [
+        `(1/8)<sup>1/3</sup> = ∛(1/8) = ∛1/∛8 = 1/2.`,
+        `Uji balik: (1/2) × (1/2) × (1/2) = 1/8 ✔`,
+        `Akar dari pecahan = pecahan dari akar — akar bekerja pada pembilang dan penyebut.` ] },
+
+    { q: `Hasil dari 100<sup>1/2</sup> + 27<sup>1/3</sup> adalah …`,
+      opts: [`11`, `30`, `13`, `7`], ans: 2, v: () => 13,
+      bahas: [
+        `Ubah ke bentuk akar: 100<sup>1/2</sup> = √100 = 10 dan 27<sup>1/3</sup> = ∛27 = 3.`,
+        `Jumlahkan: 10 + 3 = 13.`,
+        `Kerjakan tiap pangkat pecahan terpisah dulu, baru operasikan penjumlahannya.` ] },
+
+    { q: `Hasil dari 8<sup>4/3</sup> adalah …`,
+      opts: [`8`, `32`, `4`, `16`], ans: 3, v: () => 16,
+      bahas: [
+        `8<sup>4/3</sup> = ( ∛8 )<sup>4</sup>.`,
+        `∛8 = 2, lalu 2<sup>4</sup> = 16.`,
+        `Cara lain: 8 = 2<sup>3</sup>, jadi 8<sup>4/3</sup> = (2<sup>3</sup>)<sup>4/3</sup> = 2<sup>3×4/3</sup> = 2<sup>4</sup> = 16 — memanfaatkan sifat 3!` ] }
+  ]
+}
+};
+
+if (typeof module !== 'undefined' && module.exports) module.exports = W.DATA_SIFAT_B;
+
+})();
+
+(function(){
+/* DATA QUIZ — Persamaan Eksponen (10 soal) */
+const W = (typeof window !== 'undefined') ? window : globalThis;
+
+W.DATA_PERSAMAAN = {
+
+peq: {
+  title: 'Latihan Persamaan Eksponen',
+  sub: 'Strategi: samakan basis / pangkat nol / substitusi <i>t</i> = <i>a</i><sup><i>x</i></sup> — 10 soal pilihan ganda',
+  items: [
+    { q: `Nilai <i>x</i> yang memenuhi 2<sup><i>x</i></sup> = 32 adalah …`,
+      opts: [`4`, `5`, `6`, `3`], ans: 1, v: () => 5,
+      bahas: [
+        `Ubah 32 menjadi pangkat berbasis 2: 32 = 2<sup>5</sup>.`,
+        `Persamaan menjadi 2<sup><i>x</i></sup> = 2<sup>5</sup> — basis sudah sama.`,
+        `Sifat persamaan eksponen jenis 1: <i>x</i> = 5.` ] },
+
+    { q: `Nilai <i>x</i> yang memenuhi 3<sup><i>x</i></sup> = 81 adalah …`,
+      opts: [`3`, `5`, `2`, `4`], ans: 3, v: () => 4,
+      bahas: [
+        `81 = 3 × 3 × 3 × 3 = 3<sup>4</sup>.`,
+        `3<sup><i>x</i></sup> = 3<sup>4</sup> → pangkat sama → <i>x</i> = 4.`,
+        `Hafalan pangkat (3<sup>2</sup>=9, 3<sup>3</sup>=27, 3<sup>4</sup>=81) membuat soal seperti ini selesai dalam 5 detik.` ] },
+
+    { q: `Nilai <i>x</i> yang memenuhi 5<sup>2<i>x</i></sup> = 625 adalah …`,
+      opts: [`4`, `1`, `2`, `8`], ans: 2, v: () => 2,
+      bahas: [
+        `625 = 5<sup>4</sup>, sehingga 5<sup>2<i>x</i></sup> = 5<sup>4</sup>.`,
+        `Samakan pangkatnya: 2<i>x</i> = 4.`,
+        `<i>x</i> = 2. Setelah pangkat disamakan, tersisa persamaan linear biasa.` ] },
+
+    { q: `Nilai <i>x</i> yang memenuhi 2<sup><i>x</i>+1</sup> = 16 adalah …`,
+      opts: [`3`, `4`, `2`, `5`], ans: 0, v: () => 3,
+      bahas: [
+        `16 = 2<sup>4</sup> → 2<sup><i>x</i>+1</sup> = 2<sup>4</sup>.`,
+        `Samakan pangkat: <i>x</i> + 1 = 4.`,
+        `<i>x</i> = 3. Hati-hati dengan jebakan menjawab 4 tanpa mengurangi 1.` ] },
+
+    { q: `Nilai <i>x</i> yang memenuhi 4<sup><i>x</i></sup> = 8 adalah …`,
+      opts: [`2`, `3/2`, `3/4`, `1/2`], ans: 1, v: () => 1.5,
+      bahas: [
+        `Basis berbeda tetapi keduanya pangkat dari 2: 4 = 2<sup>2</sup> dan 8 = 2<sup>3</sup>.`,
+        `4<sup><i>x</i></sup> = (2<sup>2</sup>)<sup><i>x</i></sup> = 2<sup>2<i>x</i></sup> → 2<sup>2<i>x</i></sup> = 2<sup>3</sup>.`,
+        `2<i>x</i> = 3 → <i>x</i> = 3/2. Jawaban persamaan eksponen boleh berupa pecahan!` ] },
+
+    { q: `Nilai <i>x</i> yang memenuhi 9<sup><i>x</i>−1</sup> = 27 adalah …`,
+      opts: [`3/2`, `2`, `4`, `5/2`], ans: 3, v: () => 2.5,
+      bahas: [
+        `Samakan basis: 9 = 3<sup>2</sup> dan 27 = 3<sup>3</sup>.`,
+        `9<sup><i>x</i>−1</sup> = (3<sup>2</sup>)<sup><i>x</i>−1</sup> = 3<sup>2<i>x</i>−2</sup>, jadi 3<sup>2<i>x</i>−2</sup> = 3<sup>3</sup>.`,
+        `2<i>x</i> − 2 = 3 → 2<i>x</i> = 5 → <i>x</i> = 5/2.` ] },
+
+    { q: `Himpunan penyelesaian dari 2<sup>2<i>x</i></sup> − 3 · 2<sup><i>x</i></sup> + 2 = 0 adalah …`,
+      opts: [`<i>x</i> = 1 atau <i>x</i> = 2`, `<i>x</i> = −1 atau <i>x</i> = 2`, `<i>x</i> = 0 atau <i>x</i> = 1`, `<i>x</i> = 0 saja`], ans: 2, v: () => [0, 1],
+      bahas: [
+        `Perhatikan bahwa 2<sup>2<i>x</i></sup> = (2<sup><i>x</i></sup>)<sup>2</sup>. Misalkan <i>t</i> = 2<sup><i>x</i></sup>.`,
+        `Persamaan menjadi <i>t</i><sup>2</sup> − 3<i>t</i> + 2 = 0 → (<i>t</i>−1)(<i>t</i>−2) = 0 → <i>t</i> = 1 atau <i>t</i> = 2.`,
+        `Kembalikan: 2<sup><i>x</i></sup> = 1 = 2<sup>0</sup> → <i>x</i> = 0; dan 2<sup><i>x</i></sup> = 2 = 2<sup>1</sup> → <i>x</i> = 1.`,
+        `Himpunan penyelesaian: {0, 1}. Ini contoh jenis 4 — persamaan eksponen berubah menjadi persamaan kuadrat!` ] },
+
+    { q: `Nilai <i>x</i> yang memenuhi 3<sup>2<i>x</i>+1</sup> = 3<sup><i>x</i>+5</sup> adalah …`,
+      opts: [`6`, `2`, `4`, `5`], ans: 2, v: () => 4,
+      bahas: [
+        `Basis sudah sama (3) → langsung samakan pangkatnya.`,
+        `2<i>x</i> + 1 = <i>x</i> + 5.`,
+        `2<i>x</i> − <i>x</i> = 5 − 1 → <i>x</i> = 4.` ] },
+
+    { q: `Nilai <i>x</i> yang memenuhi 7<sup><i>x</i></sup> = 1 adalah …`,
+      opts: [`1`, `7`, `−1`, `0`], ans: 3, v: () => 0,
+      bahas: [
+        `Tulis 1 sebagai pangkat nol: 1 = 7<sup>0</sup> (sifat 6).`,
+        `7<sup><i>x</i></sup> = 7<sup>0</sup> → <i>x</i> = 0.`,
+        `Pola penting: <i>a</i><sup><i>f</i>(<i>x</i>)</sup> = 1 selalu berarti <i>f</i>(<i>x</i>) = 0.` ] },
+
+    { q: `Nilai <i>x</i> yang memenuhi 5<sup>2<i>x</i></sup> = 125<sup><i>x</i>−1</sup> adalah …`,
+      opts: [`1`, `2`, `3`, `5`], ans: 2, v: () => 3,
+      bahas: [
+        `Samakan basis: 125 = 5<sup>3</sup>, sehingga ruas kanan = 5<sup>3(<i>x</i>−1)</sup> = 5<sup>3<i>x</i>−3</sup>.`,
+        `Persamaan: 5<sup>2<i>x</i></sup> = 5<sup>3<i>x</i>−3</sup> → 2<i>x</i> = 3<i>x</i> − 3.`,
+        `3<i>x</i> − 2<i>x</i> = 3 → <i>x</i> = 3.` ] }
+  ]
+}
+};
+
+if (typeof module !== 'undefined' && module.exports) module.exports = W.DATA_PERSAMAAN;
+
+})();
+
+(function(){
+/* DATA QUIZ — Tantangan Berpikir Kritis (20 soal) */
+const W = (typeof window !== 'undefined') ? window : globalThis;
+
+W.DATA_TANTANGAN = {
+
+t1: {
+  title: 'Tantangan Kritis · Bagian 1 (Soal 1–10)',
+  sub: 'Menggabungkan banyak sifat sekaligus — ambil waktu, jangan tergesa!',
+  items: [
+    { q: `Jika 2<sup><i>x</i></sup> · 2<sup><i>x</i>+1</sup> = 64, maka nilai <i>x</i> adalah …`,
+      opts: [`5/2`, `3`, `2`, `1/2`], ans: 0, v: () => 2.5,
+      bahas: [
+        `Sifat 1: 2<sup><i>x</i></sup> · 2<sup><i>x</i>+1</sup> = 2<sup><i>x</i> + (<i>x</i>+1)</sup> = 2<sup>2<i>x</i>+1</sup>.`,
+        `Ruas kanan: 64 = 2<sup>6</sup> → 2<sup>2<i>x</i>+1</sup> = 2<sup>6</sup>.`,
+        `Samakan pangkat: 2<i>x</i> + 1 = 6 → 2<i>x</i> = 5 → <i>x</i> = 5/2.`,
+        `Cek: 2<sup>5/2</sup> · 2<sup>7/2</sup> = 2<sup>6</sup> = 64 ✔` ] },
+
+    { q: `Jika (3<sup><i>x</i></sup>)<sup>2</sup> = 3<sup><i>x</i>+6</sup>, maka nilai <i>x</i> adalah …`,
+      opts: [`3`, `6`, `12`, `2`], ans: 1, v: () => 6,
+      bahas: [
+        `Sifat 3: (3<sup><i>x</i></sup>)<sup>2</sup> = 3<sup>2<i>x</i></sup>.`,
+        `Basis sama → 2<i>x</i> = <i>x</i> + 6.`,
+        `2<i>x</i> − <i>x</i> = 6 → <i>x</i> = 6.`,
+        `Cek: (3<sup>6</sup>)<sup>2</sup> = 3<sup>12</sup> dan 3<sup>6+6</sup> = 3<sup>12</sup> ✔` ] },
+
+    { q: `Nilai <i>x</i> yang memenuhi 4<sup><i>x</i></sup> − 2<sup><i>x</i>+1</sup> − 8 = 0 adalah …`,
+      opts: [`3`, `1`, `2`, `−2`], ans: 2, v: () => 2,
+      bahas: [
+        `Tulis semua dalam basis 2: 4<sup><i>x</i></sup> = (2<sup><i>x</i></sup>)<sup>2</sup> dan 2<sup><i>x</i>+1</sup> = 2 · 2<sup><i>x</i></sup>.`,
+        `Misalkan <i>t</i> = 2<sup><i>x</i></sup>: persamaan menjadi <i>t</i><sup>2</sup> − 2<i>t</i> − 8 = 0.`,
+        `Faktorkan: (<i>t</i> − 4)(<i>t</i> + 2) = 0 → <i>t</i> = 4 atau <i>t</i> = −2.`,
+        `<i>t</i> = 2<sup><i>x</i></sup> tidak mungkin negatif → tolak <i>t</i> = −2. Ambil <i>t</i> = 4 → 2<sup><i>x</i></sup> = 2<sup>2</sup> → <i>x</i> = 2.` ] },
+
+    { q: `Nilai <i>x</i> yang memenuhi 9<sup><i>x</i></sup> = 27<sup><i>x</i>−1</sup> adalah …`,
+      opts: [`1`, `2`, `9`, `3`], ans: 3, v: () => 3,
+      bahas: [
+        `Samakan basis 3: 9<sup><i>x</i></sup> = (3<sup>2</sup>)<sup><i>x</i></sup> = 3<sup>2<i>x</i></sup> dan 27<sup><i>x</i>−1</sup> = (3<sup>3</sup>)<sup><i>x</i>−1</sup> = 3<sup>3<i>x</i>−3</sup>.`,
+        `Basis sama → 2<i>x</i> = 3<i>x</i> − 3.`,
+        `3<i>x</i> − 2<i>x</i> = 3 → <i>x</i> = 3.` ] },
+
+    { q: `Jika 5<sup><i>x</i>−1</sup> · 5<sup><i>x</i>+2</sup> = 5<sup>7</sup>, maka nilai <i>x</i> adalah …`,
+      opts: [`4`, `2`, `3`, `5`], ans: 2, v: () => 3,
+      bahas: [
+        `Sifat 1: jumlahkan pangkat kiri → 5<sup>(<i>x</i>−1)+(<i>x</i>+2)</sup> = 5<sup>2<i>x</i>+1</sup>.`,
+        `Basis sama → 2<i>x</i> + 1 = 7.`,
+        `2<i>x</i> = 6 → <i>x</i> = 3.` ] },
+
+    { q: `Tanpa kalkulator! Manakah bilangan yang <b>lebih besar</b>: 2<sup>300</sup> atau 3<sup>200</sup>?`,
+      opts: [`3<sup>200</sup>, karena 3<sup>200</sup> = 9<sup>100</sup> &gt; 8<sup>100</sup> = 2<sup>300</sup>`, `2<sup>300</sup>, karena basisnya lebih kecil`, `Keduanya sama besar`, `Tidak dapat ditentukan tanpa kalkulator`], ans: 0,
+      bahas: [
+        `Trik: samakan pangkatnya. 2<sup>300</sup> = (2<sup>3</sup>)<sup>100</sup> = 8<sup>100</sup> dan 3<sup>200</sup> = (3<sup>2</sup>)<sup>100</sup> = 9<sup>100</sup>.`,
+        `Kini keduanya berpangkat 100 → cukup bandingkan basisnya: 9 &gt; 8.`,
+        `Jadi 3<sup>200</sup> &gt; 2<sup>300</sup>. Soal olimpiade klasik — kuncinya <b>menyamakan pangkat</b>, bukan menghitung nilainya!` ] },
+
+    { q: `Nilai <i>x</i> yang memenuhi (0,5)<sup><i>x</i></sup> = 32 adalah …`,
+      opts: [`5`, `1/5`, `−32`, `−5`], ans: 3, v: () => -5,
+      bahas: [
+        `0,5 = 1/2 = 2<sup>−1</sup>, sehingga (0,5)<sup><i>x</i></sup> = 2<sup>−<i>x</i></sup>.`,
+        `32 = 2<sup>5</sup> → 2<sup>−<i>x</i></sup> = 2<sup>5</sup>.`,
+        `−<i>x</i> = 5 → <i>x</i> = −5.`,
+        `Makna: pangkat negatif membuat nilai <b>mengecil</b> — masuk akal, karena 0,5 dipangkatkan 5 kali menghasilkan 1/32.` ] },
+
+    { q: `Nilai <i>x</i> yang memenuhi 8<sup><i>x</i>+2</sup> = 16<sup><i>x</i>−1</sup> adalah …`,
+      opts: [`10`, `6`, `−10`, `2`], ans: 0, v: () => 10,
+      bahas: [
+        `Basis 2: 8<sup><i>x</i>+2</sup> = 2<sup>3(<i>x</i>+2)</sup> = 2<sup>3<i>x</i>+6</sup> dan 16<sup><i>x</i>−1</sup> = 2<sup>4(<i>x</i>−1)</sup> = 2<sup>4<i>x</i>−4</sup>.`,
+        `Basis sama → 3<i>x</i> + 6 = 4<i>x</i> − 4.`,
+        `6 + 4 = 4<i>x</i> − 3<i>x</i> → <i>x</i> = 10.`,
+        `Pangkat yang dijumlah-kalikan melibatkan distribusi — tulis langkah 3(<i>x</i>+2) dengan lengkap agar tidak salah tanda.` ] },
+
+    { q: `Himpunan penyelesaian 2<sup>2<i>x</i></sup> − 6 · 2<sup><i>x</i></sup> + 8 = 0 adalah …`,
+      opts: [`{2, 4}`, `{1, 2}`, `{0, 1}`, `{−1, −2}`], ans: 1, v: () => [1, 2],
+      bahas: [
+        `Misalkan <i>t</i> = 2<sup><i>x</i></sup> (ingat 2<sup>2<i>x</i></sup> = <i>t</i><sup>2</sup>): <i>t</i><sup>2</sup> − 6<i>t</i> + 8 = 0.`,
+        `Faktorkan: (<i>t</i> − 2)(<i>t</i> − 4) = 0 → <i>t</i> = 2 atau <i>t</i> = 4.`,
+        `Kembalikan: 2<sup><i>x</i></sup> = 2 → <i>x</i> = 1; 2<sup><i>x</i></sup> = 4 = 2<sup>2</sup> → <i>x</i> = 2.`,
+        `HP = {1, 2}. Perhatikan {2, 4} adalah nilai <i>t</i>, bukan <i>x</i> — jangan lupa langkah mengembalikan!` ] },
+
+    { q: `Nilai <i>x</i> yang memenuhi 27<sup><i>x</i>+1</sup> = 9<sup>2<i>x</i>−3</sup> adalah …`,
+      opts: [`3`, `6`, `−9`, `9`], ans: 3, v: () => 9,
+      bahas: [
+        `Basis 3: 27<sup><i>x</i>+1</sup> = 3<sup>3(<i>x</i>+1)</sup> = 3<sup>3<i>x</i>+3</sup>; 9<sup>2<i>x</i>−3</sup> = 3<sup>2(2<i>x</i>−3)</sup> = 3<sup>4<i>x</i>−6</sup>.`,
+        `Basis sama → 3<i>x</i> + 3 = 4<i>x</i> − 6.`,
+        `3 + 6 = 4<i>x</i> − 3<i>x</i> → <i>x</i> = 9.`,
+        `Soal ini merangkai sifat 3 (pangkat dari pangkat) dan strategi persamaan eksponen jenis 1.` ] }
+  ]
+},
+
+t2: {
+  title: 'Tantangan Kritis · Bagian 2 (Soal 11–20)',
+  sub: 'Level tertinggi: relasi, pecahan pangkat, dan masalah kontekstual',
+  items: [
+    { q: `Jika 2<sup><i>a</i></sup> = 5<sup><i>b</i></sup> = 10<sup><i>c</i></sup> dengan <i>a</i>, <i>b</i>, <i>c</i> ≠ 0, maka hubungan yang <b>benar</b> adalah …`,
+      opts: [`<i>c</i> = <i>a</i> + <i>b</i>`, `<i>a</i> = <i>b</i> + <i>c</i>`, `<span class="frac"><span class="num">1</span><span class="den"><i>c</i></span></span> = <span class="frac"><span class="num">1</span><span class="den"><i>a</i></span></span> + <span class="frac"><span class="num">1</span><span class="den"><i>b</i></span></span>`, `<i>c</i> = <i>a</i> · <i>b</i>`], ans: 2,
+      bahas: [
+        `Misalkan 2<sup><i>a</i></sup> = 5<sup><i>b</i></sup> = 10<sup><i>c</i></sup> = <i>k</i>.`,
+        `Maka 2 = <i>k</i><sup>1/<i>a</i></sup>, 5 = <i>k</i><sup>1/<i>b</i></sup>, dan 10 = <i>k</i><sup>1/<i>c</i></sup>.`,
+        `Karena 10 = 2 × 5, maka <i>k</i><sup>1/<i>c</i></sup> = <i>k</i><sup>1/<i>a</i></sup> · <i>k</i><sup>1/<i>b</i></sup> = <i>k</i><sup>1/<i>a</i> + 1/<i>b</i></sup>.`,
+        `Pangkatnya harus sama: 1/<i>c</i> = 1/<i>a</i> + 1/<i>b</i>. Relasi ini terkenal dengan sebutan <i>relasi harmonik</i> — pilihan c = a + b keliru karena eksponen tidak bekerja dengan penjumlahan langsung.` ] },
+
+    { q: `Nilai <i>x</i> yang memenuhi 8<sup>1/<i>x</i></sup> = 4 adalah …`,
+      opts: [`2/3`, `2`, `3`, `3/2`], ans: 3, v: () => 1.5,
+      bahas: [
+        `Tulis dengan basis 2: 8<sup>1/<i>x</i></sup> = (2<sup>3</sup>)<sup>1/<i>x</i></sup> = 2<sup>3/<i>x</i></sup> dan 4 = 2<sup>2</sup>.`,
+        `Basis sama → 3/<i>x</i> = 2.`,
+        `3 = 2<i>x</i> → <i>x</i> = 3/2.`,
+        `Cek: 8<sup>2/3</sup> = ( ∛8 )<sup>2</sup> = 2<sup>2</sup> = 4 ✔ — sifat 8 dan persamaan eksponen bertemu!` ] },
+
+    { q: `Nilai <i>x</i> yang memenuhi (√2)<sup><i>x</i></sup> = 8 adalah …`,
+      opts: [`6`, `3`, `12`, `√6`], ans: 0, v: () => 6,
+      bahas: [
+        `√2 = 2<sup>1/2</sup>, sehingga (√2)<sup><i>x</i></sup> = (2<sup>1/2</sup>)<sup><i>x</i></sup> = 2<sup><i>x</i>/2</sup>.`,
+        `8 = 2<sup>3</sup> → 2<sup><i>x</i>/2</sup> = 2<sup>3</sup>.`,
+        `<i>x</i>/2 = 3 → <i>x</i> = 6.`,
+        `Cek: (√2)<sup>6</sup> = (2<sup>1/2</sup>)<sup>6</sup> = 2<sup>3</sup> = 8 ✔` ] },
+
+    { q: `Nilai <i>x</i> yang memenuhi 6<sup><i>x</i></sup> · 4<sup><i>x</i></sup> = 24 adalah …`,
+      opts: [`24`, `2`, `0`, `1`], ans: 3, v: () => 1,
+      bahas: [
+        `Sifat 4 dibaca terbalik: 6<sup><i>x</i></sup> · 4<sup><i>x</i></sup> = (6 · 4)<sup><i>x</i></sup> = 24<sup><i>x</i></sup>.`,
+        `Persamaan menjadi 24<sup><i>x</i></sup> = 24 = 24<sup>1</sup>.`,
+        `Basis sama → <i>x</i> = 1.`,
+        `Strategi berpikir kritis: melihat <b>pola</b> bahwa kedua basis punya pangkat sama, lalu menggabungkannya.` ] },
+
+    { q: `Nilai <i>x</i> yang memenuhi 3<sup>2<i>x</i>+5</sup> = 81<sup><i>x</i></sup> adalah …`,
+      opts: [`5/2`, `2`, `4`, `5`], ans: 0, v: () => 2.5,
+      bahas: [
+        `81 = 3<sup>4</sup> → ruas kanan = 3<sup>4<i>x</i></sup>.`,
+        `Basis sama → 2<i>x</i> + 5 = 4<i>x</i>.`,
+        `5 = 4<i>x</i> − 2<i>x</i> = 2<i>x</i> → <i>x</i> = 5/2.`,
+        `Cek: 3<sup>2(5/2)+5</sup> = 3<sup>10</sup> dan 81<sup>5/2</sup> = 3<sup>4×5/2</sup> = 3<sup>10</sup> ✔` ] },
+
+    { q: `Bentuk sederhana dari (<i>x</i><sup>1/2</sup> · <i>x</i><sup>1/3</sup>) ÷ <i>x</i><sup>1/6</sup> adalah …`,
+      opts: [`<i>x</i>`, `<i>x</i><sup>5/6</sup>`, `1`, `<i>x</i><sup>2/3</sup> = ∛<span class="rad"><i>x</i><sup>2</sup></span>`], ans: 3,
+      bahas: [
+        `Sifat 1: <i>x</i><sup>1/2</sup> · <i>x</i><sup>1/3</sup> = <i>x</i><sup>1/2 + 1/3</sup> = <i>x</i><sup>3/6 + 2/6</sup> = <i>x</i><sup>5/6</sup>.`,
+        `Sifat 2: <i>x</i><sup>5/6</sup> ÷ <i>x</i><sup>1/6</sup> = <i>x</i><sup>5/6 − 1/6</sup> = <i>x</i><sup>4/6</sup> = <i>x</i><sup>2/3</sup>.`,
+        `Bentuk akarnya: <i>x</i><sup>2/3</sup> = ∛(<i>x</i><sup>2</sup>).`,
+        `Pecahan pangkat dioperasikan persis seperti pangkat bulat — tambah saat kali, kurang saat bagi (sama penyebut dulu!).` ] },
+
+    { q: `Tabungan Rp1.000.000 diberi bunga majemuk 10% per tahun, sehingga nilainya setelah <i>n</i> tahun adalah 1.000.000 × 1,1<sup><i>n</i></sup>. Tabungan itu <b>pertama kali</b> melebihi Rp1.500.000 setelah … tahun.`,
+      opts: [`4`, `5`, `6`, `3`], ans: 1, v: () => Math.ceil(Math.log(1.5)/Math.log(1.1)),
+      bahas: [
+        `Cari <i>n</i> terkecil dengan 1,1<sup><i>n</i></sup> &gt; 1,5.`,
+        `1,1<sup>3</sup> = 1,331 dan 1,1<sup>4</sup> = 1,4641 → masih di bawah 1,5 (Rp1.464.100).`,
+        `1,1<sup>5</sup> = 1,61051 → Rp1.610.510 &gt; Rp1.500.000 ✔`,
+        `Jadi jawabannya tahun ke-5. Bunga majemuk adalah aplikasi eksponen paling populer di dunia keuangan!` ] },
+
+    { q: `Sebanyak 500 bakteri membelah diri menjadi dua setiap 20 menit. Setelah 2 jam, banyak bakteri adalah 500 · 2<sup>6</sup>. Banyak bakteri setelah 2 jam adalah …`,
+      opts: [`3.200`, `64.000`, `6.400`, `32.000`], ans: 3, v: () => 32000,
+      bahas: [
+        `2 jam = 120 menit → banyaknya periode pembelahan = 120 ÷ 20 = 6.`,
+        `Setiap periode jumlah dikali 2, jadi faktor pertumbuhan = 2<sup>6</sup> = 64.`,
+        `Banyak bakteri = 500 × 64 = 32.000.`,
+        `Model pertumbuhan eksponensial: <i>N</i> = <i>N</i><sub>0</sub> · 2<sup><i>n</i></sup> — gunakan ini untuk soal bakteri/penyebaran!` ] },
+
+    { q: `Zat radioaktif seberat 80 gram meluruh menjadi setengahnya setiap jam. Sisa zat setelah 5 jam adalah 80 · (1/2)<sup>5</sup> gram. Sisa zat tersebut adalah …`,
+      opts: [`2,5 gram`, `5 gram`, `1,25 gram`, `10 gram`], ans: 0, v: () => 2.5,
+      bahas: [
+        `(1/2)<sup>5</sup> = 1/2<sup>5</sup> = 1/32 — sifat 5 dan 7 bekerja bersama.`,
+        `Sisa = 80 × <span class="frac"><span class="num">1</span><span class="den">32</span></span> = 80/32.`,
+        `80/32 = 2,5 → sisa zat 2,5 gram.`,
+        `Model peluruhan: <i>N</i> = <i>N</i><sub>0</sub> · (1/2)<sup><i>n</i></sup> — konsep "waktu paruh" dalam fisika.` ] },
+
+    { q: `Himpunan penyelesaian 5<sup><i>x</i><sup>2</sup>−5<i>x</i>+5</sup> = 1 adalah …`,
+      opts: [`<i>x</i> = 0 atau <i>x</i> = 5`, `<i>x</i> = 1 atau <i>x</i> = 4`, `<i>x</i> = (5+√<span class="rad">5</span>)/2 atau <i>x</i> = (5−√<span class="rad">5</span>)/2`, `<i>x</i> = (5+√<span class="rad">29</span>)/2 saja`], ans: 2,
+      bahas: [
+        `Sifat 6: 5<sup>apa pun</sup> = 1 hanya jika pangkatnya 0 → <i>x</i><sup>2</sup> − 5<i>x</i> + 5 = 0.`,
+        `Ini persamaan kuadrat — tidak bisa difaktorkan dengan bilangan bulat, gunakan rumus abc: <i>x</i> = (5 ± √(25 − 20))/2.`,
+        `√5 ≈ 2,236 → <i>x</i> ≈ 3,618 atau <i>x</i> ≈ 1,382 — kedua nilai real dan memenuhi.`,
+        `Pelajaran penting: pangkat eksponen bisa berupa kuadrat, dan solusinya bisa irasional. Cek selalu dengan sifat <i>a</i><sup>0</sup> = 1!` ] }
+  ]
+}
+};
+
+if (typeof module !== 'undefined' && module.exports) module.exports = W.DATA_TANTANGAN;
+
+})();
+
+</script>
+<script>
+/* ===== APP — Presentasi Interaktif Eksponen ===== */
+"use strict";
+const $  = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+const LET = ['A','B','C','D'];
+
+/* ---------- Toast ---------- */
+const toastEl = document.createElement('div');
+toastEl.className = 'toast';
+document.body.appendChild(toastEl);
+let toastTimer = null;
+function toast(msg){
+  toastEl.textContent = msg;
+  toastEl.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>toastEl.classList.remove('show'), 2400);
+}
+
+/* ---------- Slide engine ---------- */
+const slides = $$('.slide');
+let cur = 0;
+
+function go(i){
+  if(i < 0 || i >= slides.length) return;
+  slides[cur].classList.remove('active');
+  cur = i;
+  slides[cur].classList.add('active');
+  slides[cur].scrollTop = 0;
+  updateHud();
+}
+const next = () => go(cur + 1);
+const prev = () => go(cur - 1);
+
+function updateHud(){
+  $('#pbar').style.width = ((cur + 1) / slides.length * 100) + '%';
+  $('#counter').textContent = (cur + 1) + ' / ' + slides.length;
+  $('#where').textContent = slides[cur].dataset.title || '';
+  $('#btn-prev').disabled = (cur === 0);
+  $('#btn-next').disabled = (cur === slides.length - 1);
+}
+
+/* ---------- Menu daftar isi ---------- */
+const menuOv = document.createElement('div');
+menuOv.className = 'menu-ov';
+menuOv.innerHTML = `
+  <div class="menu-panel">
+    <h3>📑 Daftar Isi <button class="menu-close" id="menu-close" title="Tutup">✕</button></h3>
+    <div id="menu-body"></div>
+  </div>`;
+document.body.appendChild(menuOv);
+
+function buildMenuClean(){
+  const body = $('#menu-body', menuOv);
+  const groups = [];
+  slides.forEach((s, i) => {
+    const g = s.dataset.group || 'Bagian';
+    if(!groups.length || groups[groups.length-1].g !== g) groups.push({g, items: []});
+    groups[groups.length-1].items.push([i, s.dataset.title || ('Slide ' + (i+1))]);
+  });
+  body.innerHTML = groups.map(gr =>
+    `<div class="menu-group">${gr.g}</div>
+     <div class="menu-list">${gr.items.map(([i, t]) =>
+       `<button class="menu-item" data-i="${i}"><span class="n">${i+1}</span><span>${t}</span></button>`).join('')}
+     </div>`).join('');
+  $$('.menu-item', body).forEach(b => b.addEventListener('click', () => {
+    go(+b.dataset.i);
+    closeMenu();
+  }));
+}
+function openMenu(){ menuOv.classList.add('open'); }
+function closeMenu(){ menuOv.classList.remove('open'); }
+
+/* ---------- Tombol global ---------- */
+document.addEventListener('click', e => {
+  const g = e.target.closest('[data-goto]');
+  if(g){ g.dataset.goto === 'next' ? next() : prev(); }
+});
+$('#btn-prev').addEventListener('click', prev);
+$('#btn-next').addEventListener('click', next);
+$('#btn-menu').addEventListener('click', openMenu);
+$('#btn-fs').addEventListener('click', () => {
+  if(!document.fullscreenElement) document.documentElement.requestFullscreen?.();
+  else document.exitFullscreen?.();
+});
+$('#btn-start')?.addEventListener('click', () => go(1));
+
+/* ---------- Keyboard ---------- */
+document.addEventListener('keydown', e => {
+  const tag = (e.target.tagName || '').toLowerCase();
+  if(tag === 'input' || tag === 'textarea' || tag === 'select') return;
+  if(menuOv.classList.contains('open')){
+    if(e.key === 'Escape' || e.key === 'm') closeMenu();
+    return;
+  }
+  if(e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); next(); }
+  else if(e.key === 'ArrowLeft'  || e.key === 'PageUp'){ e.preventDefault(); prev(); }
+  else if(e.key === 'Home') go(0);
+  else if(e.key === 'End')  go(slides.length - 1);
+  else if(e.key === 'Escape') closeMenu();
+  else if(e.key === 'm' || e.key === 'M') openMenu();
+  else if((e.key === 'f' || e.key === 'F') && !e.ctrlKey && !e.metaKey){
+    if(!document.fullscreenElement) document.documentElement.requestFullscreen?.();
+    else document.exitFullscreen?.();
+  }
+});
+
+/* ---------- Geser layar (touch) ---------- */
+let tX = null, tY = null;
+document.addEventListener('touchstart', e => {
+  tX = e.touches[0].clientX; tY = e.touches[0].clientY;
+}, {passive:true});
+document.addEventListener('touchend', e => {
+  if(tX === null) return;
+  const dx = e.changedTouches[0].clientX - tX;
+  const dy = e.changedTouches[0].clientY - tY;
+  tX = null;
+  if(Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy) * 1.4){
+    dx < 0 ? next() : prev();
+  }
+}, {passive:true});
+menuOv.addEventListener('click', e => { if(e.target === menuOv) closeMenu(); });
+document.addEventListener('click', e => { if(e.target.closest('#menu-close')) closeMenu(); });
+
+/* ---------- Tombol tampilkan/sembunyikan langkah ---------- */
+$$('.reveal-btn').forEach(btn => {
+  btn.dataset.label = btn.textContent;
+  btn.addEventListener('click', () => {
+    const t = document.getElementById(btn.dataset.target);
+    if(!t) return;
+    const open = t.classList.toggle('open');
+    btn.textContent = open ? btn.dataset.alt : btn.dataset.label;
+  });
+});
+
+/* ============================================================
+   QUIZ ENGINE
+   ============================================================ */
+const QUIZ = Object.assign({},
+  window.DATA_SIFAT_A   || {},
+  window.DATA_SIFAT_B   || {},
+  window.DATA_PERSAMAAN || {},
+  window.DATA_TANTANGAN || {}
+);
+window.QUIZ = QUIZ;
+
+function buildQuiz(el, id){
+  const quiz = (window.QUIZ || {})[id];
+  if(!quiz){ el.innerHTML = '<div class="card">Data quiz tidak ditemukan.</div>'; return; }
+  const items = quiz.items;
+  const n = items.length;
+  const st = items.map(() => ({sel:null, checked:false, bah:false}));
+  let qi = 0;
+
+  el.innerHTML = `
+    <div class="quiz-head">
+      <div class="quiz-title">${quiz.title}<small>${quiz.sub || ''}</small></div>
+      <div class="quiz-meta">
+        <span class="q-count">Soal <b class="cur-num">1</b>/${n}</span>
+        <button class="btn btn-ghost btn-sm" data-act="reset">↺ Ulangi</button>
+      </div>
+    </div>
+    <div class="pills" data-role="pills"></div>
+    <div class="qcard" data-role="card"></div>
+    <div class="q-done" data-role="done">🎉 <b>Hebat!</b> Semua soal latihan ini sudah kamu cek. Tekan <b>↺ Ulangi</b> untuk berlatih lagi, atau lanjut ke slide berikutnya →</div>
+    <div class="q-nav">
+      <button class="btn btn-ghost" data-act="prev">‹ Sebelumnya</button>
+      <button class="btn btn-primary" data-act="next">Berikutnya ›</button>
+    </div>`;
+
+  const card  = $('[data-role="card"]',  el);
+  const pills = $('[data-role="pills"]', el);
+  const done  = $('[data-role="done"]',  el);
+  const cnt   = $('.cur-num', el);
+
+  function renderPills(){
+    pills.innerHTML = '';
+    items.forEach((it, i) => {
+      const b = document.createElement('button');
+      b.className = 'pill'
+        + (i === qi ? ' cur' : '')
+        + (i !== qi && st[i].checked ? (st[i].sel === it.ans ? ' ok' : ' bad') : '');
+      b.textContent = i + 1;
+      b.title = 'Lompat ke soal ' + (i + 1);
+      b.addEventListener('click', () => { qi = i; render(); });
+      pills.appendChild(b);
+    });
+  }
+
+  function render(){
+    cnt.textContent = qi + 1;
+    renderPills();
+    const it = items[qi], s = st[qi];
+
+    let opts = '';
+    it.opts.forEach((o, i) => {
+      let cls = 'opt', mark = '';
+      if(s.checked){
+        cls += ' locked';
+        if(i === it.ans){ cls += ' correct'; mark = '<span class="mark">✔</span>'; }
+        else if(i === s.sel){ cls += ' wrong'; mark = '<span class="mark">✖</span>'; }
+        else cls += ' dim';
+      } else if(i === s.sel) cls += ' sel';
+      opts += `<button class="${cls}" data-opt="${i}"><span class="letter">${LET[i]}</span><span class="opt-body">${o}</span>${mark}</button>`;
+    });
+
+    let fb = '';
+    if(s.checked){
+      fb = s.sel === it.ans
+        ? '<div class="fb ok show"><span style="font-size:18px">🎉</span><span><b>Benar!</b> Jawabanmu tepat. Baca pembahasan untuk memantapkan pemahamanmu.</span></div>'
+        : `<div class="fb bad show"><span style="font-size:18px">🤔</span><span><b>Belum tepat.</b> Jawaban yang benar: <b>${LET[it.ans]}</b>. Pahami pembahasan di bawah, ya!</span></div>`;
+    }
+
+    const bahOpen = s.checked && s.bah;
+    card.innerHTML = `
+      <span class="qnum">SOAL ${qi + 1} DARI ${n}</span>
+      <div class="qtext">${it.q}</div>
+      <div class="opts">${opts}</div>
+      ${fb}
+      <div class="q-actions">
+        <button class="btn btn-accent" data-act="check" ${s.checked ? 'disabled' : ''}>${s.checked ? '✔ Sudah Dicek' : '✅ Cek Jawaban'}</button>
+        <button class="btn btn-ghost" data-act="bahas" ${s.checked ? '' : 'disabled'}>${s.checked ? (bahOpen ? '🙈 Tutup Pembahasan' : '👁 Lihat Pembahasan') : '🔒 Pembahasan · buka setelah cek jawaban'}</button>
+      </div>
+      <div class="bahas ${bahOpen ? 'open' : ''}" data-role="bahas">
+        <h5>💡 PEMBAHASAN — SOAL ${qi + 1}</h5>
+        <ol class="steps">${it.bahas.map(b => `<li>${b}</li>`).join('')}</ol>
+      </div>`;
+    done.classList.toggle('show', st.every(x => x.checked));
+
+    $$('[data-opt]', card).forEach(b => b.addEventListener('click', () => {
+      if(s.checked) return;
+      s.sel = +b.dataset.opt;
+      render();
+    }));
+    $('[data-act="check"]', card)?.addEventListener('click', () => {
+      if(s.checked) return;
+      if(s.sel === null){
+        const w = document.createElement('div');
+        w.className = 'fb warn show';
+        w.style.marginTop = '16px';
+        w.innerHTML = '<span style="font-size:18px">☝️</span><span>Pilih salah satu jawaban (A–D) terlebih dahulu, lalu tekan <b>Cek Jawaban</b>.</span>';
+        card.appendChild(w);
+        card.classList.remove('shake'); void card.offsetWidth; card.classList.add('shake');
+        setTimeout(() => w.remove(), 2000);
+        return;
+      }
+      s.checked = true;
+      render();
+    });
+    $('[data-act="bahas"]', card)?.addEventListener('click', () => {
+      if(!s.checked) return;
+      s.bah = !s.bah;
+      render();
+    });
+  }
+
+  $('[data-act="prev"]', el).addEventListener('click', () => { if(qi > 0){ qi--; render(); } });
+  $('[data-act="next"]', el).addEventListener('click', () => { if(qi < n - 1){ qi++; render(); } });
+  $('[data-act="reset"]', el).addEventListener('click', () => {
+    st.forEach(s => { s.sel = null; s.checked = false; s.bah = false; });
+    qi = 0;
+    render();
+    toast('↺ Latihan diulang — semua jawaban direset!');
+  });
+  render();
+}
+$$('.quiz').forEach(el => buildQuiz(el, el.dataset.quiz));
+
+/* ============================================================
+   REFLEKSI (localStorage + unduh txt)
+   ============================================================ */
+const REF_KEY = 'refleksi-eksponen-v1';
+const GOAL_TXT = {
+  1: 'Memahami definisi eksponen',
+  2: 'Menerapkan 8 sifat eksponen',
+  3: 'Menyelesaikan persamaan eksponen',
+  4: 'Berpikir kritis pada masalah kontekstual'
+};
+const RATE_TXT = ['Belum', 'Proses', 'Mahir'];
+
+$$('.rate-row').forEach(row => {
+  $$('.rate button', row).forEach(b => b.addEventListener('click', () => {
+    $$('.rate button', row).forEach(x => x.className = '');
+    b.classList.add('sel-' + b.dataset.v);
+  }));
+});
+
+function collectRef(){
+  const rates = {};
+  $$('.rate-row').forEach(row => {
+    const sel = $('.rate button[class*="sel-"]', row);
+    rates[row.dataset.goal] = sel ? +sel.dataset.v : null;
+  });
+  return {
+    t: new Date().toLocaleString('id-ID', {dateStyle:'full', timeStyle:'short'}),
+    ref1: $('#ref1')?.value || '',
+    ref2: $('#ref2')?.value || '',
+    ref3: $('#ref3')?.value || '',
+    rates
+  };
+}
+function applyRef(d){
+  if(!d) return;
+  if($('#ref1')) $('#ref1').value = d.ref1 || '';
+  if($('#ref2')) $('#ref2').value = d.ref2 || '';
+  if($('#ref3')) $('#ref3').value = d.ref3 || '';
+  Object.entries(d.rates || {}).forEach(([g, v]) => {
+    if(v === null || v === undefined) return;
+    const row = $(`.rate-row[data-goal="${g}"]`);
+    if(!row) return;
+    $$('.rate button', row).forEach(x => x.className = '');
+    const b = $(`.rate button[data-v="${v}"]`, row);
+    if(b) b.classList.add('sel-' + v);
+  });
+}
+try { applyRef(JSON.parse(localStorage.getItem(REF_KEY))); } catch(e){}
+
+$('#btn-save-ref')?.addEventListener('click', () => {
+  try {
+    localStorage.setItem(REF_KEY, JSON.stringify(collectRef()));
+    toast('💾 Refleksi tersimpan di perangkat ini!');
+  } catch(e){ toast('⚠️ Penyimpanan browser tidak tersedia.'); }
+});
+$('#btn-dl-ref')?.addEventListener('click', () => {
+  const d = collectRef();
+  const lines = [
+    '============================================',
+    '   REFLEKSI BELAJAR — MATERI EKSPONEN',
+    '   Matematika SMA Kelas X (Fase E)',
+    '============================================',
+    'Tanggal  : ' + d.t,
+    '',
+    'JAWABAN REFLEKSI',
+    '1) Sifat eksponen paling menantang:',
+    '   ' + (d.ref1 || '(belum diisi)'),
+    '',
+    '2) Contoh nyata eksponen di kehidupan:',
+    '   ' + (d.ref2 || '(belum diisi)'),
+    '',
+    '3) Kebiasaan berpikir yang berubah:',
+    '   ' + (d.ref3 || '(belum diisi)'),
+    '',
+    'PENGUASAAN TUJUAN PEMBELAJARAN'
+  ];
+  Object.entries(GOAL_TXT).forEach(([g, t]) => {
+    const v = d.rates[g];
+    lines.push(`${g}. ${t} : ${v === null || v === undefined ? '(belum dinilai)' : RATE_TXT[v]}`);
+  });
+  const blob = new Blob([lines.join('\n')], {type:'text/plain;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'refleksi-eksponen.txt';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(a.href);
+  toast('⬇️ Refleksi diunduh sebagai refleksi-eksponen.txt');
+});
+
+/* ---------- Init ---------- */
+buildMenuClean();
+slides[0].classList.add('active');
+updateHud();
+
+</script>
+</body>
+</html>
