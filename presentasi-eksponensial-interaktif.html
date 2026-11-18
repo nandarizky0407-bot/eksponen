@@ -1,0 +1,1798 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Persamaan &amp; Pertidaksamaan Eksponensial — Slide Interaktif</title>
+<style>
+:root{
+  --ink:#1e293b; --muted:#64748b; --accent:#4f46e5; --accent2:#0d9488;
+  --gold:#f59e0b; --bg1:#eef2ff; --bg2:#f0fdfa; --card:#ffffff;
+  --ok:#16a34a; --bad:#dc2626; --line:#e2e8f0;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:'Segoe UI',system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;
+  color:var(--ink);
+  background:linear-gradient(135deg,var(--bg1),var(--bg2) 55%,#fdf2f8);
+  overflow:hidden;
+}
+#app{height:100dvh;display:flex;flex-direction:column}
+
+/* ===== Top bar ===== */
+.topbar{display:flex;align-items:center;gap:12px;padding:10px 16px 6px}
+.brand{font-weight:800;color:var(--accent);font-size:13px;letter-spacing:.6px;text-transform:uppercase;white-space:nowrap}
+.progress-wrap{flex:1;height:8px;background:#e2e8f0;border-radius:99px;overflow:hidden}
+#progress{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .3s}
+#score-chip{font-size:13px;font-weight:700;color:#0f766e;background:#ccfbf1;border-radius:99px;padding:5px 12px;white-space:nowrap}
+.icon-btn{border:1px solid var(--line);background:#fff;border-radius:10px;padding:8px 12px;font-size:15px;cursor:pointer;color:var(--ink)}
+.icon-btn:hover{background:#eef2ff}
+
+/* ===== Deck & slides ===== */
+.deck{flex:1;position:relative;display:flex;align-items:center;justify-content:center;padding:6px 16px 2px;min-height:0}
+.slide{display:none;width:min(100%,1150px);height:100%;background:var(--card);border-radius:20px;
+  box-shadow:0 20px 50px rgba(79,70,229,.12),0 2px 8px rgba(2,6,23,.06);overflow:hidden;flex-direction:column}
+.slide.active{display:flex;animation:slideIn .35s ease}
+@keyframes slideIn{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
+.slide-head{padding:16px 28px 10px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.kicker{font-size:11px;font-weight:800;color:var(--accent2);text-transform:uppercase;letter-spacing:1.4px}
+h2.slide-title{font-size:clamp(17px,2.4vw,25px);color:#0f172a;line-height:1.25}
+.slide-body{flex:1;overflow-y:auto;padding:16px 28px 24px;min-height:0;line-height:1.65}
+.slide-body p{margin:8px 0}
+.lead{font-size:1.03em;color:#334155}
+
+/* ===== Bottom bar ===== */
+.bottombar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 16px 14px}
+#counter{font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums;font-size:14px}
+.nav-btns{display:flex;gap:8px}
+.nav-btn{padding:10px 18px;border-radius:12px;border:1px solid var(--line);background:#fff;font-weight:700;color:var(--accent);cursor:pointer;transition:.2s;font-size:14px}
+.nav-btn:hover:not(:disabled){background:var(--accent);color:#fff}
+.nav-btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* ===== Generic layout ===== */
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(270px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
+.card{background:#f8fafc;border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.card h4{font-size:15px;margin-bottom:6px;color:#0f172a}
+.card p{font-size:.94em;color:#475569}
+.icon-big{font-size:26px;margin-bottom:6px;display:block}
+.math{font-family:Georgia,'Times New Roman',serif}
+.math sup{font-size:.72em}
+.rule-box{border-left:4px solid var(--accent);background:#eef2ff;padding:12px 16px;border-radius:10px;margin:10px 0}
+.rule-box.teal{border-color:var(--accent2);background:#f0fdfa}
+.rule-box.warn{border-color:var(--gold);background:#fffbeb}
+.rule-box.danger{border-color:var(--bad);background:#fef2f2}
+.rule-box b{color:#0f172a}
+.step-list{margin:6px 0}
+.step{position:relative;padding-left:32px;margin:7px 0}
+.step::before{counter-increment:step;content:counter(step);position:absolute;left:0;top:1px;width:22px;height:22px;border-radius:50%;
+  background:var(--accent);color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.step-list{counter-reset:step}
+.example{border:1.5px dashed var(--accent);border-radius:14px;padding:13px 16px;margin:12px 0;background:#fafaff;counter-reset:step}
+.example-title{font-weight:800;color:var(--accent);margin-bottom:6px}
+.answer-tag{display:inline-block;background:var(--accent2);color:#fff;border-radius:8px;padding:2px 10px;font-weight:800;font-size:.9em;margin-top:4px}
+.check-line{color:var(--ok);font-weight:700;font-size:.95em}
+.small-note{font-size:.88em;color:var(--muted)}
+ul.clean{list-style:none;padding-left:0}
+ul.clean li{padding-left:26px;position:relative;margin:7px 0}
+ul.clean li::before{content:"▸";position:absolute;left:6px;color:var(--accent);font-weight:800}
+table.tbl{width:100%;border-collapse:collapse;margin:10px 0;font-size:.95em}
+table.tbl th{background:var(--accent);color:#fff;padding:9px 10px;text-align:left;font-size:.92em}
+table.tbl td{border:1px solid var(--line);padding:8px 10px;background:#fff}
+table.tbl tr:nth-child(even) td{background:#f8fafc}
+.tbl-wrap{overflow-x:auto}
+
+/* ===== Cover & dark slides ===== */
+.slide.dark{background:linear-gradient(135deg,#1e1b4b,#312e81 55%,#0f766e);color:#fff}
+.slide.dark .slide-body,.slide.dark .cover-inner{overflow-y:auto}
+.cover-inner{margin:auto;text-align:center;padding:34px 22px;max-width:900px}
+.cover-badge{display:inline-block;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);border-radius:99px;
+  padding:6px 18px;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#a5f3fc}
+h1.cover-title{font-size:clamp(24px,4.6vw,46px);line-height:1.25;margin:16px 0 10px;font-weight:900}
+.cover-sub{font-size:clamp(14px,1.8vw,18px);color:#c7d2fe;max-width:720px;margin:0 auto}
+.chips{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:20px}
+.chip{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);padding:6px 14px;border-radius:99px;font-size:.88em;font-weight:600}
+.btn-start{margin-top:26px;padding:13px 32px;font-size:1.02em;border-radius:14px;background:var(--gold);color:#78350f;border:none;font-weight:900;cursor:pointer;box-shadow:0 8px 24px rgba(245,158,11,.4)}
+.btn-start:hover{transform:translateY(-2px)}
+.formula-hero{font-size:clamp(20px,3.4vw,34px);margin:12px 0;color:#fde68a;font-weight:700}
+
+/* ===== Quiz ===== */
+.quiz{border:1px solid var(--line);border-radius:14px;padding:13px 16px;margin:13px 0;background:#fff;box-shadow:0 1px 4px rgba(2,6,23,.05)}
+.quiz-q{font-weight:600;margin-bottom:10px;line-height:1.6}
+.qnum{display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:26px;border-radius:8px;background:var(--accent);color:#fff;font-weight:800;margin-right:8px;font-size:.85em}
+.quiz-opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px}
+.opt{text-align:left;padding:9px 12px;border-radius:10px;border:2px solid var(--line);background:#f8fafc;cursor:pointer;font-weight:600;transition:.15s;font-size:.93em;font-family:inherit;color:var(--ink)}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt.selected{border-color:var(--accent);background:#eef2ff}
+.opt.correct{border-color:var(--ok);background:#f0fdf4}
+.opt.wrong{border-color:var(--bad);background:#fef2f2}
+.opt:disabled{cursor:default}
+.btn-check{margin-top:10px;padding:9px 16px;border-radius:10px;border:none;background:var(--accent);color:#fff;font-weight:800;cursor:pointer;font-family:inherit;font-size:.92em}
+.btn-check:disabled{background:#94a3b8;cursor:default}
+.btn-reset{margin-top:10px;padding:9px 16px;border-radius:10px;background:#fff;color:var(--accent);border:1.5px solid var(--accent);font-weight:800;cursor:pointer;font-family:inherit;font-size:.92em;margin-left:8px}
+.quiz-feedback{margin-top:10px;font-weight:800;display:none}
+.quiz-feedback.ok{color:var(--ok)}
+.quiz-feedback.bad{color:var(--bad)}
+.pembahasan{display:none;margin-top:10px;background:#f0fdfa;border-left:4px solid var(--accent2);padding:11px 14px;border-radius:10px;line-height:1.75;font-size:.94em}
+.pembahasan.show{display:block;animation:fadeUp .3s}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.pem-label{font-weight:800;color:#0f766e;display:block;margin-bottom:4px}
+@keyframes pop{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+.pop{animation:pop .35s ease}
+
+/* ===== Simulasi bakteri ===== */
+.sim{background:#f0fdfa;border:1.5px solid #99f6e4;border-radius:16px;padding:16px 18px;margin:12px 0}
+.sim-line{font-weight:600;margin-bottom:6px}
+.sim-big{font-size:clamp(16px,2.2vw,22px);margin:8px 0 12px;color:#0f172a}
+.sim-big b{color:var(--accent2)}
+input[type=range]{width:100%;accent-color:var(--accent2);height:26px;cursor:pointer}
+.sim-scale{display:flex;justify-content:space-between;font-size:.8em;color:var(--muted);margin:2px 0 10px}
+.sim-bars{display:flex;align-items:flex-end;gap:4px;height:150px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px}
+.sim-bar{flex:1;max-width:44px;background:linear-gradient(180deg,var(--accent2),var(--accent));border-radius:6px 6px 0 0;transition:height .35s;min-height:4px;position:relative}
+.sim-bar span{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:.66em;color:var(--muted);font-weight:700;white-space:nowrap}
+.sim-legend{font-size:.85em;color:var(--muted);margin-top:8px}
+
+/* ===== Menu overlay ===== */
+.overlay{position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;z-index:50}
+.overlay.open{display:block}
+.menu-panel{position:absolute;right:14px;top:58px;width:min(92vw,390px);max-height:72vh;overflow:auto;background:#fff;border-radius:16px;padding:14px;box-shadow:0 24px 60px rgba(2,6,23,.3)}
+.menu-panel h3{font-size:15px;margin-bottom:8px;color:var(--accent)}
+.menu-item{display:block;width:100%;text-align:left;padding:8px 12px;border-radius:10px;border:none;background:transparent;cursor:pointer;font-weight:600;font-size:.9em;color:var(--ink);font-family:inherit}
+.menu-item:hover{background:#eef2ff}
+.menu-item.current{background:var(--accent);color:#fff}
+.menu-close{float:right;border:none;background:none;font-size:18px;cursor:pointer;color:var(--muted)}
+
+/* ===== Refleksi ===== */
+.emo-row{display:flex;gap:12px;flex-wrap:wrap;margin:12px 0}
+.emo{font-size:26px;padding:10px 16px;border-radius:14px;border:2px solid var(--line);background:#fff;cursor:pointer;transition:.15s;font-family:inherit}
+.emo:hover{transform:scale(1.06)}
+.emo.selected{border-color:var(--accent);background:#eef2ff;transform:scale(1.08)}
+.emo small{display:block;font-size:.42em;font-weight:700;color:var(--muted);margin-top:2px}
+textarea#refl-text{width:100%;min-height:110px;border:1.5px solid var(--line);border-radius:12px;padding:12px;font-family:inherit;font-size:.95em;resize:vertical}
+textarea#refl-text:focus{outline:2px solid var(--accent);border-color:var(--accent)}
+.btn-primary{padding:11px 22px;border-radius:12px;border:none;background:var(--accent);color:#fff;font-weight:800;cursor:pointer;font-family:inherit;font-size:.95em;margin-top:10px}
+#refl-msg{display:none;margin-top:10px;font-weight:700;color:var(--ok)}
+
+/* ===== Kesimpulan skor ===== */
+.sum-score{display:flex;align-items:center;gap:14px;background:#fffbeb;border:1.5px solid var(--gold);border-radius:14px;padding:14px 18px;margin:12px 0;flex-wrap:wrap}
+#sum-bar-wrap{flex:1;min-width:180px;height:10px;background:#fef3c7;border-radius:99px;overflow:hidden}
+#sum-bar{height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--accent));transition:width .4s}
+
+/* ===== SVG grafik pertidaksamaan ===== */
+.graph-wrap{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin:10px 0}
+.graph-box{background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px}
+
+/* ===== Responsive ===== */
+@media (max-width:640px){
+  .topbar{padding:8px 10px 4px;gap:8px}
+  .brand{display:none}
+  .deck{padding:4px 8px 0}
+  .slide{border-radius:14px}
+  .slide-head{padding:12px 14px 8px}
+  .slide-body{padding:12px 14px 18px}
+  .bottombar{padding:6px 10px 10px}
+  .nav-btn{padding:9px 13px;font-size:13px}
+  #score-chip{font-size:11px;padding:4px 9px}
+  .menu-panel{top:50px}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="topbar">
+    <span class="brand">Eksponensial Interaktif</span>
+    <div class="progress-wrap"><div id="progress"></div></div>
+    <span id="score-chip">✅ 0 · ❌ 0</span>
+    <button class="icon-btn" id="menu-btn" aria-label="Daftar slide">☰</button>
+  </div>
+
+  <div class="deck">
+  <!-- ========== SLIDE 1: COVER ========== -->
+  <section class="slide dark active" data-title="Cover">
+    <div class="cover-inner">
+      <span class="cover-badge">Matematika · Fase E / Kelas X SMA</span>
+      <h1 class="cover-title">Persamaan &amp; Pertidaksamaan<br>Eksponensial</h1>
+      <p class="cover-sub">Slide presentasi interaktif: dari bakteri yang membelah diri, bunga bank, hingga peluruhan zat radioaktif — kuasai lima bentuk persamaan eksponensial dan dua kasus pertidaksamaannya.</p>
+      <div class="formula-hero math">a<sup>f(x)</sup> = a<sup>g(x)</sup> &nbsp;⟺&nbsp; f(x) = g(x)</div>
+      <div class="chips">
+        <span class="chip">🦠 Bakteri</span>
+        <span class="chip">💰 Bunga Majemuk</span>
+        <span class="chip">☢️ Radioaktif</span>
+        <span class="chip">🧮 40 Soal Interaktif</span>
+      </div>
+      <button class="btn-start" id="btn-start">Mulai Belajar →</button>
+    </div>
+  </section>
+
+  <!-- ========== SLIDE 2: APERSEPSI ========== -->
+  <section class="slide" data-title="Apersepsi">
+    <div class="slide-head">
+      <div>
+        <span class="kicker">Menyalakan Rasa Ingin Tahu</span>
+        <h2 class="slide-title">Apersepsi: Kekuatan Berlipat yang Menakjubkan</h2>
+      </div>
+    </div>
+    <div class="slide-body">
+      <div class="rule-box warn">
+        <b>Bayangkan:</b> satu bakteri berada di piring. Setiap <b>20 menit</b> bakteri itu membelah diri menjadi 2. Setelah pembelahan, kedua bakteri masing-masing juga membelah 20 menit kemudian — dan seterusnya.
+      </div>
+      <table class="tbl">
+        <tr><th>Waktu</th><th>Jumlah pembelahan</th><th>Banyak bakteri</th></tr>
+        <tr><td>20 menit</td><td>1 kali</td><td class="math">2 = 2<sup>1</sup></td></tr>
+        <tr><td>40 menit</td><td>2 kali</td><td class="math">4 = 2<sup>2</sup></td></tr>
+        <tr><td>1 jam</td><td>3 kali</td><td class="math">8 = 2<sup>3</sup></td></tr>
+        <tr><td>2 jam</td><td>6 kali</td><td class="math">64 = 2<sup>6</sup></td></tr>
+        <tr><td><b>8 jam</b></td><td><b>24 kali</b></td><td class="math"><b>2<sup>24</sup> = 16.777.216 bakteri!</b></td></tr>
+      </table>
+      <p class="lead">Dari <b>1</b> menjadi lebih dari <b>16 juta</b> hanya dalam 8 jam. Inilah kekuatan <b>eksponensial</b>: tumbuh bukan dengan cara bertambah, tetapi dengan cara <i>dikali</i>.</p>
+      <div class="grid g2">
+        <div class="card">
+          <h4>💭 Pertanyaan Pemantik 1</h4>
+          <p>Jika kamu menabung Rp100.000 dan uangmu berlipat dua setiap bulan, berapa isimu setelah 6 bulan? (Petunjuk: 100.000 × 2<sup>6</sup>.)</p>
+        </div>
+        <div class="card">
+          <h4>💭 Pertanyaan Pemantik 2</h4>
+          <p>Kenapa zat radioaktif dari kecelakaan nuklir masih berbahaya berbulan-bulan, padahal terus "menghilang"? Kuncinya: ia menyusut <i>setengah</i> setiap periode tertentu — juga eksponensial!</p>
+        </div>
+        <div class="card">
+          <h4>🗣️ Aktivitas Diskusi</h4>
+          <p>Berilah 2 contoh lain di sekitarmu yang jumlahnya "berlipat" atau "menyusut" secara eksponensial. Diskusikan dengan teman sebangku selama 2 menit!</p>
+        </div>
+        <div class="card">
+          <h4>🎯 Menurutmu…</h4>
+          <p>Model matematika apa yang cocok untuk menghitung banyaknya bakteri pada tabel di atas? Jika kamu menjawab <span class="math">N = 2<sup>n</sup></span>, kamu sudah berada di jalur yang tepat!</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== SLIDE 3: TUJUAN PEMBELAJARAN ========== -->
+  <section class="slide" data-title="Tujuan Pembelajaran">
+    <div class="slide-head">
+      <div>
+        <span class="kicker">Arah Belajar Hari Ini</span>
+        <h2 class="slide-title">Tujuan Pembelajaran</h2>
+      </div>
+    </div>
+    <div class="slide-body">
+      <p class="lead">Setelah mengikuti pembelajaran dengan slide ini, kamu diharapkan mampu:</p>
+      <div class="grid g2">
+        <div class="card"><span class="icon-big">🌏</span><h4>Tujuan 1 — Konteks Nyata</h4><p>Menjelaskan penggunaan eksponen dalam kehidupan sehari-hari, seperti menghitung banyaknya bakteri, pertumbuhan tabungan dengan bunga majemuk, dan peluruhan zat radioaktif.</p></div>
+        <div class="card"><span class="icon-big">🧮</span><h4>Tujuan 2 — Persamaan Eksponensial</h4><p>Menyelesaikan lima bentuk persamaan eksponensial: <span class="math">a<sup>f(x)</sup> = a<sup>p</sup></span>, <span class="math">a<sup>f(x)</sup> = a<sup>g(x)</sup></span>, <span class="math">a<sup>f(x)</sup> = b<sup>f(x)</sup></span>, <span class="math">f(x)<sup>g(x)</sup> = f(x)<sup>h(x)</sup></span>, dan bentuk kuadrat <span class="math">A(a<sup>f(x)</sup>)<sup>2</sup> + B·a<sup>f(x)</sup> + C = 0</span>.</p></div>
+        <div class="card"><span class="icon-big">⚖️</span><h4>Tujuan 3 — Pertidaksamaan Eksponensial</h4><p>Menyelesaikan pertidaksamaan eksponensial untuk kasus <span class="math">a &gt; 1</span> (tanda tetap) dan <span class="math">0 &lt; a &lt; 1</span> (tanda berbalik), lengkap dengan himpunan penyelesaiannya.</p></div>
+        <div class="card"><span class="icon-big">📖</span><h4>Tujuan 4 — Soal Cerita</h4><p>Memodelkan dan menyelesaikan soal cerita kontekstual (pertumbuhan, peluruhan, dan bunga majemuk) menggunakan konsep eksponensial.</p></div>
+      </div>
+      <div class="rule-box teal">
+        <b>Alur materi:</b> Eksponen di kehidupan sehari-hari 🌏 → Persamaan eksponensial (5 bentuk) 🧮 → Pertidaksamaan eksponensial (2 kasus) ⚖️ → Soal cerita 📖 → Kesimpulan &amp; refleksi ✨. Setiap materi dilengkapi <b>2 contoh soal berlangkah</b> dan <b>5 soal pilihan ganda interaktif</b>.
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== SLIDE 4: EKSPONEN DI KEHIDUPAN SEHARI-HARI ========== -->
+  <section class="slide" data-title="Eksponen di Kehidupan Sehari-hari">
+    <div class="slide-head">
+      <div>
+        <span class="kicker">Materi 0 · Konteks Dunia Nyata</span>
+        <h2 class="slide-title">Eksponen di Kehidupan Sehari-hari</h2>
+      </div>
+    </div>
+    <div class="slide-body">
+      <div class="rule-box">
+        <b>Rumus umum pertumbuhan / peluruhan:</b> <span class="math">N(t) = N<sub>0</sub> · a<sup>t</sup></span><br>
+        <span class="small-note">Keterangan: <span class="math">N<sub>0</sub></span> = jumlah awal, <span class="math">a</span> = rasio setiap periode, <span class="math">t</span> = banyaknya periode. Jika <span class="math">a &gt; 1</span> terjadi <b>pertumbuhan</b> (misal bakteri), jika <span class="math">0 &lt; a &lt; 1</span> terjadi <b>peluruhan</b> (misal sisa radioaktif).</span>
+      </div>
+      <div class="grid g2">
+        <div class="card"><span class="icon-big">🦠</span><h4>1 · Bakteri &amp; Virus</h4><p>Bakteri membelah diri menjadi 2 setiap periode, sehingga jumlahnya mengikuti <span class="math">N = N<sub>0</sub> · 2<sup>n</sup></span>. Inilah alasan infeksi bisa menyebar sangat cepat dalam hitungan jam.</p></div>
+        <div class="card"><span class="icon-big">💰</span><h4>2 · Bunga Majemuk Bank</h4><p>Tabungan <span class="math">M<sub>0</sub></span> dengan bunga <span class="math">i</span> per tahun selama <span class="math">n</span> tahun menjadi <span class="math">M = M<sub>0</sub>(1 + i)<sup>n</sup></span>. Bunga yang ikut berbunga inilah yang disebut majemuk.</p></div>
+        <div class="card"><span class="icon-big">☢️</span><h4>3 · Peluruhan Radioaktif</h4><p>Massa unsur radioaktif menyusut menjadi setengah setiap <i>waktu paruh</i>: <span class="math">N = N<sub>0</sub> · (1/2)<sup>t/T</sup></span>, dengan <span class="math">T</span> waktu paruh. Dipakai untuk penanggalan fosil (karbon-14).</p></div>
+        <div class="card"><span class="icon-big">📉</span><h4>4 · Nilai Aset &amp; Populasi</h4><p>Harga kendaraan turun sekitar 10% per tahun: <span class="math">V = V<sub>0</sub>(0,9)<sup>n</sup></span>. Sebaliknya, populasi penduduk atau pengguna internet tumbuh mirip pola eksponensial.</p></div>
+      </div>
+      <p class="lead" style="margin-top:10px">Sekarang kita coba langsung: hitunglah <b>banyaknya bakteri</b> dengan simulasi interaktif berikut! 🦠</p>
+    </div>
+  </section>
+
+  <!-- ========== SLIDE 5: SIMULASI BAKTERI ========== -->
+  <section class="slide" data-title="Simulasi: Bakteri Belah Diri">
+    <div class="slide-head">
+      <div>
+        <span class="kicker">Simulasi Interaktif</span>
+        <h2 class="slide-title">Menghitung Banyaknya Bakteri 🦠</h2>
+      </div>
+    </div>
+    <div class="slide-body">
+      <div class="sim">
+        <div class="sim-line">Geser slider → makin banyak pembelahan, makin meledak jumlahnya!</div>
+        <div class="sim-big math">N = 100 × 2<sup id="sim-exp">6</sup> = <b id="sim-val">6.400</b> bakteri</div>
+        <input type="range" id="sim-slider" min="0" max="12" value="6" aria-label="Jumlah pembelahan bakteri">
+        <div class="sim-scale"><span>0 kali (mulai)</span><span id="sim-time">6 kali × 20 menit = 120 menit (2 jam)</span></div>
+        <div class="sim-bars" id="sim-bars"></div>
+        <div class="sim-legend">Setiap batang = jumlah bakteri setelah <span class="math">k</span> pembelahan (<span class="math">100 × 2<sup>k</sup></span>). Jumlah awal <span class="math">N<sub>0</sub> = 100</span>, bakteri membelah 2 setiap 20 menit.</div>
+      </div>
+      <div class="rule-box warn">
+        <b>Amati:</b> dari pembelahan ke-6 ke ke-12 (hanya 2 jam lagi), jumlah bakteri melonjak dari <b>6.400</b> menjadi <b>409.600</b> — 64 kali lipat! Itulah sifat pertumbuhan eksponensial: makin akhir, makin cepat.
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== SLIDE 6: CONTOH BAKTERI & BUNGA ========== -->
+  <section class="slide" data-title="Contoh: Bakteri &amp; Bunga Majemuk">
+    <div class="slide-head">
+      <div>
+        <span class="kicker">Contoh Soal Dunia Nyata</span>
+        <h2 class="slide-title">Contoh Hitungan Eksponen Sehari-hari</h2>
+      </div>
+    </div>
+    <div class="slide-body">
+      <div class="example">
+        <div class="example-title">📌 Contoh 1 — Jumlah Bakteri</div>
+        <p>Sejumlah <b>100 bakteri</b> diletakkan di piring. Bakteri membelah diri menjadi dua setiap <b>20 menit</b>. Tentukan banyaknya bakteri setelah <b>2 jam</b>!</p>
+        <div class="step-list">
+          <div class="step">Tentukan panjang periode: 2 jam = 120 menit, tiap periode 20 menit → banyaknya pembelahan <span class="math">n = 120 : 20 = 6</span>.</div>
+          <div class="step">Susun model: <span class="math">N = N<sub>0</sub> · 2<sup>n</sup> = 100 · 2<sup>6</sup></span>.</div>
+          <div class="step">Hitung: <span class="math">2<sup>6</sup> = 64</span>, sehingga <span class="math">N = 100 × 64 = 6.400</span>.</div>
+        </div>
+        <span class="answer-tag">Jadi, ada 6.400 bakteri setelah 2 jam.</span>
+        <div class="check-line">✓ Uji cepat: 100 → 200 → 400 → 800 → 1.600 → 3.200 → 6.400 (6 kali lipat-2) ✔</div>
+      </div>
+      <div class="example">
+        <div class="example-title">📌 Contoh 2 — Bunga Majemuk</div>
+        <p>Bu Rina menabung <b>Rp2.000.000</b> di bank dengan bunga majemuk <b>10% per tahun</b>. Tentukan jumlah tabungan Bu Rina setelah <b>3 tahun</b>!</p>
+        <div class="step-list">
+          <div class="step">Model bunga majemuk: <span class="math">M = M<sub>0</sub>(1 + i)<sup>n</sup></span> dengan <span class="math">M<sub>0</sub> = 2.000.000</span>, <span class="math">i = 10% = 0,1</span>, <span class="math">n = 3</span>.</div>
+          <div class="step">Substitusi: <span class="math">M = 2.000.000 × (1,1)<sup>3</sup></span>.</div>
+          <div class="step">Hitung: <span class="math">(1,1)<sup>3</sup> = 1,331</span>, sehingga <span class="math">M = 2.000.000 × 1,331 = 2.662.000</span>.</div>
+        </div>
+        <span class="answer-tag">Tabungan menjadi Rp2.662.000.</span>
+        <div class="check-line">✓ Uji tahunan: 2.200.000 → 2.420.000 → 2.662.000 ✔ (bunga ikut berbunga!)</div>
+      </div>
+      <div class="rule-box teal">
+        <b>Bonus ☢️:</b> unsur radioaktif 96 gram memiliki waktu paruh 3 jam (setiap 3 jam massanya menjadi setengah). Setelah 12 jam tersisa <span class="math">96 × (1/2)<sup>12/3</sup> = 96 × (1/2)<sup>4</sup> = 6</span> gram. Pola yang sama, hanya saja <span class="math">a &lt; 1</span> (peluruhan).
+      </div>
+    </div>
+  </section>
+  <!-- ========== SLIDE 7: PERSAMAAN EKSPONENSIAL - PETA MATERI ========== -->
+  <section class="slide" data-title="Persamaan Eksponensial: Sifat &amp; Peta Materi">
+    <div class="slide-head">
+      <div>
+        <span class="kicker">Persamaan Eksponensial · Prasyarat</span>
+        <h2 class="slide-title">Sifat Pangkat &amp; Peta 5 Bentuk Persamaan</h2>
+      </div>
+    </div>
+    <div class="slide-body">
+      <p class="lead">Sebelum mulai, segarkan ingatanmu tentang <b>sifat-sifat pangkat</b> — senjata utama menyelesaikan semua bentuk persamaan eksponensial (dengan <span class="math">a &gt; 0</span>, <span class="math">a ≠ 1</span>):</p>
+      <div class="tbl-wrap">
+      <table class="tbl">
+        <tr><th>Sifat</th><th>Contoh</th></tr>
+        <tr><td class="math">a<sup>m</sup> · a<sup>n</sup> = a<sup>m+n</sup></td><td class="math">2<sup>3</sup> · 2<sup>4</sup> = 2<sup>7</sup> = 128</td></tr>
+        <tr><td class="math">a<sup>m</sup> : a<sup>n</sup> = a<sup>m−n</sup></td><td class="math">5<sup>6</sup> : 5<sup>4</sup> = 5<sup>2</sup> = 25</td></tr>
+        <tr><td class="math">(a<sup>m</sup>)<sup>n</sup> = a<sup>m·n</sup></td><td class="math">(3<sup>2</sup>)<sup>3</sup> = 3<sup>6</sup> = 729</td></tr>
+        <tr><td class="math">a<sup>0</sup> = 1</td><td class="math">7<sup>0</sup> = 1</td></tr>
+        <tr><td class="math">a<sup>−n</sup> = 1/a<sup>n</sup></td><td class="math">2<sup>−3</sup> = 1/8</td></tr>
+        <tr><td class="math">(a/b)<sup>−n</sup> = (b/a)<sup>n</sup></td><td class="math">(1/2)<sup>−3</sup> = 2<sup>3</sup> = 8</td></tr>
+      </table>
+      </div>
+      <div class="rule-box">
+        <b>Kaidah emas:</b> bentuk <span class="math">a<sup>m</sup> = a<sup>n</sup></span> (basis sama, <span class="math">a &gt; 0</span>, <span class="math">a ≠ 1</span>) menyatakan <span class="math">m = n</span>. Maka strategi utamanya: <b>samakan basisnya</b>, lalu samakan pangkatnya!
+      </div>
+      <p class="lead"><b>Peta 5 bentuk persamaan eksponensial</b> yang akan kita kuasai satu per satu:</p>
+      <div class="tbl-wrap">
+      <table class="tbl">
+        <tr><th style="width:40px">No</th><th>Bentuk</th><th>Ciri Khas</th><th>Strategi</th></tr>
+        <tr><td>1</td><td class="math">a<sup>f(x)</sup> = a<sup>p</sup></td><td>Pangkat kanan konstanta</td><td>Samakan basis → <span class="math">f(x) = p</span></td></tr>
+        <tr><td>2</td><td class="math">a<sup>f(x)</sup> = a<sup>g(x)</sup></td><td>Basis sama dua sisi</td><td><span class="math">f(x) = g(x)</span></td></tr>
+        <tr><td>3</td><td class="math">a<sup>f(x)</sup> = b<sup>f(x)</sup></td><td>Pangkat sama, basis beda</td><td><span class="math">f(x) = 0</span></td></tr>
+        <tr><td>4</td><td class="math">f(x)<sup>g(x)</sup> = f(x)<sup>h(x)</sup></td><td>Basis berupa fungsi</td><td>3 kasus: basis 1, pangkat sama, basis 0</td></tr>
+        <tr><td>5</td><td class="math">A(a<sup>f(x)</sup>)<sup>2</sup> + B·a<sup>f(x)</sup> + C = 0</td><td>Kuadrat dalam eksponensial</td><td>Misalkan <span class="math">t = a<sup>f(x)</sup></span> → kuadrat biasa</td></tr>
+      </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== SLIDE 8: BENTUK 1 - KONSEP & CONTOH ========== -->
+  <section class="slide" data-title="Bentuk 1: a^f(x)=a^p">
+    <div class="slide-head">
+      <div>
+        <span class="kicker">Persamaan Eksponensial · Bentuk 1</span>
+        <h2 class="slide-title">Bentuk 1: <span class="math">a<sup>f(x)</sup> = a<sup>p</sup></span></h2>
+      </div>
+    </div>
+    <div class="slide-body">
+      <div class="rule-box">
+        <b>Aturan:</b> <span class="math">a<sup>f(x)</sup> = a<sup>p</sup> ⟺ f(x) = p</span>, dengan syarat <span class="math">a &gt; 0</span> dan <span class="math">a ≠ 1</span>.
+      </div>
+      <div class="step-list">
+        <div class="step">Ubah ruas kanan menjadi pangkat dengan basis yang sama dengan ruas kiri.</div>
+        <div class="step">Samakan pangkatnya: tulis <span class="math">f(x) = p</span>.</div>
+        <div class="step">Selesaikan persamaan yang terbentuk (linear atau kuadrat).</div>
+      </div>
+      <div class="example">
+        <div class="example-title">📌 Contoh 1</div>
+        <p>Tentukan nilai <span class="math">x</span> yang memenuhi <span class="math">3<sup>2x−1</sup> = 27</span>.</p>
+        <div class="step-list">
+          <div class="step">Samakan basis: <span class="math">27 = 3<sup>3</sup></span>, sehingga persamaan menjadi <span class="math">3<sup>2x−1</sup> = 3<sup>3</sup></span>.</div>
+          <div class="step">Samakan pangkat: <span class="math">2x − 1 = 3</span>.</div>
+          <div class="step">Selesaikan: <span class="math">2x = 4</span> → <span class="math">x = 2</span>.</div>
+        </div>
+        <span class="answer-tag">x = 2</span>
+        <div class="check-line">✓ Uji: 3<sup>2(2)−1</sup> = 3<sup>3</sup> = 27 ✔</div>
+      </div>
+      <div class="example">
+        <div class="example-title">📌 Contoh 2</div>
+        <p>Tentukan himpunan penyelesaian dari <span class="math">5<sup>x²−2x</sup> = 125</span>.</p>
+        <div class="step-list">
+          <div class="step">Samakan basis: <span class="math">125 = 5<sup>3</sup></span> → <span class="math">5<sup>x²−2x</sup> = 5<sup>3</sup></span>.</div>
+          <div class="step">Samakan pangkat: <span class="math">x² − 2x = 3</span> → <span class="math">x² − 2x − 3 = 0</span>.</div>
+          <div class="step">Faktorkan: <span class="math">(x − 3)(x + 1) = 0</span> → <span class="math">x = 3</span> atau <span class="math">x = −1</span>.</div>
+        </div>
+        <span class="answer-tag">HP = {x | x = 3 atau x = −1}</span>
+        <div class="check-line">✓ Uji x=3: 5<sup>9−6</sup> = 5<sup>3</sup> ✔ &nbsp;·&nbsp; Uji x=−1: 5<sup>1+2</sup> = 5<sup>3</sup> ✔</div>
+      </div>
+      <div class="rule-box warn"><b>Ingat:</b> pangkat kanan boleh negatif atau pecahan! Misal <span class="math">1/9 = 3<sup>−2</sup></span> dan <span class="math">8 = (1/2)<sup>−3</sup></span>.</div>
+    </div>
+  </section>
+
+  <!-- ========== SLIDE 9: KUIS BENTUK 1 ========== -->
+  <section class="slide" data-title="Kuis Bentuk 1">
+    <div class="slide-head">
+      <div>
+        <span class="kicker">Kuis Interaktif · 5 Soal</span>
+        <h2 class="slide-title">Kuis Bentuk 1: <span class="math">a<sup>f(x)</sup> = a<sup>p</sup></span></h2>
+      </div>
+    </div>
+    <div class="slide-body">
+      <p class="small-note">Pilih satu jawaban, tekan <b>Cek Jawaban</b>, lalu pelajari pembahasannya. Skormu tercatat otomatis ⭐</p>
+
+      <div class="quiz" data-answer="A">
+        <div class="quiz-q"><span class="qnum">1</span>Nilai <span class="math">x</span> yang memenuhi <span class="math">2<sup>x+3</sup> = 128</span> adalah …</div>
+        <div class="quiz-opts">
+          <button class="opt" data-key="A">A. x = 4</button>
+          <button class="opt" data-key="B">B. x = 3</button>
+          <button class="opt" data-key="C">C. x = 5</button>
+          <button class="opt" data-key="D">D. x = 2</button>
+        </div>
+        <div class="quiz-actions"><button class="btn-check" disabled>Cek Jawaban</button><button class="btn-reset">Ulangi</button></div>
+        <div class="quiz-feedback"></div>
+        <div class="pembahasan"><span class="pem-label">💬 Pembahasan</span>
+          <span class="math">128 = 2<sup>7</sup></span> → <span class="math">2<sup>x+3</sup> = 2<sup>7</sup></span> → <span class="math">x + 3 = 7</span> → <span class="math">x = 4</span>.<br><span class="check-line">✓ Uji: 2<sup>4+3</sup> = 2<sup>7</sup> = 128 ✔</span>
+        </div>
+      </div>
+
+      <div class="quiz" data-answer="A">
+        <div class="quiz-q"><span class="qnum">2</span>Penyelesaian <span class="math">3<sup>2x−5</sup> = 1/9</span> adalah …</div>
+        <div class="quiz-opts">
+          <button class="opt" data-key="A">A. x = 3/2</button>
+          <button class="opt" data-key="B">B. x = 2</button>
+          <button class="opt" data-key="C">C. x = 1/2</button>
+          <button class="opt" data-key="D">D. x = 7/2</button>
+        </div>
+        <div class="quiz-actions"><button class="btn-check" disabled>Cek Jawaban</button><button class="btn-reset">Ulangi</button></div>
+        <div class="quiz-feedback"></div>
+        <div class="pembahasan"><span class="pem-label">💬 Pembahasan</span>
+          <span class="math">1/9 = 3<sup>−2</sup></span> → <span class="math">3<sup>2x−5</sup> = 3<sup>−2</sup></span> → <span class="math">2x − 5 = −2</span> → <span class="math">2x = 3</span> → <span class="math">x = 3/2</span>.<br><span class="check-line">✓ Uji: 3<sup>2(3/2)−5</sup> = 3<sup>−2</sup> = 1/9 ✔</span>
+        </div>
+      </div>
+
+      <div class="quiz" data-answer="A">
+        <div class="quiz-q"><span class="qnum">3</span>Nilai <span class="math">x</span> dari persamaan <span class="math">9<sup>x+1</sup> = 729</span> adalah …</div>
+        <div class="quiz-opts">
+          <button class="opt" data-key="A">A. x = 2</button>
+          <button class="opt" data-key="B">B. x = 3</button>
+          <button class="opt" data-key="C">C. x = 1</button>
+          <button class="opt" data-key="D">D. x = 1/2</button>
+        </div>
+        <div class="quiz-actions"><button class="btn-check" disabled>Cek Jawaban</button><button class="btn-reset">Ulangi</button></div>
+        <div class="quiz-feedback"></div>
+        <div class="pembahasan"><span class="pem-label">💬 Pembahasan</span>
+          <span class="math">729 = 9<sup>3</sup></span> (karena 9 × 9 × 9 = 729) → <span class="math">9<sup>x+1</sup> = 9<sup>3</sup></span> → <span class="math">x + 1 = 3</span> → <span class="math">x = 2</span>.<br><span class="check-line">✓ Uji: 9<sup>3</sup> = 729 ✔</span>
+        </div>
+      </div>
+
+      <div class="quiz" data-answer="A">
+        <div class="quiz-q"><span class="qnum">4</span>Himpunan penyelesaian <span class="math">(1/3)<sup>x²−4</sup> = 27</span> adalah …</div>
+        <div class="quiz-opts">
+          <button class="opt" data-key="A">A. x = 1 atau x = −1</button>
+          <button class="opt" data-key="B">B. x = 1</button>
+          <button class="opt" data-key="C">C. x = −1</button>
+          <button class="opt" data-key="D">D. x = 3 atau x = −3</button>
+        </div>
+        <div class="quiz-actions"><button class="btn-check" disabled>Cek Jawaban</button><button class="btn-reset">Ulangi</button></div>
+        <div class="quiz-feedback"></div>
+        <div class="pembahasan"><span class="pem-label">💬 Pembahasan</span>
+          <span class="math">27 = (1/3)<sup>−3</sup></span> → <span class="math">x² − 4 = −3</span> → <span class="math">x² = 1</span> → <span class="math">x = 1</span> atau <span class="math">x = −1</span>.<br><span class="check-line">✓ Uji x=1: (1/3)<sup>−3</sup> = 27 ✔</span>
+        </div>
+      </div>
+
+      <div class="quiz" data-answer="A">
+        <div class="quiz-q"><span class="qnum">5</span>Himpunan penyelesaian <span class="math">7<sup>x²−3x+2</sup> = 49</span> adalah …</div>
+        <div class="quiz-opts">
+          <button class="opt" data-key="A">A. x = 0 atau x = 3</button>
+          <button class="opt" data-key="B">B. x = 1 atau x = 3</button>
+          <button class="opt" data-key="C">C. x = 0 atau x = 1</button>
+          <button class="opt" data-key="D">D. x = −3 atau x = 0</button>
+        </div>
+        <div class="quiz-actions"><button class="btn-check" disabled>Cek Jawaban</button><button class="btn-reset">Ulangi</button></div>
+        <div class="quiz-feedback"></div>
+        <div class="pembahasan"><span class="pem-label">💬 Pembahasan</span>
+          <span class="math">49 = 7<sup>2</sup></span> → <span class="math">x² − 3x + 2 = 2</span> → <span class="math">x² − 3x = 0</span> → <span class="math">x(x − 3) = 0</span> → <span class="math">x = 0</span> atau <span class="math">x = 3</span>.<br><span class="check-line">✓ Uji x=3: 7<sup>9−9+2</sup> = 7<sup>2</sup> = 49 ✔</span>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ========== SLIDE 10: BENTUK 2 - KONSEP & CONTOH ========== -->
+  <section class="slide" data-title="Bentuk 2: a^f(x)=a^g(x)">
+    <div class="slide-head">
+      <div>
+        <span class="kicker">Persamaan Eksponensial · Bentuk 2</span>
+        <h2 class="slide-title">Bentuk 2: <span class="math">a<sup>f(x)</sup> = a<sup>g(x)</sup></span></h2>
+      </div>
+    </div>
+    <div class="slide-body">
+      <div class="rule-box">
+        <b>Aturan:</b> <span class="math">a<sup>f(x)</sup> = a<sup>g(x)</sup> ⟺ f(x) = g(x)</span>, dengan syarat <span class="math">a &gt; 0</span> dan <span class="math">a ≠ 1</span>. Jika basisnya belum sama, <b>jadikan sama dulu</b> (misal 4 = 2<sup>2</sup>, 9 = 3<sup>2</sup>, 1/8 = 2<sup>−3</sup>).
+      </div>
+      <div class="example">
+        <div class="example-title">📌 Contoh 1</div>
+        <p>Tentukan nilai <span class="math">x</span> yang memenuhi <span class="math">2<sup>x+2</sup> = 2<sup>3x−4</sup></span>.</p>
+        <div class="step-list">
+          <div class="step">Basisnya sudah sama (2), langsung samakan pangkat: <span class="math">x + 2 = 3x − 4</span>.</div>
+          <div class="step">Pindahkan semua <span class="math">x</span> ke satu ruas: <span class="math">2 + 4 = 3x − x</span> → <span class="math">6 = 2x</span>.</div>
+          <div class="step">Selesaikan: <span class="math">x = 3</span>.</div>
+        </div>
+        <span class="answer-tag">x = 3</span>
+        <div class="check-line">✓ Uji: 2<sup>5</sup> = 2<sup>9−4</sup> = 32 ✔</div>
+      </div>
+      <div class="example">
+        <div class="example-title">📌 Contoh 2</div>
+        <p>Tentukan himpunan penyelesaian dari <span class="math">2<sup>x²−3x</sup> = 2<sup>x+5</sup></span>.</p>
+        <div class="step-list">
+          <div class="step">Samakan pangkat: <span class="math">x² − 3x = x + 5</span>.</div>
+          <div class="step">Susun ke bentuk kuadrat: <span class="math">x² − 4x − 5 = 0</span>.</div>
+          <div class="step">Faktorkan: <span class="math">(x − 5)(x + 1) = 0</span> → <span class="math">x = 5</span> atau <span class="math">x = −1</span>.</div>
+        </div>
+        <span class="answer-tag">HP = {x | x = 5 atau x = −1}</span>
+        <div class="check-line">✓ Uji x=5: 2<sup>10</sup> = 2<sup>10</sup> ✔ &nbsp;·&nbsp; Uji x=−1: 2<sup>4</sup> = 2<sup>4</sup> ✔</div>
+      </div>
+      <div class="rule-box warn"><b>Hati-hati:</b> bila pangkatnya kuadrat dan diskriminannya negatif (misal <span class="math">x² − 4x + 5 = 0</span>), persamaan <b>tidak memiliki penyelesaian real</b> — jawabannya bukan selalu ada!</div>
+    </div>
+  </section>
+
+  <!-- ========== SLIDE 11: KUIS BENTUK 2 ========== -->
+  <section class="slide" data-title="Kuis Bentuk 2">
+    <div class="slide-head">
+      <div>
+        <span class="kicker">Kuis Interaktif · 5 Soal</span>
+        <h2 class="slide-title">Kuis Bentuk 2: <span class="math">a<sup>f(x)</sup> = a<sup>g(x)</sup></span></h2>
+      </div>
+    </div>
+    <div class="slide-body">
+      <p class="small-note">Pilih satu jawaban, tekan <b>Cek Jawaban</b>, lalu pelajari pembahasannya. Skormu tercatat otomatis ⭐</p>
+
+      <div class="quiz" data-answer="A">
+        <div class="quiz-q"><span class="qnum">1</span>Nilai <span class="math">x</span> yang memenuhi <span class="math">5<sup>2x−1</sup> = 5<sup>x+2</sup></span> adalah …</div>
+        <div class="quiz-opts">
+          <button class="opt" data-key="A">A. x = 3</button>
+          <button class="opt" data-key="B">B. x = 2</button>
+          <button class="opt" data-key="C">C. x = 1/3</button>
+          <button class="opt" data-key="D">D. x = −3</button>
+        </div>
+        <div class="quiz-actions"><button class="btn-check" disabled>Cek Jawaban</button><button class="btn-reset">Ulangi</button></div>
+        <div class="quiz-feedback"></div>
+        <div class="pembahasan"><span class="pem-label">💬 Pembahasan</span>
+          <span class="math">2x − 1 = x + 2</span> → <span class="math">2x − x = 2 + 1</span> → <span class="math">x = 3</span>.<br><span class="check-line">✓ Uji: 5<sup>5</sup> = 5<sup>5</sup> ✔</span>
+        </div>
+      </div>
+
+      <div class="quiz" data-answer="A">
+        <div class="quiz-q"><span class="qnum">2</span>Nilai <span class="math">x</span> yang memenuhi <span class="math">4<sup>2x+3</sup> = 4<sup>x+7</sup></span> adalah …</div>
+        <div class="quiz-opts">
+          <button class="opt" data-key="A">A. x = 4</button>
+          <button class="opt" data-key="B">B. x = 2</button>
+          <button class="opt" data-key="C">C. x = −4</button>
+          <button class="opt" data-key="D">D. x = 10</button>
+        </div>
+        <div class="quiz-actions"><button class="btn-check" disabled>Cek Jawaban</button><button class="btn-reset">Ulangi</button></div>
+        <div class="quiz-feedback"></div>
+        <div class="pembahasan"><span class="pem-label">💬 Pembahasan</span>
+          <span class="math">2x + 3 = x + 7</span> → <span class="math">2x − x = 7 − 3</span> → <span class="math">x = 4</span>.<br><span class="check-line">✓ Uji: 4<sup>11</sup> = 4<sup>11</sup> ✔</span>
+        </div>
+      </div>
+
+      <div class="quiz" data-answer="A">
+        <div class="quiz-q"><span class="qnum">3</span>Himpunan penyelesaian <span class="math">6<sup>x²−x</sup> = 6<sup>2x</sup></span> adalah …</div>
+        <div class="quiz-opts">
+          <button class="opt" data-key="A">A. x = 0 atau x = 3</button>
+          <button class="opt" data-key="B">B. x = 3</button>
+          <button class="opt" data-key="C">C. x = 0</button>
+          <button class="opt" data-key="D">D. x = −3 atau x = 0</button>
+        </div>
+        <div class="quiz-actions"><button class="btn-check" disabled>Cek Jawaban</button><button class="btn-reset">Ulangi</button></div>
+        <div class="quiz-feedback"></div>
+        <div class="pembahasan"><span class="pem-label">💬 Pembahasan</span>
+          <span class="math">x² − x = 2x</span> → <span class="math">x² − 3x = 0</span> → <span class="math">x(x − 3) = 0</span> → <span class="math">x = 0</span> atau <span class="math">x = 3</span>.<br><span class="check-line">✓ Uji x=0: 6<sup>0</sup> = 6<sup>0</sup> ✔</span>
+        </div>
+      </div>
+
+      <div class="quiz" data-answer="A">
+        <div class="quiz-q"><span class="qnum">4</span>Nilai <span class="math">x</span> yang memenuhi <span class="math">(0,5)<sup>x−1</sup> = (0,5)<sup>2x+3</sup></span> adalah …</div>
+        <div class="quiz-opts">
+          <button class="opt" data-key="A">A. x = −4</button>
+          <button class="opt" data-key="B">B. x = 4</button>
+          <button class="opt" data-key="C">C. x = −2</button>
+          <button class="opt" data-key="D">D. x = 2</button>
+        </div>
+        <div class="quiz-actions"><button class="btn-check" disabled>Cek Jawaban</button><button class="btn-reset">Ulangi</button></div>
+        <div class="quiz-feedback"></div>
+        <div class="pembahasan"><span class="pem-label">💬 Pembahasan</span>
+          Basis desimal pun boleh! <span class="math">x − 1 = 2x + 3</span> → <span class="math">−4 = x</span> → <span class="math">x = −4</span>.<br><span class="check-line">✓ Uji: (0,5)<sup>−5</sup> = (0,5)<sup>−5</sup> ✔</span>
+        </div>
+      </div>
+
+      <div class="quiz" data-answer="A">
+        <div class="quiz-q"><span class="qnum">5</span>Nilai <span class="math">x</span> yang memenuhi <span class="math">10<sup>3x+1</sup> = 10<sup>5x−7</sup></span> adalah …</div>
+        <div class="quiz-opts">
+          <button class="opt" data-key="A">A. x = 4</button>
+          <button class="opt" data-key="B">B. x = 2</button>
+          <button class="opt" data-key="C">C. x = −4</button>
+          <button class="opt" data-key="D">D. x = 8</button>
+        </div>
+        <div class="quiz-actions"><button class="btn-check" disabled>Cek Jawaban</button><button class="btn-reset">Ulangi</button></div>
+        <div class="quiz-feedback"></div>
+        <div class="pembahasan"><span class="pem-label">💬 Pembahasan</span>
+          <span class="math">3x + 1 = 5x − 7</span> → <span class="math">1 + 7 = 5x − 3x</span> → <span class="math">8 = 2x</span> → <span class="math">x = 4</span>.<br><span class="check-line">✓ Uji: 10<sup>13</sup> = 10<sup>13</sup> ✔</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== SLIDE 12: BENTUK 3 - KONSEP & CONTOH ========== -->
+  <section class="slide" data-title="Bentuk 3: a^f(x)=b^f(x)">
+    <div class="slide-head">
+      <div>
+        <span class="kicker">Persamaan Eksponensial · Bentuk 3</span>
+        <h2 class="slide-title">Bentuk 3: <span class="math">a<sup>f(x)</sup> = b<sup>f(x)</sup></span></h2>
+      </div>
+    </div>
+    <div class="slide-body">
+      <div class="rule-box">
+        <b>Aturan:</b> jika <span class="math">a ≠ b</span> dan keduanya positif, maka <span class="math">a<sup>f(x)</sup> = b<sup>f(x)</sup> ⟺ f(x) = 0</span>.<br>
+        <span class="small-note">Mengapa? Bagi kedua ruas dengan <span class="math">b<sup>f(x)</sup></span>: <span class="math">(a/b)<sup>f(x)</sup> = 1</span>. Karena <span class="math">a/b ≠ 1</span>, satu-satunya cara agar hasil pangkatnya 1 adalah pangkatnya nol: <span class="math">f(x) = 0</span>.</span>
+      </div>
+      <div class="example">
+        <div class="example-title">📌 Contoh 1</div>
+        <p>Tentukan nilai <span class="math">x</span> yang memenuhi <span class="math">5<sup>x+2</sup> = 7<sup>x+2</sup></span>.</p>
+        <div class="step-list">
+          <div class="step">Basis 5 ≠ 7 dengan pangkat sama <span class="math">f(x) = x + 2</span> → pakai aturan: <span class="math">x + 2 = 0</span>.</div>
+          <div class="step">Selesaikan: <span class="math">x = −2</span>.</div>
+        </div>
+        <span class="answer-tag">x = −2</span>
+        <div class="check-line">✓ Uji: 5<sup>0</sup> = 1 = 7<sup>0</sup> ✔</div>
+      </div>
+      <div class="example">
+        <div class="example-title">📌 Contoh 2</div>
+        <p>Tentukan nilai <span class="math">x</span> yang memenuhi <span class="math">2<sup>3x−9</sup> = 8<sup>3x−9</sup></span>.</p>
+        <div class="step-list">
+          <div class="step">Sekilas basis beda (2 dan 8), tapi bisa disamakan: <span class="math">8 = 2<sup>3</sup></span> → ruas kanan <span class="math">8<sup>3x−9</sup> = 2<sup>3(3x−9)</sup> = 2<sup>9x−27</sup></span>.</div>
+          <div class="step">Sekarang basis sama → pangkat sama: <span class="math">3x − 9 = 9x − 27</span>.</div>
+          <div class="step">Selesaikan: <span class="math">18 = 6x</span> → <span class="math">x = 3</span>. (Pintasan: pangkat kiri = pangkat kanan awal, basis 2 ≠ 8 → <span class="math">3x − 9 = 0</span> → <span class="math">x = 3</span>.)</div>
+        </div>
+        <span class="answer-tag">x = 3</span>
+        <div class="check-line">✓ Uji: 2<sup>0</sup> = 1 = 8<sup>0</sup> ✔</div>
+      </div>
+      <div class="rule-box warn"><b>Perhatikan:</b> bentuk ini sering "menyamar"! Basis bisa ditulis beda padahal nilainya sama (8 = 2<sup>3</sup>) atau benar-benar beda (5 dan 7). Kenali dulu, baru pilih strategi.</div>
+    </div>
+  </section>
+
+  <!-- ========== SLIDE 13: KUIS BENTUK 3 ========== -->
+  <section class="slide" data-title="Kuis Bentuk 3">
+    <div class="slide-head">
+      <div>
+        <span class="kicker">Kuis Interaktif · 5 Soal</span>
+        <h2 class="slide-title">Kuis Bentuk 3: <span class="math">a<sup>f(x)</sup> = b<sup>f(x)</sup></span></h2>
+      </div>
+    </div>
+    <div class="slide-body">
+      <p class="small-note">Pilih satu jawaban, tekan <b>Cek Jawaban</b>, lalu pelajari pembahasannya. Skormu tercatat otomatis ⭐</p>
+
+      <div class="quiz" data-answer="A">
+        <div class="quiz-q"><span class="qnum">1</span>Nilai <span class="math">x</span> yang memenuhi <span class="math">3<sup>x−4</sup> = 6<sup>x−4</sup></span> adalah …</div>
+        <div class="quiz-opts">
+          <button class="opt" data-key="A">A. x = 4</button>
+          <button class="opt" data-key="B">B. x = 0</button>
+          <button class="opt" data-key="C">C. x = −4</button>
+          <button class="opt" data-key="D">D. x = 6</button>
+        </div>
+        <div class="quiz-actions"><button class="btn-check" disabled>Cek Jawaban</button><button class="btn-reset">Ulangi</button></div>
+        <div class="quiz-feedback"></div>
+        <div class="pembahasan"><span class="pem-label">💬 Pembahasan</span>
+          Basis 3 ≠ 6 dan pangkatnya sama → pangkat harus 0: <span class="math">x − 4 = 0</span> → <span class="math">x = 4</span>.<br><span class="check-line">✓ Uji: 3<sup>0</sup> = 1 = 6<sup>0</sup> ✔</span>
+        </div>
+      </div>
+
+      <div class="quiz" data-answer="A">
+        <div class="quiz-q"><span class="qnum">2</span>Nilai <span class="math">x</span> yang memenuhi <span class="math">2<sup>2x+8</sup> = 4<sup>2x+8</sup></span> adalah …</div>
+        <div class="quiz-opts">
+          <button class="opt" data-key="A">A. x = −4</button>
+          <button class="opt" data-key="B">B. x = 4</button>
+          <button class="opt" data-key="C">C. x = −8</button>
+          <button class="opt" data-key="D">D. x = 2</button>
+        </div>
+        <div class="quiz-actions"><button class="btn-check" disabled>Cek Jawaban</button><button class="btn-reset">Ulangi</button></div>
+        <div class="quiz-feedback"></div>
+        <div class="pembahasan"><span class="pem-label">💬 Pembahasan</span>
+          Boleh langsung: basis efektif 2 ≠ 4 → <span class="math">2x + 8 = 0</span> → <span class="math">x = −4</span>. Cara panjang: <span class="math">4<sup>2x+8</sup> = 2<sup>4x+16</sup></span> → <span class="math">2x + 8 = 4x + 16</span> → <span class="math">x = −4</span>.<br><span class="check-line">✓ Uji: 2<sup>0</sup> = 1 = 4<sup>0</sup> ✔</span>
+        </div>
+      </div>
+
+      <div class="quiz" data-answer="A">
+        <div class="quiz-q"><span class="qnum">3</span>Himpunan penyelesaian <span class="math">5<sup>x²−9</sup> = 6<sup>x²−9</sup></span> adalah …</div>
+        <div class="quiz-opts">
+          <button class="opt" data-key="A">A. x = 3 atau x = −3</button>
+          <button class="opt" data-key="B">B. x = 3</button>
+          <button class="opt" data-key="C">C. x = −3</button>
+          <button class="opt" data-key="D">D. x = 9 atau x = −9</button>
+        </div>
+        <div class="quiz-actions"><button class="btn-check" disabled>Cek Jawaban</button><button class="btn-reset">Ulangi</button></div>
+        <div class="quiz-feedback"></div>
+        <div class="pembahasan"><span class="pem-label">💬 Pembahasan</span>
+          Basis 5 ≠ 6 → <span class="math">x² − 9 = 0</span> → <span class="math">x² = 9</span> → <span class="math">x = 3</span> atau <span class="math">x = −3</span>.<br><span class="check-line">✓ Uji: 5<sup>0</sup> = 1 = 6<sup>0</sup> ✔</span>
+        </div>
+      </div>
+
+      <div class="quiz" data-answer="A">
+        <div class="quiz-q"><span class="qnum">4</span>Nilai <span class="math">x</span> yang memenuhi <span class="math">4<sup>x−1</sup> = 8<sup>x−1</sup></span> adalah …</div>
+        <div class="quiz-opts">
+          <button class="opt" data-key="A">A. x = 1</button>
+          <button class="opt" data-key="B">B. x = 0</button>
+          <button class="opt" data-key="C">C. x = −1</button>
+          <button class="opt" data-key="D">D. x = 3</button>
+        </div>
+        <div class="quiz-actions"><button class="btn-check" disabled>Cek Jawaban</button><button class="btn-reset">Ulangi</button></div>
+        <div class="quiz-feedback"></div>
+        <div class="pembahasan"><span class="pem-label">💬 Pembahasan</span>
+          Basis 4 ≠ 8 → pangkat nol: <span class="math">x − 1 = 0</span> → <span class="math">x = 1</span>. Dengan cara samakan basis: <span class="math">2<sup>2x−2</sup> = 2<sup>3x−3</sup></span> → <span class="math">2x − 2 = 3x − 3</span> → <span class="math">x = 1</span>.<br><span class="check-line">✓ Uji: 4<sup>0</sup> = 1 = 8<sup>0</sup> ✔</span>
+        </div>
+      </div>
+
+      <div class="quiz" data-answer="A">
+        <div class="quiz-q"><span class="qnum">5</span>Nilai <span class="math">x</span> yang memenuhi <span class="math">7<sup>3x+6</sup> = (1/7)<sup>3x+6</sup></span> adalah …</div>
+        <div class="quiz-opts">
+          <button class="opt" data-key="A">A. x = −2</button>
+          <button class="opt" data-key="B">B. x = 2</button>
+          <button class="opt" data-key="C">C. x = −6</button>
+          <button class="opt" data-key="D">D. x = 1/2</button>
+        </div>
+        <div class="quiz-actions"><button class="btn-check" disabled>Cek Jawaban</button><button class="btn-reset">Ulangi</button></div>
+        <div class="quiz-feedback"></div>
+        <div class="pembahasan"><span class="pem-label">💬 Pembahasan</span>
+          Basis 7 ≠ 1/7 (keduanya positif, nilainya beda) dan pangkatnya sama → <span class="math">3x + 6 = 0</span> → <span class="math">x = −2</span>.<br><span class="check-line">✓ Uji: 7<sup>0</sup> = 1 = (1/7)<sup>0</sup> ✔</span>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ========== SLIDE 14: BENTUK 4 - KONSEP & CONTOH ========== -->
+  <section class="slide" data-title="Bentuk 4: f(x)^g(x)=f(x)^h(x)">
+    <div class="slide-head">
+      <div>
+        <span class="kicker">Persamaan Eksponensial · Bentuk 4</span>
+        <h2 class="slide-title">Bentuk 4: <span class="math">f(x)<sup>g(x)</sup> = f(x)<sup>h(x)</sup></span></h2>
+      </div>
+    </div>
+    <div class="slide-body">
+      <div class="rule-box">
+        <b>Bentuk ini istimewa</b> karena basisnya juga berupa fungsi. Persamaan <span class="math">f(x)<sup>g(x)</sup> = f(x)<sup>h(x)</sup></span> dipenuhi jika salah satu <b>tiga kasus</b> berikut terjadi:
+      </div>
+      <div class="tbl-wrap">
+      <table class="tbl">
+        <tr><th>Kasus</th><th>Syarat</th><th>Keterangan</th></tr>
+        <tr><td>① Basis = 1</td><td class="math">f(x) = 1</td><td><span class="math">1</span> pangkat berapapun selalu 1 → <b>selalu benar</b></td></tr>
+        <tr><td>② Pangkat sama</td><td class="math">g(x) = h(x)</td><td>Syarat: basisnya bukan 0, yaitu <span class="math">f(x) ≠ 0</span></td></tr>
+        <tr><td>③ Basis = 0</td><td class="math">f(x) = 0</td><td><span class="math">0<sup>k</sup> = 0</span> hanya untuk <span class="math">k &gt; 0</span> → wajib <span class="math">g(x) &gt; 0</span> <b>dan</b> <span class="math">h(x) &gt; 0</span></td></tr>
+      </table>
+      </div>
+      <div class="example">
+        <div class="example-title">📌 Contoh 1</div>
+        <p>Tentukan himpunan penyelesaian <span class="math">(x − 2)<sup>x+1</sup> = (x − 2)<sup>2x−3</sup></span>.</p>
+        <div class="step-list">
+          <div class="step"><b>Kasus ①</b> basis 1: <span class="math">x − 2 = 1</span> → <span class="math">x = 3</span>.</div>
+          <div class="step"><b>Kasus ②</b> pangkat sama: <span class="math">x + 1 = 2x − 3</span> → <span class="math">x = 4</span> (basisnya 4 ≠ 0, sah).</div>
+          <div class="step"><b>Kasus ③</b> basis 0: <span class="math">x − 2 = 0</span> → <span class="math">x = 2</span>; cek pangkat: <span class="math">x+1 = 3 &gt; 0</span> dan <span class="math">2x−3 = 1 &gt; 0</span> → <b>diterima</b>.</div>
+          <div class="step">Gabungkan semua kasus yang lolos.</div>
+        </div>
+        <span class="answer-tag">HP = {x | x = 2 atau x = 3 atau x = 4}</span>
+        <div class="check-line">✓ Uji: 0<sup>3</sup> = 0<sup>1</sup> ✔ · 1<sup>4</sup> = 1<sup>3</sup> ✔ · 4<sup>5</sup> = 4<sup>5</sup> ✔</div>
+      </div>
+      <div class="example">
+        <div class="example-title">📌 Contoh 2</div>
+        <p>Tentukan himpunan penyelesaian <span class="math">(x + 3)<sup>2x−1</sup> = (x + 3)<sup>x+2</sup></span>.</p>
+        <div class="step-list">
+          <div class="step"><b>Kasus ①</b> basis 1: <span class="math">x + 3 = 1</span> → <span class="math">x = −2</span>.</div>
+          <div class="step"><b>Kasus ②</b> pangkat sama: <span class="math">2x − 1 = x + 2</span> → <span class="math">x = 3</span>.</div>
+          <div class="step"><b>Kasus ③</b> basis 0: <span class="math">x + 3 = 0</span> → <span class="math">x = −3</span>; cek pangkat: <span class="math">2x−1 = −7</span> (negatif!) → <b>ditolak</b>, karena <span class="math">0<sup>−7</sup></span> tidak terdefinisi.</div>
+        </div>
+        <span class="answer-tag">HP = {x | x = −2 atau x = 3}</span>
+        <div class="check-line">✓ Uji: 1<sup>−5</sup> = 1<sup>0</sup> = 1 ✔ · 6<sup>5</sup> = 6<sup>5</sup> ✔</div>
+      </div>
+      <div class="rule-box danger"><b>Jangan lupa kasus ③!</b> Banyak soal ujian menjebak di sini: jawaban basis 0 <b>harus diuji</b> dulu apakah kedua pangkatnya positif. Jika salah satu negatif atau nol → buang jawaban itu.</div>
+    </div>
+  </section>
+
+  <!-- ========== SLIDE 15: KUIS BENTUK 4 ========== -->
+  <section class="slide" data-title="Kuis Bentuk 4">
+    <div class="slide-head">
+      <div>
+        <span class="kicker">Kuis Interaktif · 5 Soal</span>
+        <h2 class="slide-title">Kuis Bentuk 4: <span class="math">f(x)<sup>g(x)</sup> = f(x)<sup>h(x)</sup></span></h2>
+      </div>
+    </div>
+    <div class="slide-body">
+      <p class="small-note">Ingat 3 kasus: basis 1, pangkat sama, dan basis 0 (dengan pangkat positif). Pilih jawaban lalu tekan <b>Cek Jawaban</b> ⭐</p>
+
+      <div class="quiz" data-answer="A">
+        <div class="quiz-q"><span class="qnum">1</span>Himpunan penyelesaian <span class="math">(x − 1)<sup>x+2</sup> = (x − 1)<sup>3x−4</sup></span> adalah …</div>
+        <div class="quiz-opts">
+          <button class="opt" data-key="A">A. x = 2 atau x = 3</button>
+          <button class="opt" data-key="B">B. x = 1, x = 2, atau x = 3</button>
+          <button class="opt" data-key="C">C. x = 2</button>
+          <button class="opt" data-key="D">D. x = 3</button>
+        </div>
+        <div class="quiz-actions"><button class="btn-check" disabled>Cek Jawaban</button><button class="btn-reset">Ulangi</button></div>
+        <div class="quiz-feedback"></div>
+        <div class="pembahasan"><span class="pem-label">💬 Pembahasan</span>
+          ① Basis 1: <span class="math">x − 1 = 1</span> → <span class="math">x = 2</span>.<br>
+          ② Pangkat sama: <span class="math">x + 2 = 3x − 4</span> → <span class="math">x = 3</span>.<br>
+          ③ Basis 0: <span class="math">x = 1</span> → pangkat <span class="math">x+2 = 3 &gt; 0</span> tapi <span class="math">3x−4 = −1 &lt; 0</span> → <b>ditolak</b>.<br>
+          Jadi HP = {2, 3}.
+        </div>
+      </div>
+
+      <div class="quiz" data-answer="A">
+        <div class="quiz-q"><span class="qnum">2</span>Himpunan penyelesaian <span class="math">(x + 2)<sup>2x</sup> = (x + 2)<sup>x+1</sup></span> adalah …</div>
+        <div class="quiz-opts">
+          <button class="opt" data-key="A">A. x = −1 atau x = 1</button>
+          <button class="opt" data-key="B">B. x = 1</button>
+          <button class="opt" data-key="C">C. x = −1</button>
+          <button class="opt" data-key="D">D. x = −2 atau x = 1</button>
+        </div>
+        <div class="quiz-actions"><button class="btn-check" disabled>Cek Jawaban</button><button class="btn-reset">Ulangi</button></div>
+        <div class="quiz-feedback"></div>
+        <div class="pembahasan"><span class="pem-label">💬 Pembahasan</span>
+          ① Basis 1: <span class="math">x + 2 = 1</span> → <span class="math">x = −1</span>.<br>
+          ② Pangkat sama: <span class="math">2x = x + 1</span> → <span class="math">x = 1</span>.<br>
+          ③ Basis 0: <span class="math">x = −2</span> → pangkat <span class="math">2x = −4 &lt; 0</span> → <b>ditolak</b>.<br>
+          Jadi HP = {−1, 1}.
+        </div>
+      </div>
+
+      <div class="quiz" data-answer="A">
+        <div class="quiz-q"><span class="qnum">3</span>Himpunan penyelesaian <span class="math">(2x − 1)<sup>x−3</sup> = (2x − 1)<sup>2x−7</sup></span> adalah …</div>
+        <div class="quiz-opts">
+          <button class="opt" data-key="A">A. x = 1 atau x = 4</button>
+          <button class="opt" data-key="B">B. x = 1</button>
+          <button class="opt" data-key="C">C. x = 4</button>
+          <button class="opt" data-key="D">D. x = 1/2 atau x = 4</button>
+        </div>
+        <div class="quiz-actions"><button class="btn-check" disabled>Cek Jawaban</button><button class="btn-reset">Ulangi</button></div>
+        <div class="quiz-feedback"></div>
+        <div class="pembahasan"><span class="pem-label">💬 Pembahasan</span>
+          ① Basis 1: <span class="math">2x − 1 = 1</span> → <span class="math">x = 1</span>.<br>
+          ② Pangkat sama: <span class="math">x − 3 = 2x − 7</span> → <span class="math">x = 4</span>.<br>
+          ③ Basis 0: <span class="math">x = 1/2</span> → pangkat <span class="math">x−3 = −2,5 &lt; 0</span> → <b>ditolak</b>.<br>
+          Jadi HP = {1, 4}.
+        </div>
+      </div>
+
+      <div class="quiz" data-answer="A">
+        <div class="quiz-q"><span class="qnum">4</span>Himpunan penyelesaian <span class="math">(3 − x)<sup>x+1</sup> = (3 − x)<sup>2x−1</sup></span> adalah …</div>
+        <div class="quiz-opts">
+          <button class="opt" data-key="A">A. x = 2 atau x = 3</button>
+          <button class="opt" data-key="B">B. x = 2</button>
+          <button class="opt" data-key="C">C. x = 3</button>
+          <button class="opt" data-key="D">D. x = 1 atau x = 3</button>
+        </div>
+        <div class="quiz-actions"><button class="btn-check" disabled>Cek Jawaban</button><button class="btn-reset">Ulangi</button></div>
+        <div class="quiz-feedback"></div>
+        <div class="pembahasan"><span class="pem-label">💬 Pembahasan</span>
+          ① Basis 1: <span class="math">3 − x = 1</span> → <span class="math">x = 2</span>.<br>
+          ② Pangkat sama: <span class="math">x + 1 = 2x − 1</span> → <span class="math">x = 2</span> (ketemu juga di sini!).<br>
+          ③ Basis 0: <span class="math">x = 3</span> → pangkat <span class="math">x+1 = 4 &gt; 0</span> dan <span class="math">2x−1 = 5 &gt; 0</span> → <b>diterima</b>!<br>
+          Jadi HP = {2, 3}. Kali ini kasus ③ lolos uji — selalu cek!
+        </div>
+      </div>
+
+      <div class="quiz" data-answer="A">
+        <div class="quiz-q"><span class="qnum">5</span>Himpunan penyelesaian <span class="math">(x² − 4)<sup>x−2</sup> = (x² − 4)<sup>x+2</sup></span> adalah …</div>
+        <div class="quiz-opts">
+          <button class="opt" data-key="A">A. x = √5 atau x = −√5</button>
+          <button class="opt" data-key="B">B. x = 2 atau x = −2</button>
+          <button class="opt" data-key="C">C. x = 2</button>
+          <button class="opt" data-key="D">D. x = −2</button>
+        </div>
+        <div class="quiz-actions"><button class="btn-check" disabled>Cek Jawaban</button><button class="btn-reset">Ulangi</button></div>
+        <div class="quiz-feedback"></div>
+        <div class="pembahasan"><span class="pem-label">💬 Pembahasan</span>
+          ① Basis 1: <span class="math">x² − 4 = 1</span> → <span class="math">x² = 5</span> → <span class="math">x = ±√5</span>.<br>
+          ② Pangkat sama: <span class="math">x − 2 = x + 2</span> → mustahil (−4 = 0), tidak ada.<br>
+          ③ Basis 0: <span class="math">x = ±2</span>; untuk <span class="math">x = 2</span> pangkatnya 0 (tidak &gt; 0) → ditolak; untuk <span class="math">x = −2</span> pangkatnya <span class="math">−4 &lt; 0</span> → ditolak.<br>
+          Jadi HP = {±√5} ≈ {±2,24}.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== SLIDE 16: BENTUK 5 - KONSEP & CONTOH ========== -->
+  <section class="slide" data-title="Bentuk 5: Kuadrat dalam a^f(x)">
+    <div class="slide-head">
+      <div>
+        <span class="kicker">Persamaan Eksponensial · Bentuk 5</span>
+        <h2 class="slide-title">Bentuk 5: <span class="math">A(a<sup>f(x)</sup>)<sup>2</sup> + B·a<sup>f(x)</sup> + C = 0</span></h2>
+      </div>
+    </div>
+    <div class="slide-body">
+      <div class="rule-box">
+        <b>Aturan (substitusi):</b> misalkan <span class="math">t = a<sup>f(x)</sup></span>, ingat <span class="math">(a<sup>f(x)</sup>)<sup>2</sup> = a<sup>2f(x)</sup></span>. Persamaan berubah menjadi kuadrat biasa: <span class="math">At² + Bt + C = 0</span>.<br>
+        <span class="small-note">Setelah nilai <span class="math">t</span> ditemukan, kembalikan ke <span class="math">a<sup>f(x)</sup> = t</span>. <b>Hanya nilai t &gt; 0 yang boleh dipakai</b> — pangkat dari bilangan positif selalu positif!</span>
+      </div>
+      <div class="example">
+        <div class="example-title">📌 Contoh 1</div>
+        <p>Tentukan himpunan penyelesaian <span class="math">9<sup>x</sup> − 12·3<sup>x</sup> + 27 = 0</span>.</p>
+        <div class="step-list">
+          <div class="step">Perhatikan <span class="math">9<sup>x</sup> = (3²)<sup>x</sup> = (3<sup>x</sup>)²</span>. Misalkan <span class="math">t = 3<sup>x</sup></span> (dengan <span class="math">t &gt; 0</span>): persamaan menjadi <span class="math">t² − 12t + 27 = 0</span>.</div>
+          <div class="step">Faktorkan: <span class="math">(t − 3)(t − 9) = 0</span> → <span class="math">t = 3</span> atau <span class="math">t = 9</span>. Keduanya positif ✔</div>
+          <div class="step">Kembalikan: <span class="math">3<sup>x</sup> = 3</span> → <span class="math">x = 1</span>; dan <span class="math">3<sup>x</sup> = 9</span> → <span class="math">x = 2</span>.</div>
+        </div>
+        <span class="answer-tag">HP = {x | x = 1 atau x = 2}</span>
+        <div class="check-line">✓ Uji x=2: 81 − 108 + 27 = 0 ✔</div>
+      </div>
+      <div class="example">
+        <div class="example-title">📌 Contoh 2</div>
+        <p>Tentukan himpunan penyelesaian <span class="math">25<sup>x</sup> − 6·5<sup>x</sup> + 5 = 0</span>.</p>
+        <div class="step-list">
+          <div class="step">Misalkan <span class="math">t = 5<sup>x</sup></span>, maka <span class="math">25<sup>x</sup> = (5<sup>x</sup>)² = t²</span>: persamaan menjadi <span class="math">t² − 6t + 5 = 0</span>.</div>
+          <div class="step">Faktorkan: <span class="math">(t − 1)(t − 5) = 0</span> → <span class="math">t = 1</span> atau <span class="math">t = 5</span>. Positif ✔</div>
+          <div class="step">Kembalikan: <span class="math">5<sup>x</sup> = 1 = 5<sup>0</sup></span> → <span class="math">x = 0</span>; dan <span class="math">5<sup>x</sup> = 5</span> → <span class="math">x = 1</span>.</div>
+        </div>
+        <span class="answer-tag">HP = {x | x = 0 atau x = 1}</span>
+        <div class="check-line">✓ Uji x=1: 25 − 30 + 5 = 0 ✔</div>
+      </div>
+      <div class="rule-box warn"><b>Jebakan klasik:</b> jika salah satu akar <span class="math">t</span> bernilai ≤ 0 (misal <span class="math">t = −2</span>), akar itu <b>langsung dibuang</b>, karena <span class="math">a<sup>f(x)</sup></span> tidak mungkin bernilai nol atau negatif. Jangan lupa memeriksa!</div>
+    </div>
+  </section>
+
+  <!-- ========== SLIDE 17: KUIS BENTUK 5 ========== -->
+  <section class="slide" data-title="Kuis Bentuk 5">
+    <div class="slide-head">
+      <div>
+        <span class="kicker">Kuis Interaktif · 5 Soal</span>
+        <h2 class="slide-title">Kuis Bentuk 5: Kuadrat dalam <span class="math">a<sup>f(x)</sup></span></h2>
+      </div>
+    </div>
+    <div class="slide-body">
+      <p class="small-note">Misalkan t = a<sup>f(x)</sup>, selesaikan kuadratnya, lalu kembalikan. Tekan <b>Cek Jawaban</b> untuk koreksi ⭐</p>
+
+      <div class="quiz" data-answer="A">
+        <div class="quiz-q"><span class="qnum">1</span>Himpunan penyelesaian <span class="math">2<sup>2x</sup> − 6·2<sup>x</sup> + 8 = 0</span> adalah …</div>
+        <div class="quiz-opts">
+          <button class="opt" data-key="A">A. x = 1 atau x = 2</button>
+          <button class="opt" data-key="B">B. x = 2 atau x = 3</button>
+          <button class="opt" data-key="C">C. x = 0 atau x = 1</button>
+          <button class="opt" data-key="D">D. x = −1 atau x = 2</button>
+        </div>
+        <div class="quiz-actions"><button class="btn-check" disabled>Cek Jawaban</button><button class="btn-reset">Ulangi</button></div>
+        <div class="quiz-feedback"></div>
+        <div class="pembahasan"><span class="pem-label">💬 Pembahasan</span>
+          Misal <span class="math">t = 2<sup>x</sup></span> → <span class="math">t² − 6t + 8 = 0</span> → <span class="math">(t − 2)(t − 4) = 0</span> → <span class="math">t = 2, 4</span>.<br>
+          Kembali: <span class="math">2<sup>x</sup> = 2 → x = 1</span>; <span class="math">2<sup>x</sup> = 4 → x = 2</span>. Jadi HP = {1, 2}.
+        </div>
+      </div>
+
+      <div class="quiz" data-answer="A">
+        <div class="quiz-q"><span class="qnum">2</span>Himpunan penyelesaian <span class="math">3<sup>2x+1</sup> − 28·3<sup>x</sup> + 9 = 0</span> adalah …</div>
+        <div class="quiz-opts">
+          <button class="opt" data-key="A">A. x = −1 atau x = 2</button>
+          <button class="opt" data-key="B">B. x = 1 atau x = 2</button>
+          <button class="opt" data-key="C">C. x = −1 atau x = −2</button>
+          <button class="opt" data-key="D">D. x = 0 atau x = 2</button>
+        </div>
+        <div class="quiz-actions"><button class="btn-check" disabled>Cek Jawaban</button><button class="btn-reset">Ulangi</button></div>
+        <div class="quiz-feedback"></div>
+        <div class="pembahasan"><span class="pem-label">💬 Pembahasan</span>
+          Tulis <span class="math">3<sup>2x+1</sup> = 3·(3<sup>x</sup>)²</span>. Misal <span class="math">t = 3<sup>x</sup></span> → <span class="math">3t² − 28t + 9 = 0</span> → <span class="math">(3t − 1)(t − 9) = 0</span> → <span class="math">t = 1/3</span> atau <span class="math">t = 9</span>.<br>
+          Kembali: <span class="math">3<sup>x</sup> = 1/3 → x = −1</span>; <span class="math">3<sup>x</sup> = 9 → x = 2</span>. Jadi HP = {−1, 2}.
+        </div>
+      </div>
+
+      <div class="quiz" data-answer="A">
+        <div class="quiz-q"><span class="qnum">3</span>Himpunan penyelesaian <span class="math">9<sup>x</sup> − 4·3<sup>x</sup> + 3 = 0</span> adalah …</div>
+        <div class="quiz-opts">
+          <button class="opt" data-key="A">A. x = 0 atau x = 1</button>
+          <button class="opt" data-key="B">B. x = 1 atau x = 2</button>
+          <button class="opt" data-key="C">C. x = 0 atau x = 2</button>
+          <button class="opt" data-key="D">D. x = −1 atau x = 0</button>
+        </div>
+        <div class="quiz-actions"><button class="btn-check" disabled>Cek Jawaban</button><button class="btn-reset">Ulangi</button></div>
+        <div class="quiz-feedback"></div>
+        <div class="pembahasan"><span class="pem-label">💬 Pembahasan</span>
+          Misal <span class="math">t = 3<sup>x</sup></span> → <span class="math">t² − 4t + 3 = 0</span> → <span class="math">(t − 1)(t − 3) = 0</span> → <span class="math">t = 1, 3</span>.<br>
+          Kembali: <span class="math">3<sup>x</sup> = 1 → x = 0</span>; <span class="math">3<sup>x</sup> = 3 → x = 1</span>. Jadi HP = {0, 1}.
+        </div>
+      </div>
+
+      <div class="quiz" data-answer="A">
+        <div class="quiz-q"><span class="qnum">4</span>Himpunan penyelesaian <span class="math">5<sup>2x</sup> − 26·5<sup>x</sup> + 25 = 0</span> adalah …</div>
+        <div class="quiz-opts">
+          <button class="opt" data-key="A">A. x = 0 atau x = 2</button>
+          <button class="opt" data-key="B">B. x = 1 atau x = 2</button>
+          <button class="opt" data-key="C">C. x = 0 atau x = 1</button>
+          <button class="opt" data-key="D">D. x = −2 atau x = 0</button>
+        </div>
+        <div class="quiz-actions"><button class="btn-check" disabled>Cek Jawaban</button><button class="btn-reset">Ulangi</button></div>
+        <div class="quiz-feedback"></div>
+        <div class="pembahasan"><span class="pem-label">💬 Pembahasan</span>
+          Misal <span class="math">t = 5<sup>x</sup></span> → <span class="math">t² − 26t + 25 = 0</span> → <span class="math">(t − 1)(t − 25) = 0</span> → <span class="math">t = 1, 25</span>.<br>
+          Kembali: <span class="math">5<sup>x</sup> = 1 → x = 0</span>; <span class="math">5<sup>x</sup> = 25 = 5² → x = 2</span>. Jadi HP = {0, 2}.
+        </div>
+      </div>
+
+      <div class="quiz" data-answer="A">
+        <div class="quiz-q"><span class="qnum">5</span>Himpunan penyelesaian <span class="math">2<sup>2x+2</sup> − 33·2<sup>x</sup> + 8 = 0</span> adalah …</div>
+        <div class="quiz-opts">
+          <button class="opt" data-key="A">A. x = −2 atau x = 3</button>
+          <button class="opt" data-key="B">B. x = 2 atau x = 3</button>
+          <button class="opt" data-key="C">C. x = −2 atau x = −3</button>
+          <button class="opt" data-key="D">D. x = −3 atau x = 3</button>
+        </div>
+        <div class="quiz-actions"><button class="btn-check" disabled>Cek Jawaban</button><button class="btn-reset">Ulangi</button></div>
+        <div class="quiz-feedback"></div>
+        <div class="pembahasan"><span class="pem-label">💬 Pembahasan</span>
+          Tulis <span class="math">2<sup>2x+2</sup> = 4·(2<sup>x</sup>)²</span>. Misal <span class="math">t = 2<sup>x</sup></span> → <span class="math">4t² − 33t + 8 = 0</span> → <span class="math">(4t − 1)(t − 8) = 0</span> → <span class="math">t = 1/4</span> atau <span class="math">t = 8</span>.<br>
+          Kembali: <span class="math">2<sup>x</sup> = 1/4 = 2<sup>−2</sup> → x = −2</span>; <span class="math">2<sup>x</sup> = 8 → x = 3</span>. Jadi HP = {−2, 3}.
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ========== SLIDE 18: PERTIDAKSAMAAN EKSPONENSIAL - ATURAN DASAR ========== -->
+  <section class="slide" data-title="Pertidaksamaan Eksponensial: Aturan Dasar">
+    <div class="slide-head">
+      <div>
+        <span class="kicker">Pertidaksamaan Eksponensial · Pengantar</span>
+        <h2 class="slide-title">Pertidaksamaan Eksponensial: Aturan Dasar</h2>
+      </div>
+    </div>
+    <div class="slide-body">
+      <p class="lead">Pertidaksamaan eksponensial adalah pertidaksamaan yang variabelnya berada di pangkat, contohnya <span class="math">2<sup>x</sup> &gt; 8</span>. Persoalan utamanya: <b>apakah tanda pertidaksamaan berubah?</b> Jawabannya bergantung pada nilai basis <span class="math">a</span>:</p>
+      <div class="graph-wrap">
+        <div class="graph-box">
+          <svg width="260" height="150" viewBox="0 0 260 150" role="img" aria-label="Grafik y=2^x naik dan y=(1/2)^x turun">
+            <line x1="10" y1="140" x2="250" y2="140" stroke="#cbd5e1" stroke-width="1.5"/>
+            <line x1="130" y1="140" x2="130" y2="10" stroke="#cbd5e1" stroke-width="1.5"/>
+            <line x1="10" y1="116" x2="250" y2="116" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4 3"/>
+            <text x="240" y="148" font-size="10" fill="#64748b">x</text>
+            <text x="133" y="16" font-size="10" fill="#64748b">y</text>
+            <polyline points="10,128 50,127 90,123 130,117 170,103 210,77 250,23" fill="none" stroke="#4f46e5" stroke-width="2.5"/>
+            <polyline points="10,23 50,77 90,103 130,117 170,123 210,127 250,128" fill="none" stroke="#0d9488" stroke-width="2.5"/>
+            <text x="196" y="40" font-size="11" font-weight="bold" fill="#4f46e5">a &gt; 1 ↗</text>
+            <text x="26" y="40" font-size="11" font-weight="bold" fill="#0d9488">↘ 0 &lt; a &lt; 1</text>
+          </svg>
+        </div>
+        <div style="flex:1;min-width:250px">
+          <div class="rule-box">
+            <b>Kasus a &gt; 1</b> (fungsi naik ↗, misal 2<sup>x</sup>):<br>
+            <span class="math">a<sup>f(x)</sup> &gt; a<sup>g(x)</sup> ⟺ f(x) &gt; g(x)</span> → <b>tanda TETAP</b>.
+          </div>
+          <div class="rule-box teal">
+            <b>Kasus 0 &lt; a &lt; 1</b> (fungsi turun ↘, misal (1/2)<sup>x</sup>):<br>
+            <span class="math">a<sup>f(x)</sup> &gt; a<sup>g(x)</sup> ⟺ f(x) &lt; g(x)</span> → <b>tanda TERBALIK</b>.
+          </div>
+        </div>
+      </div>
+      <div class="step-list">
+        <div class="step">Pastikan basis positif dan tidak sama dengan 1.</div>
+        <div class="step">Samakan basis kedua ruas (contoh: 8 = 2<sup>3</sup>, 1/9 = (1/3)<sup>2</sup>).</div>
+        <div class="step">Cek nilai basisnya: <span class="math">a &gt; 1</span> → pertahankan tanda; <span class="math">0 &lt; a &lt; 1</span> → balikkan tanda.</div>
+        <div class="step">Selesaikan pertidaksamaan yang terbentuk (linear/kuadrat), lalu tulis himpunan penyelesaiannya.</div>
+      </div>
+      <div class="rule-box warn"><b>Trik mengingat:</b> basis kecil (kurang dari 1) itu "nakal" — tanda pertidaksamaannya dibalik. Basis besar (lebih dari 1) itu "rajin" — tanda tetap. 😄</div>
+    </div>
+  </section>
+
+  <!-- ========== SLIDE 19: KASUS a>1 - KONSEP & CONTOH ========== -->
+  <section class="slide" data-title="Kasus a &gt; 1">
+    <div class="slide-head">
+      <div>
+        <span class="kicker">Pertidaksamaan Eksponensial · Kasus 1</span>
+        <h2 class="slide-title">Kasus <span class="math">a &gt; 1</span>: Tanda Tetap</h2>
+      </div>
+    </div>
+    <div class="slide-body">
+      <div class="rule-box">
+        <b>Aturan:</b> untuk <span class="math">a &gt; 1</span>, fungsi eksponensial naik, sehingga:<br>
+        <span class="math">a<sup>f(x)</sup> &gt; a<sup>g(x)</sup> ⟺ f(x) &gt; g(x)</span> &nbsp;·&nbsp; <span class="math">a<sup>f(x)</sup> &lt; a<sup>g(x)</sup> ⟺ f(x) &lt; g(x)</span><br>
+        <span class="small-note">Tanda pertidaksamaan <b>tidak berubah</b>. Sifat ini juga berlaku untuk tanda ≥ dan ≤.</span>
+      </div>
+      <div class="example">
+        <div class="example-title">📌 Contoh 1</div>
+        <p>Tentukan himpunan penyelesaian <span class="math">2<sup>2x−3</sup> &gt; 8</span>.</p>
+        <div class="step-list">
+          <div class="step">Samakan basis: <span class="math">8 = 2<sup>3</sup></span> → <span class="math">2<sup>2x−3</sup> &gt; 2<sup>3</sup></span>.</div>
+          <div class="step">Basis 2 &gt; 1 → tanda tetap: <span class="math">2x − 3 &gt; 3</span>.</div>
+          <div class="step">Selesaikan: <span class="math">2x &gt; 6</span> → <span class="math">x &gt; 3</span>.</div>
+        </div>
+        <span class="answer-tag">HP = {x | x &gt; 3, x ∈ ℝ}</span>
+        <div class="check-line">✓ Uji x=4: 2<sup>5</sup> = 32 &gt; 8 ✔ · Uji x=2: 2<sup>1</sup> = 2 ≤ 8 ✔</div>
+      </div>
+      <div class="example">
+        <div class="example-title">📌 Contoh 2</div>
+        <p>Tentukan himpunan penyelesaian <span class="math">3<sup>x²−4x</sup> &gt; 9<sup>−x</sup></span>.</p>
+        <div class="step-list">
+          <div class="step">Samakan basis: <span class="math">9<sup>−x</sup> = 3<sup>−2x</sup></span> → <span class="math">3<sup>x²−4x</sup> &gt; 3<sup>−2x</sup></span>.</div>
+          <div class="step">Basis 3 &gt; 1 → tanda tetap: <span class="math">x² − 4x &gt; −2x</span>.</div>
+          <div class="step">Rapikan: <span class="math">x² − 2x &gt; 0</span> → <span class="math">x(x − 2) &gt; 0</span>.</div>
+          <div class="step">Titik kritis 0 dan 2; parabola terbuka ke atas, hasil positif di luar kedua akar: <span class="math">x &lt; 0</span> atau <span class="math">x &gt; 2</span>.</div>
+        </div>
+        <span class="answer-tag">HP = {x | x &lt; 0 atau x &gt; 2, x ∈ ℝ}</span>
+        <div class="check-line">✓ Uji x=3 (anggota HP): 3<sup>−3</sup> ≈ 0,037 &gt; 9<sup>−3</sup> ≈ 0,001 ✔ · Uji x=1 (bukan anggota): 3<sup>−3</sup> ≈ 0,037 &lt; 9<sup>−1</sup> ≈ 0,111 ✔</div>
+      </div>
+      <div class="rule-box warn"><b>Ingat:</b> bila pangkatnya berbentuk kuadrat, gunakan garis bilangan / uji interval seperti menyelesaikan pertidaksamaan kuadrat biasa.</div>
+    </div>
+  </section>
+
+  <!-- ========== SLIDE 20: KUIS KASUS a>1 ========== -->
+  <section class="slide" data-title="Kuis a &gt; 1">
+    <div class="slide-head">
+      <div>
+        <span class="kicker">Kuis Interaktif · 5 Soal</span>
+        <h2 class="slide-title">Kuis Kasus <span class="math">a &gt; 1</span></h2>
+      </div>
+    </div>
+    <div class="slide-body">
+      <p class="small-note">Semua soal berikut memakai basis &gt; 1 → <b>tanda pertidaksamaan tetap</b>. Tekan <b>Cek Jawaban</b> untuk koreksi ⭐</p>
+
+      <div class="quiz" data-answer="A">
+        <div class="quiz-q"><span class="qnum">1</span>Himpunan penyelesaian <span class="math">5<sup>x−2</sup> &gt; 25</span> adalah …</div>
+        <div class="quiz-opts">
+          <button class="opt" data-key="A">A. x &gt; 4</button>
+          <button class="opt" data-key="B">B. x &gt; 2</button>
+          <button class="opt" data-key="C">C. x &lt; 4</button>
+          <button class="opt" data-key="D">D. x &gt; 1/4</button>
+        </div>
+        <div class="quiz-actions"><button class="btn-check" disabled>Cek Jawaban</button><button class="btn-reset">Ulangi</button></div>
+        <div class="quiz-feedback"></div>
+        <div class="pembahasan"><span class="pem-label">💬 Pembahasan</span>
+          <span class="math">25 = 5<sup>2</sup></span> → <span class="math">5<sup>x−2</sup> &gt; 5<sup>2</sup></span>. Basis 5 &gt; 1, tanda tetap: <span class="math">x − 2 &gt; 2</span> → <span class="math">x &gt; 4</span>.
+        </div>
+      </div>
+
+      <div class="quiz" data-answer="A">
+        <div class="quiz-q"><span class="qnum">2</span>Himpunan penyelesaian <span class="math">2<sup>3x−1</sup> &lt; 32</span> adalah …</div>
+        <div class="quiz-opts">
+          <button class="opt" data-key="A">A. x &lt; 2</button>
+          <button class="opt" data-key="B">B. x &gt; 2</button>
+          <button class="opt" data-key="C">C. x &lt; −2</button>
+          <button class="opt" data-key="D">D. x &lt; 3</button>
+        </div>
+        <div class="quiz-actions"><button class="btn-check" disabled>Cek Jawaban</button><button class="btn-reset">Ulangi</button></div>
+        <div class="quiz-feedback"></div>
+        <div class="pembahasan"><span class="pem-label">💬 Pembahasan</span>
+          <span class="math">32 = 2<sup>5</sup></span> → <span class="math">2<sup>3x−1</sup> &lt; 2<sup>5</sup></span>. Basis 2 &gt; 1, tanda tetap: <span class="math">3x − 1 &lt; 5</span> → <span class="math">3x &lt; 6</span> → <span class="math">x &lt; 2</span>.
+        </div>
+      </div>
+
+      <div class="quiz" data-answer="A">
+        <div class="quiz-q"><span class="qnum">3</span>Himpunan penyelesaian <span class="math">4<sup>2x+1</sup> &gt; 64</span> adalah …</div>
+        <div class="quiz-opts">
+          <button class="opt" data-key="A">A. x &gt; 1</button>
+          <button class="opt" data-key="B">B. x &gt; 2</button>
+          <button class="opt" data-key="C">C. x &lt; 1</button>
+          <button class="opt" data-key="D">D. x &gt; 3</button>
+        </div>
+        <div class="quiz-actions"><button class="btn-check" disabled>Cek Jawaban</button><button class="btn-reset">Ulangi</button></div>
+        <div class="quiz-feedback"></div>
+        <div class="pembahasan"><span class="pem-label">💬 Pembahasan</span>
+          <span class="math">64 = 4<sup>3</sup></span> → <span class="math">4<sup>2x+1</sup> &gt; 4<sup>3</sup></span>. Basis 4 &gt; 1: <span class="math">2x + 1 &gt; 3</span> → <span class="math">2x &gt; 2</span> → <span class="math">x &gt; 1</span>.
+        </div>
+      </div>
+
+      <div class="quiz" data-answer="A">
+        <div class="quiz-q"><span class="qnum">4</span>Himpunan penyelesaian <span class="math">3<sup>x²−3x</sup> &lt; 1</span> adalah …</div>
+        <div class="quiz-opts">
+          <button class="opt" data-key="A">A. 0 &lt; x &lt; 3</button>
+          <button class="opt" data-key="B">B. x &lt; 0 atau x &gt; 3</button>
+          <button class="opt" data-key="C">C. x &gt; 3</button>
+          <button class="opt" data-key="D">D. −3 &lt; x &lt; 0</button>
+        </div>
+        <div class="quiz-actions"><button class="btn-check" disabled>Cek Jawaban</button><button class="btn-reset">Ulangi</button></div>
+        <div class="quiz-feedback"></div>
+        <div class="pembahasan"><span class="pem-label">💬 Pembahasan</span>
+          <span class="math">1 = 3<sup>0</sup></span> → <span class="math">3<sup>x²−3x</sup> &lt; 3<sup>0</sup></span>. Basis 3 &gt; 1: <span class="math">x² − 3x &lt; 0</span> → <span class="math">x(x − 3) &lt; 0</span> → <span class="math">0 &lt; x &lt; 3</span>.
+        </div>
+      </div>
+
+      <div class="quiz" data-answer="A">
+        <div class="quiz-q"><span class="qnum">5</span>Himpunan penyelesaian <span class="math">2<sup>x²−2x−3</sup> ≥ 1</span> adalah …</div>
+        <div class="quiz-opts">
+          <button class="opt" data-key="A">A. x ≤ −1 atau x ≥ 3</button>
+          <button class="opt" data-key="B">B. −1 ≤ x ≤ 3</button>
+          <button class="opt" data-key="C">C. x ≥ 3</button>
+          <button class="opt" data-key="D">D. −1 &lt; x &lt; 3</button>
+        </div>
+        <div class="quiz-actions"><button class="btn-check" disabled>Cek Jawaban</button><button class="btn-reset">Ulangi</button></div>
+        <div class="quiz-feedback"></div>
+        <div class="pembahasan"><span class="pem-label">💬 Pembahasan</span>
+          <span class="math">1 = 2<sup>0</sup></span> → <span class="math">x² − 2x − 3 ≥ 0</span> → <span class="math">(x − 3)(x + 1) ≥ 0</span> → parabola positif di luar akar: <span class="math">x ≤ −1</span> atau <span class="math">x ≥ 3</span>.
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ========== SLIDE 21: KASUS 0<a<1 - KONSEP & CONTOH ========== -->
+  <section class="slide" data-title="Kasus 0 &lt; a &lt; 1">
+    <div class="slide-head">
+      <div>
+        <span class="kicker">Pertidaksamaan Eksponensial · Kasus 2</span>
+        <h2 class="slide-title">Kasus <span class="math">0 &lt; a &lt; 1</span>: Tanda Berbalik</h2>
+      </div>
+    </div>
+    <div class="slide-body">
+      <div class="rule-box teal">
+        <b>Aturan:</b> untuk <span class="math">0 &lt; a &lt; 1</span>, fungsi eksponensial <b>turun</b>, sehingga:<br>
+        <span class="math">a<sup>f(x)</sup> &gt; a<sup>g(x)</sup> ⟺ f(x) &lt; g(x)</span> &nbsp;·&nbsp; <span class="math">a<sup>f(x)</sup> &lt; a<sup>g(x)</sup> ⟺ f(x) &gt; g(x)</span><br>
+        <span class="small-note">Tanda pertidaksamaan <b>berbalik arah</b>! Basis seperti ini: 1/2, 1/3, 1/10, 0,5, 0,25, dan sebagainya.</span>
+      </div>
+      <div class="example">
+        <div class="example-title">📌 Contoh 1</div>
+        <p>Tentukan himpunan penyelesaian <span class="math">(1/2)<sup>2x−1</sup> &gt; 8</span>.</p>
+        <div class="step-list">
+          <div class="step">Samakan basis: <span class="math">8 = 2<sup>3</sup> = (1/2)<sup>−3</sup></span> → <span class="math">(1/2)<sup>2x−1</sup> &gt; (1/2)<sup>−3</sup></span>.</div>
+          <div class="step">Basis 1/2 antara 0 dan 1 → <b>tanda dibalik</b>: <span class="math">2x − 1 &lt; −3</span>.</div>
+          <div class="step">Selesaikan: <span class="math">2x &lt; −2</span> → <span class="math">x &lt; −1</span>.</div>
+        </div>
+        <span class="answer-tag">HP = {x | x &lt; −1, x ∈ ℝ}</span>
+        <div class="check-line">✓ Uji x=−2: (1/2)<sup>−5</sup> = 32 &gt; 8 ✔ · Uji x=0: (1/2)<sup>−1</sup> = 2 ≤ 8 ✔</div>
+      </div>
+      <div class="example">
+        <div class="example-title">📌 Contoh 2</div>
+        <p>Tentukan himpunan penyelesaian <span class="math">(0,5)<sup>2x−4</sup> &lt; (0,5)<sup>x+1</sup></span>.</p>
+        <div class="step-list">
+          <div class="step">Basis sudah sama: 0,5 = 1/2 dengan <span class="math">0 &lt; 0,5 &lt; 1</span>.</div>
+          <div class="step">Tanda dibalik: <span class="math">2x − 4 &gt; x + 1</span>.</div>
+          <div class="step">Selesaikan: <span class="math">2x − x &gt; 1 + 4</span> → <span class="math">x &gt; 5</span>.</div>
+        </div>
+        <span class="answer-tag">HP = {x | x &gt; 5, x ∈ ℝ}</span>
+        <div class="check-line">✓ Uji x=6: (0,5)<sup>8</sup> &lt; (0,5)<sup>7</sup> ✔ (0,5<sup>8</sup> lebih kecil — pangkat besar pada basis kecil justru makin kecil)</div>
+      </div>
+      <div class="rule-box danger"><b>Kesalahan paling sering:</b> lupa membalik tanda pada basis kecil! Selalu tanyakan pada dirimu: "basisnya kurang dari 1?" Jika ya → balik tanda sebelum menyelesaikan.</div>
+    </div>
+  </section>
+
+  <!-- ========== SLIDE 22: KUIS KASUS 0<a<1 ========== -->
+  <section class="slide" data-title="Kuis 0 &lt; a &lt; 1">
+    <div class="slide-head">
+      <div>
+        <span class="kicker">Kuis Interaktif · 5 Soal</span>
+        <h2 class="slide-title">Kuis Kasus <span class="math">0 &lt; a &lt; 1</span></h2>
+      </div>
+    </div>
+    <div class="slide-body">
+      <p class="small-note">Semua basis di bawah kurang dari 1 → <b>tanda pertidaksamaan berbalik</b>. Tekan <b>Cek Jawaban</b> untuk koreksi ⭐</p>
+
+      <div class="quiz" data-answer="A">
+        <div class="quiz-q"><span class="qnum">1</span>Himpunan penyelesaian <span class="math">(1/3)<sup>x−1</sup> &gt; (1/3)<sup>3</sup></span> adalah …</div>
+        <div class="quiz-opts">
+          <button class="opt" data-key="A">A. x &lt; 4</button>
+          <button class="opt" data-key="B">B. x &gt; 4</button>
+          <button class="opt" data-key="C">C. x &gt; 2</button>
+          <button class="opt" data-key="D">D. x &lt; 2</button>
+        </div>
+        <div class="quiz-actions"><button class="btn-check" disabled>Cek Jawaban</button><button class="btn-reset">Ulangi</button></div>
+        <div class="quiz-feedback"></div>
+        <div class="pembahasan"><span class="pem-label">💬 Pembahasan</span>
+          Basis 1/3 &lt; 1 → tanda dibalik: <span class="math">x − 1 &lt; 3</span> → <span class="math">x &lt; 4</span>.
+        </div>
+      </div>
+
+      <div class="quiz" data-answer="A">
+        <div class="quiz-q"><span class="qnum">2</span>Himpunan penyelesaian <span class="math">(0,5)<sup>2x</sup> &lt; 8</span> adalah …</div>
+        <div class="quiz-opts">
+          <button class="opt" data-key="A">A. x &gt; −3/2</button>
+          <button class="opt" data-key="B">B. x &lt; −3/2</button>
+          <button class="opt" data-key="C">C. x &gt; −2/3</button>
+          <button class="opt" data-key="D">D. x &lt; 3/2</button>
+        </div>
+        <div class="quiz-actions"><button class="btn-check" disabled>Cek Jawaban</button><button class="btn-reset">Ulangi</button></div>
+        <div class="quiz-feedback"></div>
+        <div class="pembahasan"><span class="pem-label">💬 Pembahasan</span>
+          <span class="math">8 = 2<sup>3</sup> = (1/2)<sup>−3</sup></span> → <span class="math">(0,5)<sup>2x</sup> &lt; (0,5)<sup>−3</sup></span>. Basis 0,5 &lt; 1 → tanda dibalik: <span class="math">2x &gt; −3</span> → <span class="math">x &gt; −3/2</span>.
+        </div>
+      </div>
+
+      <div class="quiz" data-answer="A">
+        <div class="quiz-q"><span class="qnum">3</span>Himpunan penyelesaian <span class="math">(1/2)<sup>x²−4</sup> &gt; 1</span> adalah …</div>
+        <div class="quiz-opts">
+          <button class="opt" data-key="A">A. −2 &lt; x &lt; 2</button>
+          <button class="opt" data-key="B">B. x &lt; −2 atau x &gt; 2</button>
+          <button class="opt" data-key="C">C. 0 &lt; x &lt; 4</button>
+          <button class="opt" data-key="D">D. −4 &lt; x &lt; 4</button>
+        </div>
+        <div class="quiz-actions"><button class="btn-check" disabled>Cek Jawaban</button><button class="btn-reset">Ulangi</button></div>
+        <div class="quiz-feedback"></div>
+        <div class="pembahasan"><span class="pem-label">💬 Pembahasan</span>
+          <span class="math">1 = (1/2)<sup>0</sup></span> → basis kecil, tanda dibalik: <span class="math">x² − 4 &lt; 0</span> → <span class="math">(x−2)(x+2) &lt; 0</span> → <span class="math">−2 &lt; x &lt; 2</span>.
+        </div>
+      </div>
+
+      <div class="quiz" data-answer="A">
+        <div class="quiz-q"><span class="qnum">4</span>Himpunan penyelesaian <span class="math">(0,25)<sup>x+2</sup> ≥ (0,25)<sup>3x−1</sup></span> adalah …</div>
+        <div class="quiz-opts">
+          <button class="opt" data-key="A">A. x ≥ 3/2</button>
+          <button class="opt" data-key="B">B. x ≤ 3/2</button>
+          <button class="opt" data-key="C">C. x ≥ 2</button>
+          <button class="opt" data-key="D">D. x ≤ 2</button>
+        </div>
+        <div class="quiz-actions"><button class="btn-check" disabled>Cek Jawaban</button><button class="btn-reset">Ulangi</button></div>
+        <div class="quiz-feedback"></div>
+        <div class="pembahasan"><span class="pem-label">💬 Pembahasan</span>
+          <span class="math">0,25 = 1/4</span>, basis &lt; 1 → tanda dibalik (≥ menjadi ≤): <span class="math">x + 2 ≤ 3x − 1</span> → <span class="math">3 ≤ 2x</span> → <span class="math">x ≥ 3/2</span>.
+        </div>
+      </div>
+
+      <div class="quiz" data-answer="A">
+        <div class="quiz-q"><span class="qnum">5</span>Himpunan penyelesaian <span class="math">(1/3)<sup>x²−3x−10</sup> ≤ 1</span> adalah …</div>
+        <div class="quiz-opts">
+          <button class="opt" data-key="A">A. x ≤ −2 atau x ≥ 5</button>
+          <button class="opt" data-key="B">B. −2 ≤ x ≤ 5</button>
+          <button class="opt" data-key="C">C. x ≥ 5</button>
+          <button class="opt" data-key="D">D. −2 &lt; x &lt; 5</button>
+        </div>
+        <div class="quiz-actions"><button class="btn-check" disabled>Cek Jawaban</button><button class="btn-reset">Ulangi</button></div>
+        <div class="quiz-feedback"></div>
+        <div class="pembahasan"><span class="pem-label">💬 Pembahasan</span>
+          <span class="math">1 = (1/3)<sup>0</sup></span> → tanda dibalik: <span class="math">x² − 3x − 10 ≥ 0</span> → <span class="math">(x − 5)(x + 2) ≥ 0</span> → <span class="math">x ≤ −2</span> atau <span class="math">x ≥ 5</span>.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== SLIDE 23: SOAL CERITA - KONSEP & CONTOH ========== -->
+  <section class="slide" data-title="Soal Cerita Eksponensial">
+    <div class="slide-head">
+      <div>
+        <span class="kicker">Soal Cerita · Model &amp; Contoh</span>
+        <h2 class="slide-title">Soal Cerita Eksponensial</h2>
+      </div>
+    </div>
+    <div class="slide-body">
+      <div class="tbl-wrap">
+      <table class="tbl">
+        <tr><th>Situasi</th><th>Model</th><th>Contoh</th></tr>
+        <tr><td>Pertumbuhan (belah diri, berlipat)</td><td class="math">N = N<sub>0</sub> · a<sup>n</sup>, a &gt; 1</td><td>Bakteri, virus, penduduk</td></tr>
+        <tr><td>Peluruhan (menyusut)</td><td class="math">N = N<sub>0</sub> · a<sup>n</sup>, 0 &lt; a &lt; 1</td><td>Radioaktif, nilai kendaraan</td></tr>
+        <tr><td>Bunga majemuk</td><td class="math">M = M<sub>0</sub>(1 + i)<sup>n</sup></td><td>Tabungan di bank</td></tr>
+      </table>
+      </div>
+      <div class="step-list">
+        <div class="step">Tentukan <span class="math">N<sub>0</sub></span> (jumlah awal) dan rasio perubahan per periode (<span class="math">a</span>).</div>
+        <div class="step">Hitung banyaknya periode <span class="math">n</span> — <b>samakan satuan waktu</b> (menit ↔ jam, hari, tahun)!</div>
+        <div class="step">Susun model dan substitusikan nilai yang diketahui.</div>
+        <div class="step">Hitung nilai yang ditanya; untuk soal mencari waktu, selesaikan persamaan eksponensialnya.</div>
+      </div>
+      <div class="example">
+        <div class="example-title">📌 Contoh 1 — Pertumbuhan Bakteri</div>
+        <p>Sebuah laboratorium menumbuhkan <b>100 bakteri</b>. Setiap <b>20 menit</b>, jumlah bakteri menjadi <b>dua kali</b> sebelumnya. Berapa banyak bakteri setelah <b>2 jam</b>?</p>
+        <div class="step-list">
+          <div class="step">Diketahui: <span class="math">N<sub>0</sub> = 100</span>, rasio <span class="math">a = 2</span> tiap 20 menit.</div>
+          <div class="step">Banyak periode: 2 jam = 120 menit → <span class="math">n = 120 : 20 = 6</span>.</div>
+          <div class="step">Model: <span class="math">N = 100 · 2<sup>6</sup> = 100 × 64 = 6.400</span>.</div>
+        </div>
+        <span class="answer-tag">Ada 6.400 bakteri setelah 2 jam.</span>
+      </div>
+      <div class="example">
+        <div class="example-title">📌 Contoh 2 — Peluruhan Radioaktif</div>
+        <p>Massa awal sebuah unsur radioaktif adalah <b>96 gram</b>. Unsur ini meluruh menjadi <b>setengahnya setiap 3 jam</b>. Berapa massa unsur yang tersisa setelah <b>12 jam</b>?</p>
+        <div class="step-list">
+          <div class="step">Diketahui: <span class="math">N<sub>0</sub> = 96</span>, waktu paruh 3 jam → rasio <span class="math">a = 1/2</span> per 3 jam.</div>
+          <div class="step">Banyak periode: <span class="math">n = 12 : 3 = 4</span> kali peluruhan.</div>
+          <div class="step">Model: <span class="math">N = 96 · (1/2)<sup>4</sup> = 96 × 1/16 = 6</span> gram.</div>
+        </div>
+        <span class="answer-tag">Tersisa 6 gram setelah 12 jam.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== SLIDE 24: KUIS SOAL CERITA ========== -->
+  <section class="slide" data-title="Kuis Soal Cerita">
+    <div class="slide-head">
+      <div>
+        <span class="kicker">Kuis Interaktif · 5 Soal</span>
+        <h2 class="slide-title">Kuis Soal Cerita Eksponensial</h2>
+      </div>
+    </div>
+    <div class="slide-body">
+      <p class="small-note">Identifikasi N₀, rasio, dan banyaknya periode dengan teliti (hati-hati satuan waktu!). Tekan <b>Cek Jawaban</b> untuk koreksi ⭐</p>
+
+      <div class="quiz" data-answer="A">
+        <div class="quiz-q"><span class="qnum">1</span>Sejumlah <b>50 bakteri</b> berkembang biak dengan cara membelah diri menjadi dua setiap <b>30 menit</b>. Banyak bakteri setelah <b>3 jam</b> adalah …</div>
+        <div class="quiz-opts">
+          <button class="opt" data-key="A">A. 3.200 bakteri</button>
+          <button class="opt" data-key="B">B. 1.600 bakteri</button>
+          <button class="opt" data-key="C">C. 6.400 bakteri</button>
+          <button class="opt" data-key="D">D. 800 bakteri</button>
+        </div>
+        <div class="quiz-actions"><button class="btn-check" disabled>Cek Jawaban</button><button class="btn-reset">Ulangi</button></div>
+        <div class="quiz-feedback"></div>
+        <div class="pembahasan"><span class="pem-label">💬 Pembahasan</span>
+          3 jam = 180 menit → <span class="math">n = 180 : 30 = 6</span> kali pembelahan.<br>
+          <span class="math">N = 50 · 2<sup>6</sup> = 50 × 64 = 3.200</span> bakteri.
+        </div>
+      </div>
+
+      <div class="quiz" data-answer="A">
+        <div class="quiz-q"><span class="qnum">2</span>Pak Dedi menabung <b>Rp1.000.000</b> dengan bunga majemuk <b>10% per tahun</b>. Jumlah tabungan Pak Dedi setelah <b>3 tahun</b> adalah …</div>
+        <div class="quiz-opts">
+          <button class="opt" data-key="A">A. Rp1.331.000</button>
+          <button class="opt" data-key="B">B. Rp1.300.000</button>
+          <button class="opt" data-key="C">C. Rp1.210.000</button>
+          <button class="opt" data-key="D">D. Rp1.464.100</button>
+        </div>
+        <div class="quiz-actions"><button class="btn-check" disabled>Cek Jawaban</button><button class="btn-reset">Ulangi</button></div>
+        <div class="quiz-feedback"></div>
+        <div class="pembahasan"><span class="pem-label">💬 Pembahasan</span>
+          <span class="math">M = 1.000.000 × (1 + 0,1)<sup>3</sup> = 1.000.000 × (1,1)<sup>3</sup></span>.<br>
+          <span class="math">(1,1)<sup>3</sup> = 1,331</span> → <span class="math">M = Rp1.331.000</span>.
+        </div>
+      </div>
+
+      <div class="quiz" data-answer="A">
+        <div class="quiz-q"><span class="qnum">3</span>Harga sebuah motor <b>Rp20.000.000</b> dan nilainya turun <b>10% per tahun</b>. Nilai motor tersebut setelah <b>2 tahun</b> adalah …</div>
+        <div class="quiz-opts">
+          <button class="opt" data-key="A">A. Rp16.200.000</button>
+          <button class="opt" data-key="B">B. Rp18.000.000</button>
+          <button class="opt" data-key="C">C. Rp16.000.000</button>
+          <button class="opt" data-key="D">D. Rp14.580.000</button>
+        </div>
+        <div class="quiz-actions"><button class="btn-check" disabled>Cek Jawaban</button><button class="btn-reset">Ulangi</button></div>
+        <div class="quiz-feedback"></div>
+        <div class="pembahasan"><span class="pem-label">💬 Pembahasan</span>
+          Turun 10% → rasio <span class="math">a = 0,9</span>.<br>
+          <span class="math">V = 20.000.000 × (0,9)<sup>2</sup> = 20.000.000 × 0,81 = Rp16.200.000</span>.
+        </div>
+      </div>
+
+      <div class="quiz" data-answer="A">
+        <div class="quiz-q"><span class="qnum">4</span>Awalnya terdapat <b>20 orang</b> penderita virus flu baru. Jumlah penderita menjadi <b>dua kali lipat setiap 4 hari</b>. Banyak penderita setelah <b>16 hari</b> adalah …</div>
+        <div class="quiz-opts">
+          <button class="opt" data-key="A">A. 320 orang</button>
+          <button class="opt" data-key="B">B. 160 orang</button>
+          <button class="opt" data-key="C">C. 640 orang</button>
+          <button class="opt" data-key="D">D. 80 orang</button>
+        </div>
+        <div class="quiz-actions"><button class="btn-check" disabled>Cek Jawaban</button><button class="btn-reset">Ulangi</button></div>
+        <div class="quiz-feedback"></div>
+        <div class="pembahasan"><span class="pem-label">💬 Pembahasan</span>
+          <span class="math">n = 16 : 4 = 4</span> kali lipatan.<br>
+          <span class="math">N = 20 · 2<sup>4</sup> = 20 × 16 = 320</span> orang.
+        </div>
+      </div>
+
+      <div class="quiz" data-answer="A">
+        <div class="quiz-q"><span class="qnum">5</span>Sebuah kolam berisi <b>2.000 bakteri</b>. Setiap jam jumlah bakteri menjadi <b>3 kali lipat</b>. Setelah <b>berapa jam</b> jumlah bakteri menjadi <b>54.000</b>?</div>
+        <div class="quiz-opts">
+          <button class="opt" data-key="A">A. 3 jam</button>
+          <button class="opt" data-key="B">B. 2 jam</button>
+          <button class="opt" data-key="C">C. 4 jam</button>
+          <button class="opt" data-key="D">D. 27 jam</button>
+        </div>
+        <div class="quiz-actions"><button class="btn-check" disabled>Cek Jawaban</button><button class="btn-reset">Ulangi</button></div>
+        <div class="quiz-feedback"></div>
+        <div class="pembahasan"><span class="pem-label">💬 Pembahasan</span>
+          Model: <span class="math">2000 · 3<sup>t</sup> = 54.000</span> → <span class="math">3<sup>t</sup> = 27</span>.<br>
+          Karena <span class="math">27 = 3<sup>3</sup></span>, maka <span class="math">t = 3</span> jam. (Ini persamaan eksponensial bentuk 1 di dalam soal cerita!)
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ========== SLIDE 25: KESIMPULAN ========== -->
+  <section class="slide" data-title="Kesimpulan">
+    <div class="slide-head">
+      <div>
+        <span class="kicker">Rangkuman</span>
+        <h2 class="slide-title">Kesimpulan</h2>
+      </div>
+    </div>
+    <div class="slide-body">
+      <div class="grid g2">
+        <div class="card">
+          <h4>🧮 Persamaan Eksponensial (5 Bentuk)</h4>
+          <div class="tbl-wrap">
+          <table class="tbl">
+            <tr><th>Bentuk</th><th>Solusi</th></tr>
+            <tr><td class="math">a<sup>f(x)</sup> = a<sup>p</sup></td><td class="math">f(x) = p</td></tr>
+            <tr><td class="math">a<sup>f(x)</sup> = a<sup>g(x)</sup></td><td class="math">f(x) = g(x)</td></tr>
+            <tr><td class="math">a<sup>f(x)</sup> = b<sup>f(x)</sup>, a ≠ b</td><td class="math">f(x) = 0</td></tr>
+            <tr><td class="math">f(x)<sup>g(x)</sup> = f(x)<sup>h(x)</sup></td><td>3 kasus: basis 1, pangkat sama, basis 0 (pangkat positif)</td></tr>
+            <tr><td class="math">A(a<sup>f(x)</sup>)<sup>2</sup> + B·a<sup>f(x)</sup> + C = 0</td><td>Misal <span class="math">t = a<sup>f(x)</sup> &gt; 0</span>, selesaikan kuadrat, lalu kembalikan</td></tr>
+          </table>
+          </div>
+        </div>
+        <div class="card">
+          <h4>⚖️ Pertidaksamaan Eksponensial</h4>
+          <p><b>Jika a &gt; 1</b> → fungsi naik, tanda pertidaksamaan <b>tetap</b>:<br><span class="math">a<sup>f(x)</sup> &gt; a<sup>p</sup> ⟺ f(x) &gt; p</span></p>
+          <p><b>Jika 0 &lt; a &lt; 1</b> → fungsi turun, tanda <b>berbalik</b>:<br><span class="math">a<sup>f(x)</sup> &gt; a<sup>p</sup> ⟺ f(x) &lt; p</span></p>
+          <p class="small-note">Selalu samakan basis dulu, cek nilainya, baru pindahkan ke pangkat.</p>
+        </div>
+        <div class="card">
+          <h4>🌏 Eksponen di Dunia Nyata</h4>
+          <p><b>Pertumbuhan/peluruhan:</b> <span class="math">N = N<sub>0</sub> · a<sup>n</sup></span> (bakteri 2<sup>n</sup>, radioaktif (1/2)<sup>n</sup>)<br>
+          <b>Bunga majemuk:</b> <span class="math">M = M<sub>0</sub>(1 + i)<sup>n</sup></span><br>
+          <span class="small-note">Kuncinya: identifikasi jumlah awal, rasio, dan banyaknya periode dengan satuan waktu yang konsisten.</span></p>
+        </div>
+        <div class="card">
+          <h4>⭐ Skor Kuis Kamu</h4>
+          <div class="sum-score">
+            <div style="text-align:center">
+              <div style="font-size:26px;font-weight:900;color:var(--accent)" id="sum-correct">0</div>
+              <div class="small-note">jawaban benar</div>
+            </div>
+            <div id="sum-bar-wrap"><div id="sum-bar"></div></div>
+            <div class="small-note" style="min-width:140px" id="sum-detail">0 dari 40 soal dicek</div>
+          </div>
+          <p class="small-note">Skor diperbarui otomatis setiap kamu menekan "Cek Jawaban". Tekan "Ulangi" pada soal untuk mencoba lagi.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== SLIDE 26: REFLEKSI ========== -->
+  <section class="slide" data-title="Refleksi">
+    <div class="slide-head">
+      <div>
+        <span class="kicker">Menilai Perjalanan Belajar</span>
+        <h2 class="slide-title">Refleksi Diri</h2>
+      </div>
+    </div>
+    <div class="slide-body">
+      <p class="lead">Sebelum menutup pertemuan, luangkan waktu sejenak untuk merenungkan apa yang telah kamu pelajari hari ini.</p>
+      <div class="grid g2">
+        <div class="card"><h4>🤔 Pertanyaan 1</h4><p>Bentuk persamaan atau pertidaksamaan eksponensial mana yang paling menantang bagimu? Mengapa?</p></div>
+        <div class="card"><h4>🔍 Pertanyaan 2</h4><p>Di mana saja kamu akan menggunakan konsep eksponen ini dalam kehidupanmu? (Uang jajan, lintasan bakteri, pengaruh media sosial?)</p></div>
+      </div>
+      <div class="rule-box teal">
+        <b>Seberapa paham kamu hari ini?</b> Pilih satu emoji yang paling mewakili:
+        <div class="emo-row" id="emo-row">
+          <button class="emo" data-emo="😅">😅<small>Masih bingung</small></button>
+          <button class="emo" data-emo="🙂">🙂<small>Cukup paham</small></button>
+          <button class="emo" data-emo="🤩">🤩<small>Sangat paham!</small></button>
+        </div>
+      </div>
+      <textarea id="refl-text" placeholder="Tulis refleksimu di sini (opsional): bagian favoritmu, bagian yang masih sulit, atau hal menarik yang baru kamu ketahui hari ini..."></textarea>
+      <button class="btn-primary" id="refl-submit">Kirim Refleksi 🚀</button>
+      <div id="refl-msg"></div>
+    </div>
+  </section>
+
+  <!-- ========== SLIDE 27: THANK YOU ========== -->
+  <section class="slide dark" data-title="Thank You">
+    <div class="cover-inner">
+      <span class="cover-badge">Penutup</span>
+      <h1 class="cover-title">Thank You for Today! 🙏</h1>
+      <p class="cover-sub">Terima kasih sudah belajar bersama hari ini. Kamu kini mampu mengubah bakteri, uang di bank, dan atom radioaktif menjadi angka-angka yang bisa dihitung — itu kekuatan matematika!</p>
+      <div class="formula-hero math">Tetap eksponensial: terus berlipat dalam belajar! 2<sup>n</sup> 💪</div>
+      <div class="chips">
+        <span class="chip" id="chip-score">⭐ Skor kuis: belum ada</span>
+        <span class="chip">📚 Sampai jumpa di materi berikutnya</span>
+        <span class="chip">❓ Ada pertanyaan? Sampaikan sekarang!</span>
+      </div>
+    </div>
+  </section>
+  </div><!-- /deck -->
+
+  <!-- Menu overlay -->
+  <div class="overlay" id="overlay">
+    <div class="menu-panel">
+      <button class="menu-close" id="menu-close" aria-label="Tutup menu">✕</button>
+      <h3>📑 Daftar Slide</h3>
+      <div id="menu-list"></div>
+    </div>
+  </div>
+
+  <div class="bottombar">
+    <span id="counter">1 / 27</span>
+    <div class="nav-btns">
+      <button class="nav-btn" id="btn-prev">← Sebelumnya</button>
+      <button class="nav-btn" id="btn-next">Berikutnya →</button>
+    </div>
+  </div>
+</div><!-- /app -->
+
+<script>
+(function(){
+  "use strict";
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var total = slides.length;
+  var cur = 0;
+  var stats = { checked: 0, correct: 0 };
+  var progress = document.getElementById('progress');
+  var counter = document.getElementById('counter');
+  var chip = document.getElementById('chip-score');
+
+  function show(i){
+    cur = Math.max(0, Math.min(total - 1, i));
+    slides.forEach(function(s, idx){ s.classList.toggle('active', idx === cur); });
+    var body = slides[cur].querySelector('.slide-body');
+    if (body) body.scrollTop = 0;
+    progress.style.width = (cur / (total - 1) * 100) + '%';
+    counter.textContent = (cur + 1) + ' / ' + total;
+    document.getElementById('btn-prev').disabled = (cur === 0);
+    document.getElementById('btn-next').disabled = (cur === total - 1);
+    renderMenu();
+  }
+  function next(){ show(cur + 1); }
+  function prev(){ show(cur - 1); }
+
+  document.getElementById('btn-next').addEventListener('click', next);
+  document.getElementById('btn-prev').addEventListener('click', prev);
+  document.getElementById('btn-start').addEventListener('click', next);
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); next(); }
+    if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); prev(); }
+    if (e.key === 'Escape') document.getElementById('overlay').classList.remove('open');
+  });
+  // Swipe untuk layar sentuh
+  var tx = null;
+  document.addEventListener('touchstart', function(e){ tx = e.touches[0].clientX; }, {passive:true});
+  document.addEventListener('touchend', function(e){
+    if (tx === null) return;
+    var dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 60) { if (dx < 0) next(); else prev(); }
+    tx = null;
+  }, {passive:true});
+
+  /* ===== Menu daftar slide ===== */
+  var overlay = document.getElementById('overlay');
+  var menuList = document.getElementById('menu-list');
+  function renderMenu(){
+    menuList.innerHTML = '';
+    slides.forEach(function(s, idx){
+      var b = document.createElement('button');
+      b.className = 'menu-item' + (idx === cur ? ' current' : '');
+      b.textContent = (idx + 1) + '. ' + s.dataset.title;
+      b.addEventListener('click', function(){ show(idx); overlay.classList.remove('open'); });
+      menuList.appendChild(b);
+    });
+  }
+  document.getElementById('menu-btn').addEventListener('click', function(){ overlay.classList.add('open'); renderMenu(); });
+  document.getElementById('menu-close').addEventListener('click', function(){ overlay.classList.remove('open'); });
+  overlay.addEventListener('click', function(e){ if (e.target === overlay) overlay.classList.remove('open'); });
+
+  /* ===== Skor ===== */
+  function updateScore(){
+    document.getElementById('score-chip').textContent = '✅ ' + stats.correct + ' · ❌ ' + (stats.checked - stats.correct);
+    var sumCorrect = document.getElementById('sum-correct');
+    if (sumCorrect){
+      sumCorrect.textContent = stats.correct;
+      var pct = stats.checked / totalQuiz * 100;
+      document.getElementById('sum-bar').style.width = pct + '%';
+      document.getElementById('sum-detail').textContent = stats.checked + ' dari ' + totalQuiz + ' soal dicek';
+    }
+    if (chip){
+      chip.textContent = '⭐ Skor kuis: ' + stats.correct + ' benar dari ' + stats.checked + ' soal dicek';
+    }
+  }
+
+  /* ===== Kuis interaktif ===== */
+  var quizzes = Array.prototype.slice.call(document.querySelectorAll('.quiz'));
+  var totalQuiz = quizzes.length;
+  quizzes.forEach(function(q){
+    var opts = Array.prototype.slice.call(q.querySelectorAll('.opt'));
+    var check = q.querySelector('.btn-check');
+    var reset = q.querySelector('.btn-reset');
+    var fb = q.querySelector('.quiz-feedback');
+    var pem = q.querySelector('.pembahasan');
+    var ans = q.dataset.answer;
+
+    opts.forEach(function(o){
+      o.addEventListener('click', function(){
+        if (q.dataset.done) return;
+        opts.forEach(function(x){ x.classList.remove('selected'); });
+        o.classList.add('selected');
+        check.disabled = false;
+      });
+    });
+
+    check.addEventListener('click', function(){
+      if (q.dataset.done) return;
+      var sel = q.querySelector('.opt.selected');
+      if (!sel) return;
+      var correct = sel.dataset.key === ans;
+      q.dataset.done = '1';
+      q.dataset.ok = correct ? '1' : '0';
+      opts.forEach(function(o){
+        o.disabled = true;
+        if (o.dataset.key === ans) o.classList.add('correct');
+      });
+      if (!correct) sel.classList.add('wrong');
+      fb.style.display = 'block';
+      fb.className = 'quiz-feedback ' + (correct ? 'ok' : 'bad');
+      fb.classList.add('pop');
+      fb.textContent = correct ? '✅ Benar! Jawabanmu tepat, mantap!' : '❌ Belum tepat. Jawaban yang benar: ' + ans + '. Baca pembahasan berikut ya!';
+      pem.classList.add('show');
+      stats.checked++;
+      if (correct) stats.correct++;
+      updateScore();
+    });
+
+    reset.addEventListener('click', function(){
+      if (q.dataset.done){
+        stats.checked--;
+        if (q.dataset.ok === '1') stats.correct--;
+        q.dataset.done = '';
+        q.dataset.ok = '';
+      }
+      opts.forEach(function(o){ o.disabled = false; o.classList.remove('selected','correct','wrong'); });
+      check.disabled = true;
+      fb.style.display = 'none';
+      fb.className = 'quiz-feedback';
+      fb.textContent = '';
+      pem.classList.remove('show');
+      updateScore();
+    });
+  });
+
+  /* ===== Simulasi bakteri ===== */
+  var slider = document.getElementById('sim-slider');
+  if (slider){
+    var bars = document.getElementById('sim-bars');
+    function renderSim(){
+      var n = parseInt(slider.value, 10);
+      var N = 100 * Math.pow(2, n);
+      document.getElementById('sim-exp').textContent = n;
+      document.getElementById('sim-val').textContent = N.toLocaleString('id-ID');
+      document.getElementById('sim-time').textContent = n + ' kali × 20 menit = ' + (n * 20) + ' menit (' + (n * 20 / 60).toLocaleString('id-ID', {maximumFractionDigits:1}) + ' jam)';
+      bars.innerHTML = '';
+      for (var k = 0; k <= n; k++){
+        var b = document.createElement('div');
+        b.className = 'sim-bar';
+        var h = Math.pow(2, k) / Math.pow(2, n) * 100;
+        b.style.height = Math.max(h, 3) + '%';
+        b.title = 'Pembelahan ke-' + k + ': ' + (100 * Math.pow(2, k)).toLocaleString('id-ID') + ' bakteri';
+        if (n <= 6) {
+          var lb = document.createElement('span');
+          lb.textContent = '2' + k;
+          b.appendChild(lb);
+        }
+        bars.appendChild(b);
+      }
+    }
+    slider.addEventListener('input', renderSim);
+    renderSim();
+  }
+
+  /* ===== Refleksi ===== */
+  var chosenEmo = '';
+  document.querySelectorAll('#emo-row .emo').forEach(function(e){
+    e.addEventListener('click', function(){
+      document.querySelectorAll('#emo-row .emo').forEach(function(x){ x.classList.remove('selected'); });
+      e.classList.add('selected');
+      chosenEmo = e.dataset.emo;
+    });
+  });
+  document.getElementById('refl-submit').addEventListener('click', function(){
+    var msg = document.getElementById('refl-msg');
+    if (!chosenEmo){
+      msg.style.display = 'block';
+      msg.style.color = 'var(--bad)';
+      msg.textContent = 'Pilih dulu salah satu emoji di atas ya 😊';
+      return;
+    }
+    var teks = document.getElementById('refl-text').value.trim();
+    msg.style.display = 'block';
+    msg.style.color = 'var(--ok)';
+    msg.textContent = chosenEmo + ' Terima kasih atas refleksinya!' + (teks ? ' Catatanmu sudah dicatat di layarmu ini.' : '') + ' Semangat terus belajarnya! 🌟';
+  });
+
+  updateScore();
+  show(0);
+})();
+</script>
+</body>
+</html>
